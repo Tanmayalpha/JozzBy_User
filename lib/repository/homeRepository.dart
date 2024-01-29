@@ -47,7 +47,7 @@ class HomeRepository {
       {required Map<String, dynamic> parameter}) async {
 
     try {
-       print('-----This is parameter-------${parameter}');
+       print('-----This is get section parameter-------${parameter}');
       var sectionData =
           await ApiBaseHelper().postAPICall(getSectionApi, parameter);
                       //    ;

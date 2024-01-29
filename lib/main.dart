@@ -84,6 +84,10 @@ void main() async {
         String? theme = prefs.getString(APP_THEME);
 
         if (theme == DARK) {
+print('_________t______');
+
+
+
           ISDARK = 'false';
         } else if (theme == LIGHT) {
           ISDARK = 'false';

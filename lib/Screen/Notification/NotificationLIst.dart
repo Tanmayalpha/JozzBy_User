@@ -98,8 +98,15 @@ class StateNoti extends State<NotificationList> with TickerProviderStateMixin {
       appBar: getAppBar(
           getTranslated(context, 'NOTIFICATION')!, context, setStateNow),
       key: _scaffoldKey,
-      body: isNetworkAvail
-          ? Consumer<NotificationProvider>(
+      body:
+
+
+      isNetworkAvail
+          ?
+
+
+
+      Consumer<NotificationProvider>(
               builder: (context, value, child) {
                 if (value.getCurrentStatus == NotificationStatus.isSuccsess) {
                   return showContent(value.notificationList);
@@ -147,7 +154,9 @@ class StateNoti extends State<NotificationList> with TickerProviderStateMixin {
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
-                    : NotiListData(
+                    :
+
+                NotiListData(
                         index: index,
                         notiList: notificationList,
                       );

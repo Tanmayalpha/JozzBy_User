@@ -39,6 +39,56 @@ class ProductMoreDetail extends StatelessWidget {
         : Container();
   }
 
+  _shortdes(Product? model) {
+    return model!.shortDescription != '' && model.shortDescription != null
+        ? Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: HtmlWidget(
+          model.shortDescription ?? '',
+        )
+      //  Html(
+      //   data: model.shortDescription,
+      //   onLinkTap: (String? url, RenderContext context,
+      //       Map<String, String> attributes, dom.Element? element) async {
+      //     if (await canLaunchUrl(Uri.parse(url!))) {
+      //       await launchUrl(
+      //         Uri.parse(url),
+      //         mode: LaunchMode.platformDefault,
+      //       );
+      //     } else {
+      //       throw 'Could not launch $url';
+      //     }
+      //   },
+      // ),
+    )
+        : Container();
+  }
+
+  _extrades(Product? model) {
+    return model!.shortDescription != '' && model.shortDescription != null
+        ? Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: HtmlWidget(
+          model.extraDescription ?? '',
+        )
+      //  Html(
+      //   data: model.shortDescription,
+      //   onLinkTap: (String? url, RenderContext context,
+      //       Map<String, String> attributes, dom.Element? element) async {
+      //     if (await canLaunchUrl(Uri.parse(url!))) {
+      //       await launchUrl(
+      //         Uri.parse(url),
+      //         mode: LaunchMode.platformDefault,
+      //       );
+      //     } else {
+      //       throw 'Could not launch $url';
+      //     }
+      //   },
+      // ),
+    )
+        : Container();
+  }
+
   _attr(Product? model) {
     return model!.attributeList!.isNotEmpty
         ? ListView.builder(
@@ -157,6 +207,8 @@ class ProductMoreDetail extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _desc(model),
+                                const Divider(),
+                                _extrades(model),
                                 model!.desc != '' && model!.desc != null
                                     ? const Padding(
                                         padding: EdgeInsets.symmetric(
@@ -183,6 +235,9 @@ class ProductMoreDetail extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               _desc(model),
+
+                              _shortdes(model),
+                              _extrades(model),
                               model!.desc != '' && model!.desc != null
                                   ? const Divider(
                                       height: 3.0,
@@ -200,14 +255,12 @@ class ProductMoreDetail extends StatelessWidget {
                     children: [
                       InkWell(
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                              start: 15, top: 10, end: 2, bottom: 15),
+                          padding: const EdgeInsetsDirectional.only(start: 15, top: 10, end: 2, bottom: 15),
                           child: Text(
                             !context.read<ProductDetailProvider>().seeView
-                                ? getTranslated(context, 'See More')!
-                                : getTranslated(context, 'See Less')!,
-                            style:
-                                Theme.of(context).textTheme.caption!.copyWith(
+                                ? getTranslated(context, 'See Less')!
+                                : getTranslated(context, 'See More')!,
+                            style: Theme.of(context).textTheme.caption!.copyWith(
                                       color: colors.primary,
                                       fontWeight: FontWeight.w400,
                                       fontFamily: 'Ubuntu',
@@ -217,9 +270,7 @@ class ProductMoreDetail extends StatelessWidget {
                           ),
                         ),
                         onTap: () {
-                          context.read<ProductDetailProvider>().seeView =
-                              !context.read<ProductDetailProvider>().seeView;
-
+                          context.read<ProductDetailProvider>().seeView = !context.read<ProductDetailProvider>().seeView;
                           update();
                         },
                       ),

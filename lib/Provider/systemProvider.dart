@@ -138,12 +138,10 @@ class SystemProvider extends ChangeNotifier {
         var systemData = data['systemSetting']['system_settings'][0];
 
         supportedLocale = systemData['supported_locals'];
-
         cartBtnList = systemData['cart_btn_on_list'] == '1' ? true : false;
         refer = systemData['is_refer_earn_on'] == '1' ? true : false;
         CUR_CURRENCY = systemData['currency'];
         DECIMAL_POINTS = systemData['decimal_point'];
-
         RETURN_DAYS = systemData['max_product_return_days'];
         ADVANCE_PERCENT = systemData['advance_payment_percentage'];
         MAX_ITEMS = systemData['max_items_cart'];
@@ -151,15 +149,11 @@ class SystemProvider extends ChangeNotifier {
         CUR_DEL_CHR = systemData['delivery_charge'];
         Is_APP_IN_MAINTANCE = systemData['is_customer_app_under_maintenance'];
         MAINTENANCE_MESSAGE = systemData['message_for_customer_app'];
-        singleSellerOrderSystem =
-            systemData['is_single_seller_order'] == '1' ? true : false;
+        singleSellerOrderSystem = systemData['is_single_seller_order'] == '1' ? true : false;
         String? isVersionSystemOn = systemData['is_version_system_on'];
         extendImg = systemData['expand_product_images'] == '1' ? true : false;
         MIN_ALLOW_CART_AMT = systemData[MIN_CART_AMT];
-        ISFLAT_DEL = systemData['area_wise_delivery_charge'].toString() == '0'
-            ? true
-            : false;
-
+        ISFLAT_DEL = systemData['area_wise_delivery_charge'].toString() == '0' ? true : false;
         if (userID != null) {
           REFER_CODE = data['systemSetting']['user_data'][0]['referral_code'];
         }

@@ -19,6 +19,9 @@ class ApiException implements Exception {
 
 class ApiBaseHelper {
   Future<dynamic> postAPICall(Uri url, Map param) async {
+    log('${url}');
+    log('${param}');
+
     var responseJson;
     try {
       final response =

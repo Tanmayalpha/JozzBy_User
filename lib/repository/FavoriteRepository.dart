@@ -11,7 +11,7 @@ class FavRepository {
   }) async {
     try {
       var favList = await ApiBaseHelper().postAPICall(getFavApi, parameter);
-
+print("=get fev=======${getFavApi}==========${parameter}");
       return {
         'totalFav': favList['total'].toString(),
         'favList': (favList['data'] as List)
@@ -29,6 +29,7 @@ class FavRepository {
   }) async {
     try {
       var result = await ApiBaseHelper().postAPICall(setFavoriteApi, parameter);
+      print("=set fev=======${setFavoriteApi}==========${parameter}");
 
       return result;
     } on Exception catch (e) {

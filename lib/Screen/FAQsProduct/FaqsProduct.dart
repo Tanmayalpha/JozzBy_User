@@ -15,7 +15,6 @@ import '../Language/languageSettings.dart';
 import '../../widgets/networkAvailablity.dart';
 import '../../widgets/snackbar.dart';
 import '../NoInterNetWidget/NoInterNet.dart';
-import 'Widget/commandWidgetFaQ.dart';
 
 class FaqsProduct extends StatefulWidget {
   final String? id;
@@ -136,12 +135,8 @@ class StateFaqsProduct extends State<FaqsProduct>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: getAppBar(
-        getTranslated(context, 'Questions and Answers')!,
-        context,
-        update,
-      ),
-      bottomNavigationBar: BorromBtnWidget(id: widget.id, update: update),
+      appBar: getAppBar(getTranslated(context, 'Questions and Answers')!, context, update,),
+      // bottomNavigationBar: BorromBtnWidget(id: widget.id, update: update),
       body: isNetworkAvail
           ? Stack(
               children: <Widget>[

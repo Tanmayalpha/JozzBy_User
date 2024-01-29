@@ -167,9 +167,11 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
             SettingProvider settingsProvider =
             Provider.of<SettingProvider>(context, listen: false);
             if (isMobile==true) {
+              print("${value['otp']}");
+              setSnackbar(value['message']??"", context);
               if (!error!) {
-                //setSnackbar(msg!, context);
 
+             print("___________________________");
                 Future.delayed(const Duration(seconds: 1)).then(
                       (_) {
                     Navigator.pushReplacement(
@@ -179,7 +181,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                         mobileNumber:mobileController.text,
                         countryCode: countrycode,
                         isMobile: isMobile,
-                        responseOtp: receivedOTP.toString(),
+                        otp: value['otp'].toString(),
                         title: getTranslated(context, 'SEND_OTP_TITLE'),
 
                       ),
@@ -188,10 +190,11 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                 );
                 setSnackbar(msg!, context);
               } else {
-                setSnackbar(msg!, context);
+                // setSnackbar(msg!, context);
               }
             }
             if (isMobile==false) {
+              setSnackbar(value['message']??"", context);
               if (error!) {
                 settingsProvider.setPrefrence(MOBILE,
                     context.read<AuthenticationProvider>().mobilenumbervalue);
@@ -206,7 +209,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                               .read<AuthenticationProvider>()
                               .mobilenumbervalue,
                           countryCode: countrycode,
-                          responseOtp: receivedOTP.toString(),
+                          otp: value['otp'].toString(),
                           title: getTranslated(context, 'FORGOT_PASS_TITLE'),
                         ),
                       ),
@@ -241,7 +244,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
     isNetworkAvail = await isNetworkAvailable();
     if (isNetworkAvail) {
       Future.delayed(Duration.zero).then(
-        (value) => context.read<AuthenticationProvider>().getLoginData().then(
+        (value) => context.read<AuthenticationProvider>().getLoginData(context).then(
           (
             value,
           ) async {
@@ -250,16 +253,21 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
             await buttonController!.reverse();
             if (!error) {
               print('___________${value['data'][0]}__________');
+              print("++++++++++++++++++++++++kfksksjd");
               var getdata = value['data'][0];
               UserProvider userProvider =
                   Provider.of<UserProvider>(context, listen: false);
               userProvider.setName(getdata[USERNAME] ?? '');
               userProvider.setEmail(getdata[EMAIL] ?? '');
+              userProvider.setShopName(getdata[SHOPNAME] ?? '');
+              userProvider.setGstnumber(getdata["gst_number"] ?? '');
               userProvider.setProfilePic(getdata[IMAGE] ?? '');
 
               SettingProvider settingProvider =
                   Provider.of<SettingProvider>(context, listen: false);
               settingProvider.saveUserDetail(
+                getdata[SHOPNAME],
+                getdata["gst_number"],
                 getdata[ID],
                 getdata[USERNAME],
                 getdata[EMAIL],
@@ -731,6 +739,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           textInputAction: TextInputAction.next,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           decoration: InputDecoration(
+            counterText: "",
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 13,

@@ -57,7 +57,7 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
             String? msg = value['message'];
             await buttonController!.reverse();
             if (!error!) {
-              setSnackbar(getTranslated(context, 'PASS_SUCCESS_MSG')!, context);
+              // setSnackbar(getTranslated(context, 'PASS_SUCCESS_MSG')!, context);
               Future.delayed(const Duration(seconds: 1)).then(
                 (_) {
                   Routes.pop(context);

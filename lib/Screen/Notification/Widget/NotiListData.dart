@@ -50,12 +50,25 @@ class NotiListData extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      model.date!,
-                      style: const TextStyle(
-                        color: colors.primary,
-                        fontFamily: 'ubuntu',
-                      ),
+                    Row(
+                      children: [
+
+                        Text(
+                          "${index+1}",
+                          style: const TextStyle(
+                            color: colors.primary,
+                            fontFamily: 'ubuntu',
+                          ),
+                        ),
+                        SizedBox(width: 3,),
+                        Text(
+                          model.date!,
+                          style: const TextStyle(
+                            color: colors.primary,
+                            fontFamily: 'ubuntu',
+                          ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),

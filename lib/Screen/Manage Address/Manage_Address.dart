@@ -9,12 +9,12 @@ import '../../Helper/String.dart';
 import '../../Provider/CartProvider.dart';
 import '../../widgets/appBar.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/user_custom_radio.dart';
 import '../Language/languageSettings.dart';
 import '../../widgets/networkAvailablity.dart';
 import '../../widgets/simmerEffect.dart';
 import '../AddAddress/Add_Address.dart';
 import '../NoInterNetWidget/NoInterNet.dart';
-import 'Widget/RadioItem.dart';
 
 class ManageAddress extends StatefulWidget {
   final bool? home;
@@ -315,42 +315,21 @@ class StateAddress extends State<ManageAddress> with TickerProviderStateMixin {
                                                           .read<CartProvider>()
                                                           .deliveryCharge = 0;
                                                     }
-
-                                                    context
-                                                        .read<CartProvider>()
-                                                        .totalPrice = context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .totalPrice +
-                                                        context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .deliveryCharge;
+                                                    context.read<CartProvider>().totalPrice = context.read<CartProvider>().totalPrice + context.read<CartProvider>().deliveryCharge;
                                                   }
-
-                                                  for (var element
-                                                      in addModel) {
-                                                    element.isSelected = false;
+                                                  for (var element in addModel) {element.isSelected = false;
                                                   }
-                                                  addModel[index].isSelected =
-                                                      true;
+                                                  addModel[index].isSelected = true;
                                                 });
-                                                context
-                                                    .read<CartProvider>()
-                                                    .checkoutState!(() {});
+                                                context.read<CartProvider>().checkoutState!(() {});
                                               }
                                             },
-                                            child:
-
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
                                                       vertical: 5.0),
                                               child: RadioItem(addModel[index]),
                                             ),
                                           );
-
-
                                         },
                                       ),
                                     ),
@@ -387,17 +366,14 @@ class StateAddress extends State<ManageAddress> with TickerProviderStateMixin {
               i == context.read<CartProvider>().selectedAddress ? true : false,
           name: context.read<CartProvider>().addressList[i].name!,
           mobile: context.read<CartProvider>().addressList[i].mobile!,
-          add:
-              '${context.read<CartProvider>().addressList[i].address!}, ${context.read<CartProvider>().addressList[i].area!}, ${context.read<CartProvider>().addressList[i].city!}, ${context.read<CartProvider>().addressList[i].state!}, ${context.read<CartProvider>().addressList[i].country!}, ${context.read<CartProvider>().addressList[i].pincode!}',
+          add: '${context.read<CartProvider>().addressList[i].address!}, ${context.read<CartProvider>().addressList[i].area!}, ${context.read<CartProvider>().addressList[i].city!}, ${context.read<CartProvider>().addressList[i].state!}, ${context.read<CartProvider>().addressList[i].country!}, ${context.read<CartProvider>().addressList[i].pincode!}',
           addItem: context.read<CartProvider>().addressList[i],
           show: !widget.home!,
           onSetDefault: () {
             if (mounted) {
               setState(
                 () {
-                  context
-                      .read<ManageAddrProvider>()
-                      .changeStatus(ManageAddrProviderStatus.inProgress);
+                  context.read<ManageAddrProvider>().changeStatus(ManageAddrProviderStatus.inProgress);
                 },
               );
             }

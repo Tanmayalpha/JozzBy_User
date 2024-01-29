@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:eshop_multivendor/Helper/ApiBaseHelper.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -29,6 +31,7 @@ import '../../Provider/SettingProvider.dart';
 import '../../Provider/paymentProvider.dart';
 import '../../Provider/productDetailProvider.dart';
 import '../../Provider/Favourite/FavoriteProvider.dart';
+import '../../deeplinking/deeplinking_service.dart';
 import '../../repository/cartRepository.dart';
 import '../../widgets/desing.dart';
 import '../Language/languageSettings.dart';
@@ -195,7 +198,6 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         sliderList.insert(1, 'youtube');
       }
     });
-
     context.read<ProductDetailProvider>().reviewImgList.clear();
     if (widget.model!.reviewList!.isNotEmpty) {
       for (int i = 0;
@@ -518,10 +520,15 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         sliderList.add(widget.model!.prVarientList![i].images![j]);
       }
     }
+
+
+
   }
 
   Future<void> createDynamicLink() async {
-
+    print("_______________________-");
+   var url= await DynamicLinkHandler().createdeeplinking("${widget.model?.id}",widget.secPos.toString(),widget.index.toString(),widget.list==0?false:true);
+   print(url.toString()+"deeeeeeeeeeeeeeeeeee");
     Directory? directory ;
     final status = await Permission.storage.request();
     String documentDirectory;
@@ -543,12 +550,14 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     shareLink =
     "\n$appName\n${getTranslated(context, 'APPFIND')}$androidLink$packageName\n${getTranslated(context, 'IOSLBL')}\n$iosLink";
 
-    print(shareLink);
+    print(shortenedLink?.shortUrl.toString());
 
     Share.shareXFiles(
       [XFile(imageFile.path)],
       text:
-          '${widget.model?.name}\n${shortenedLink?.shortUrl.toString()}\n$shareLink',
+          '${widget.model?.name}\n'
+              '$url\n''$shareLink',
+
       sharePositionOrigin: Rect.largest,
     );
 
@@ -663,6 +672,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   controller: _pageController,
                   reverse: false,
                   onPageChanged: (index) {
+                    print(sliderList[index].toString()+"________________");
                     setState(
                       () {
                         _curSlider = index;
@@ -958,7 +968,6 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     try {
       isNetworkAvail = await isNetworkAvailable();
       if (isNetworkAvail) {
-
         setState(
           () {
             context.read<ProductDetailProvider>().qtyChange = true;
@@ -973,9 +982,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 },
               );
             }
-
             Product model = widget.model!;
-
             if (int.parse(qty) < model.minOrderQuntity!) {
               qty = model.minOrderQuntity.toString();
               setSnackbar(
@@ -988,13 +995,12 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               PRODUCT_VARIENT_ID: model.prVarientList![_oldSelVarient].id,
               QTY: qty,
             };
+            print("hjshdjhdjhjsjhds ${parameter}");
             ApiBaseHelper().postAPICall(manageCartApi, parameter).then(
               (getdata) {
                 bool error = getdata['error'];
                 String? msg = getdata['message'];
-
-                if (msg ==
-                    getTranslated(context,
+                if (msg == getTranslated(context,
                         'Only single seller items are allow in cart.You can remove privious item(s) and add this item.')) {
                   confirmDialog();
                 }
@@ -1370,9 +1376,12 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _setFav(int index, int from) async {
+    print("is contain");
     try {
       isNetworkAvail = await isNetworkAvailable();
       if (isNetworkAvail) {
+
+        print("net work avaiable");
         try {
           if (mounted) {
             setState(
@@ -1385,12 +1394,16 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               },
             );
           }
+          print("api call ");
           var parameter = {
             USER_ID: CUR_USERID,
             PRODUCT_ID: from == 1 ? productList[index].id : widget.model!.id
           };
+
           ApiBaseHelper().postAPICall(setFavoriteApi, parameter).then(
+
             (getdata) {
+
               bool error = getdata['error'];
               String? msg = getdata['message'];
               if (!error) {
@@ -1439,6 +1452,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _removeFav(int index, int from) async {
+    print("is remove");
     try {
       isNetworkAvail = await isNetworkAvailable();
       if (isNetworkAvail) {
@@ -1656,7 +1670,14 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 height: 33,
                 child: InkWell(
                   onTap: () {
+
+
+
                     if (CUR_USERID != null) {
+                      print('ttt1');
+                      print(widget.model!.id);
+
+
                       !data.contains(widget.model!.id)
                           ? _setFav(-1, -1)
                           : _removeFav(-1, -1);
@@ -1786,19 +1807,15 @@ double qty = 0.0 ;
                                                         fromSeller: false,
                                                       )));
                                         }else {
-
                                           await Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
+                                            context, CupertinoPageRoute(
                                               builder: (context) => SubCategory(
                                                 title: widget.model?.catName ?? '',
                                                 subList: widget.model?.subList,
                                               ),
                                             ),
                                           );
-
                                         }
-
                                         // Navigator.push(context,MaterialPageRoute(builder: (context)=>AllCategory()));
                                       },
                                       child: Padding(
@@ -1809,7 +1826,8 @@ double qty = 0.0 ;
                                     GetTitleWidget(
                                       title: widget.model!.name!,
                                     ),
-
+                                    // _desc(widget.model),
+                                     const Divider(),
                                     available! || outOfStock!
                                         ? GetPrice(
                                             pos: selectIndex,
@@ -1834,7 +1852,6 @@ double qty = 0.0 ;
                                   ],
                                 ),
                               ),
-
                               widget.model!.attributeList!.isNotEmpty
                                   ? getDivider(2, context)
                                   : Container(),
@@ -1848,7 +1865,7 @@ double qty = 0.0 ;
                               context.read<CartProvider>().promoList.isNotEmpty
                                   ? getDivider(2, context)
                                   : Container(),
-
+                              _desc(widget.model),
                               ProductMoreDetail(
                                 model: widget.model,
                                 update: update,
@@ -2146,11 +2163,22 @@ double qty = 0.0 ;
                                           ),
 
                                           onTap: () {
+
+
                                             if(qty > double.parse(widget.model?.qtyStepSize ?? '0.0'))
                                             {
                                               setState(() {
                                                 qty -= double.parse(widget.model?.qtyStepSize ?? '0.0');
                                               });
+
+
+                                            }
+
+                                            else{
+print("jjjj");
+                                              setSnackbar(getTranslated(context, 'Minimum Order is Fix')!, context);
+
+
                                             }
                                             // if (context
                                             //     .read<CartProvider>()
@@ -2333,7 +2361,6 @@ double qty = 0.0 ;
                               const SizedBox(width: 20,),
                               InkWell(
                                 onTap: () async {
-
                                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> const Cart(fromBottom: true)));
                                   // addToCart(
                                   //   qtyController.text,
@@ -2359,10 +2386,7 @@ double qty = 0.0 ;
                                     child: Text(
                                       getTranslated(context, 'ADD_CART')!,
                                       textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
+                                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
                                         color: colors.whiteTemp,
                                         fontWeight: FontWeight.normal,
                                         fontFamily: 'ubuntu',
@@ -3117,20 +3141,15 @@ double qty = 0.0 ;
                                 fillColor: Colors.transparent,
                                 filled: true,
                                 isDense: true,
-                                hintText: getTranslated(context,
-                                    'Have a question? Search for answers')!,
-                                hintStyle: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .copyWith(
+                                hintText: getTranslated(context, 'Have a question? Search for answers')!,
+                                hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
                                         color: const Color(0xffa0a1a0),
                                         fontWeight: FontWeight.w300,
                                         fontFamily: 'Ubuntu',
                                         fontStyle: FontStyle.normal,
                                         fontSize: textFontSize12),
                                 prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, right: 15.0),
+                                  padding: const EdgeInsets.only(left: 10.0, right: 15.0),
                                   child: Icon(
                                     Icons.search,
                                     size: 30,
@@ -3147,17 +3166,11 @@ double qty = 0.0 ;
               const FaqsQueWidget(),
               const Divider(),
               CUR_USERID != '' && CUR_USERID != null
-                  ? context
-                          .read<ProductDetailProvider>()
-                          .faqsProductList
-                          .isNotEmpty
+                  ? context.read<ProductDetailProvider>().faqsProductList.isNotEmpty
                       ? Container()
                       : PostQuesWidget(model: widget.model, update: update)
                   : const SizedBox(),
-              if (context
-                  .read<ProductDetailProvider>()
-                  .faqsProductList
-                  .isNotEmpty)
+              if (context.read<ProductDetailProvider>().faqsProductList.isNotEmpty)
                 AllQuesBtn(id: widget.model!.id)
             ],
           ),
@@ -3165,7 +3178,6 @@ double qty = 0.0 ;
       ),
     );
   }
-
   getvariantPart() {
     return widget.model!.attributeList!.isNotEmpty
         ? Container(
@@ -3189,11 +3201,14 @@ double qty = 0.0 ;
                       widget.model!.attributeList![index].sValue!.split(',');
                   int? varSelected;
                   List<String> wholeAtt = widget.model!.attrIds!.split(',');
+
                   for (int i = 0; i < att.length; i++) {
                     Widget itemLabel;
                     if (attSType[i] == '1') {
+
                       String clr = (attSValue[i].substring(1));
                       String color = '0xff$clr';
+
                       itemLabel = Container(
                         width: 35,
                         height: 35,
@@ -3205,8 +3220,8 @@ double qty = 0.0 ;
                         ),
                         child: Center(
                           child: Container(
-                            width: 25,
-                            height: 25,
+                            width: 30,
+                            height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Color(
@@ -3299,11 +3314,17 @@ double qty = 0.0 ;
                         ),
                         child: InkWell(
                           onTap: () async {
+
                             if (att.length != 1) {
                               if (mounted) {
+                                /*setState(() {
+                                  sliderList = widget.model?.prVarientList?[i].images ?? [];
+                                });*/
                                 setState(
                                   () {
                                     widget.model!.selVarient = i;
+                                   // sliderList = widget.model?.prVarientList?[widget.model!.selVarient ?? i].images ?? [] ;
+                                    //print(sliderList.length.toString() );
                                     available = false;
                                     _selectedIndex[index] = i;
                                     List<int> selectedId =
@@ -3939,6 +3960,31 @@ double qty = 0.0 ;
     }
   }
 
+  _desc(Product? model) {
+    return model!.shortDescription != '' && model.shortDescription != null
+        ? Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: HtmlWidget(
+          model.shortDescription ?? '',
+        )
+      //  Html(
+      //   data: model.shortDescription,
+      //   onLinkTap: (String? url, RenderContext context,
+      //       Map<String, String> attributes, dom.Element? element) async {
+      //     if (await canLaunchUrl(Uri.parse(url!))) {
+      //       await launchUrl(
+      //         Uri.parse(url),
+      //         mode: LaunchMode.platformDefault,
+      //       );
+      //     } else {
+      //       throw 'Could not launch $url';
+      //     }
+      //   },
+      // ),
+    )
+        : Container();
+  }
+
   Future getProduct() async {
     try {
       isNetworkAvail = await isNetworkAvailable();
@@ -4054,20 +4100,14 @@ double qty = 0.0 ;
           ID: widget.model!.id,
           IS_SIMILAR: '1'
         };
-
+        print("get product parraa ${parameter}");
         if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
 
         ApiBaseHelper().postAPICall(getProductApi, parameter).then(
           (getdata) {
             bool error = getdata['error'];
-
             if (!error) {
-              context.read<ProductDetailProvider>().setProTotal(
-                    int.parse(
-                      getdata['total'],
-                    ),
-                  );
-
+              context.read<ProductDetailProvider>().setProTotal(int.parse(getdata['total'],),);
               List mainlist = getdata['data'];
 
               if (mainlist.isNotEmpty) {
@@ -4179,7 +4219,7 @@ double qty = 0.0 ;
                 Icons.keyboard_arrow_right,
                 size: 30,
                 color: Theme.of(context).colorScheme.black,
-              )
+              ),
             ],
           ),
         ),
@@ -4194,6 +4234,7 @@ double qty = 0.0 ;
   }
 
   Future<void> getShare() async {
+    print("_________________________________");
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: deepLinkUrlPrefix,
       link: Uri.parse(deepLinkUrlPrefix),
@@ -4212,6 +4253,9 @@ double qty = 0.0 ;
 
     shortenedLink =
         await FirebaseDynamicLinks.instance.buildShortLink(parameters);
+    setState(() {
+
+    });
 
 
     Future.delayed(

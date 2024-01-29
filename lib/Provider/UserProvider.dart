@@ -21,6 +21,8 @@ class UserProvider extends ChangeNotifier {
       _curBal = '',
       _mob = '',
       _profilePic = '',
+      _shopName = '',
+  _gstNumber='',
       _email = '';
   String? _userId = '';
 
@@ -37,6 +39,8 @@ class UserProvider extends ChangeNotifier {
   String get curBalance => _curBal;
 
   String get mob => _mob;
+  String get shopName => _shopName;
+  String get gstNumber => _gstNumber;
 
   String get profilePic => _profilePic;
 
@@ -69,6 +73,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setShopName(String count) {
+    _shopName = count;
+    notifyListeners();
+  }
+  void setGstnumber(String count) {
+    _gstNumber = count;
+    notifyListeners();
+  }
+
   void setProfilePic(String count) {
     _profilePic = count;
     notifyListeners();
@@ -92,18 +105,23 @@ class UserProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> updateUserProfile(
       {required String userID,
-      oldPassword,
-      newPassword,
-      username,
-      userEmail}) async {
-    try {
-      changeStatus(UserStatus.inProgress);
-      Map result = await UserRepository.updateUser(
+        oldPassword,
+        newPassword,
+        username,
+        shopname,
+        gstnumber,
+        userEmail}) async {
+       try {
+        changeStatus(UserStatus.inProgress);
+        Map result = await UserRepository.updateUser(
           userID: userID,
           newPwd: newPassword,
           oldPwd: oldPassword,
           userEmail: userEmail,
-          username: username);
+          username: username,
+          shopname: shopname,
+          gstnumber: gstnumber
+      );
       changeStatus(UserStatus.isSuccsess);
       return {'error': result['error'], 'message': result['message']};
     } catch (e) {

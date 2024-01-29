@@ -98,97 +98,104 @@ class GetPrice extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-              const SizedBox(height:1),
-              off != 0.00
-                  ? Text(
-                'MRP: ${DesignConfiguration.getPriceFormat(context, double.parse(model!.prVarientList![pos].price!))!} ',
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                  decoration: TextDecoration.lineThrough,
-                  decorationColor: colors.darkColor3,
-                  decorationStyle: TextDecorationStyle.solid,
-                  decorationThickness: 2,
-                  letterSpacing: 0,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .fontColor
-                      .withOpacity(0.7),
-                  fontStyle: FontStyle.normal,
-                  fontSize: textFontSize16,
-                  fontWeight: FontWeight.normal,
-                ),
-              )
-                  : Container(),
-              const SizedBox(width: 10),
-              Text(
-                'Price: ${DesignConfiguration.getPriceFormat(context, price)!} ',
-                style: Theme.of(context).textTheme.headline6!.copyWith(
-                  color: Theme.of(context).colorScheme.blue,
-                  fontWeight: FontWeight.normal,
-                  fontStyle: FontStyle.normal,
-                  fontSize: textFontSize16,
-                ),
-              ),
-              //const Icon(Icons.share),
-              off != 0.00
-                ? Text(
-                    'Margin: ${off.toStringAsFixed(2)}%',
-                    style: Theme.of(context).textTheme.overline!.copyWith(
-                          color: Theme.of(context).colorScheme.green,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: textFontSize16,
-                        ),
+                  const SizedBox(height:1),
+                  off != 0.00
+                      ? Text(
+                    'MRP: ${DesignConfiguration.getPriceFormat(context, double.parse(model!.prVarientList![pos].price!))!} ',
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: colors.darkColor3,
+                      decorationStyle: TextDecorationStyle.solid,
+                      decorationThickness: 2,
+                      letterSpacing: 0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .fontColor
+                          .withOpacity(0.7),
+                      fontStyle: FontStyle.normal,
+                      fontSize: textFontSize16,
+                      fontWeight: FontWeight.normal,
+                    ),
                   )
-                : Container(),
-              from
-                  ? Selector<CartProvider, Tuple2<List<String?>, String?>>(
-                    builder: (context, data, child) {
-                  if (!context.read<ProductDetailProvider>().qtyChange) {
-                      if (data.item1.contains(model!.id)) {
-                      qtyController.text = data.item2.toString();
-                    } else {
-                      String qty = model!
-                          .prVarientList![model!.selVarient!].cartCount!;
-                      if (qty == '0') {
-
-                        qtyController.text =
-                            model!.minOrderQuntity.toString();
-                      } else {
-                        qtyController.text = qty;
-                      }
-                    }
-                  } else {
-                    context.read<ProductDetailProvider>().qtyChange = false;
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      start: 3.0,
-                      bottom: 0,
-                      top: 0,
+                      : Container(),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Price: ${DesignConfiguration.getPriceFormat(context, price)!} ',
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                      color: Theme.of(context).colorScheme.blue,
+                      fontWeight: FontWeight.normal,
+                      fontStyle: FontStyle.normal,
+                      fontSize: textFontSize16,
                     ),
-                    child: model!.availability == '0'
-                        ? Container()
-                        : Row(
-                      children: const [],
-                    ),
-                  );
-                },
-                selector: (_, provider) => Tuple2(
-                  provider.cartIdList,
-                  provider.qtyList(
-                    model!.id!,
-                    model!.prVarientList![0].id!,
                   ),
-                ),
-              )
-                  : Container(),
+                  //const Icon(Icons.share),
+                  off != 0.00
+                    ? Text(
+                        'Margin: ${off.toStringAsFixed(2)}%',
+                        style: Theme.of(context).textTheme.overline!.copyWith(
+                              color: Theme.of(context).colorScheme.green,
+                              letterSpacing: 0,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: textFontSize16,
+                            ),
+                      )
+                    : Container(),
+                  from
+                      ? Selector<CartProvider, Tuple2<List<String?>, String?>>(
+                        builder: (context, data, child) {
+                      if (!context.read<ProductDetailProvider>().qtyChange) {
+                          if (data.item1.contains(model!.id)) {
+                          qtyController.text = data.item2.toString();
+                        } else {
+                          String qty = model!
+                              .prVarientList![model!.selVarient!].cartCount!;
+                          if (qty == '0') {
+
+                            qtyController.text =
+                                model!.minOrderQuntity.toString();
+                          } else {
+                            qtyController.text = qty;
+                          }
+                        }
+                      } else {
+                        context.read<ProductDetailProvider>().qtyChange = false;
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: 3.0,
+                          bottom: 0,
+                          top: 0,
+                        ),
+                        child: model!.availability == '0'
+                            ? Container()
+                            : Row(
+                          children: const [],
+                        ),
+                      );
+                    },
+                    selector: (_, provider) => Tuple2(
+                      provider.cartIdList,
+                      provider.qtyList(
+                        model!.id!,
+                        model!.prVarientList![0].id!,
+                      ),
+                    ),
+                  )
+                      : Container(),
+                ],
+              ),
+
+              // Text("(Exclude GST)")
             ],
           ),
           Text(

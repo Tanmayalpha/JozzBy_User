@@ -156,11 +156,12 @@ class CartProvider extends ChangeNotifier {
   Future getUserCart({required String save}) async {
     try {
       var parameter = {USER_ID: CUR_USERID, SAVE_LATER: save};
-
+           print("get user xcarttt ${parameter}");
       CartRepository.fetchUserCart(parameter: parameter).then(
         (value) {
           if (!value['error']) {
             _cartList = value['cartList'];
+            print(_cartList[0].title.toString()+"++++++++++++++++++++++++");
           }
         },
       );
@@ -846,43 +847,32 @@ class CartProvider extends ChangeNotifier {
 
         if (int.parse(qty) < cartList[index].productList![0].minOrderQuntity!) {
           qty = cartList[index].productList![0].minOrderQuntity.toString();
-
           setSnackbar("${getTranslated(context, 'MIN_MSG')}$qty", context);
         }
-
         var parameter = {
           PRODUCT_VARIENT_ID: cartList[index].varientId,
           USER_ID: CUR_USERID,
           QTY: cartList[index].productList![0].qtyStepSize,//qty,
+          // QTY: qty,
           REMOVE: '1'
         };
-        print('------------parameter1111------------${parameter}');
-        dynamic result =
-            await CartRepository.manageCartAPICall(parameter: parameter);
-
+        print('------------parameter1111------------$parameter');
+        dynamic result = await CartRepository.manageCartAPICall(parameter: parameter);
         bool error = result['error'];
         String? msg = result['message'];
         if (!error) {
           var data = result['data'];
-
-
           String qty = data['total_quantity'];
-
-
           context.read<UserProvider>().setCartCount(data['cart_count']);
           cartList[index].qty = qty;
           oriPrice = double.parse(data['sub_total']);
-
           controller[index].text = qty;
           totalPrice = 0;
-
-
           var cart = result['cart'];
           List<SectionModel> uptcartList = (cart as List)
               .map((cart) => SectionModel.fromCart(cart))
               .toList();
           setCartlist(uptcartList);
-
           /*if (!ISFLAT_DEL) {
             if (addressList.isEmpty) {
               deliveryCharge = 0;
@@ -910,7 +900,6 @@ class CartProvider extends ChangeNotifier {
           // }
 
           totalPrice = deliveryCharge + oriPrice;
-
           if (isPromoValid!) {
             await context
                 .read<PromoCodeProvider>()

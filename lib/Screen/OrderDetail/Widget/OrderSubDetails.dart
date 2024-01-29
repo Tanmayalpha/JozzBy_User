@@ -145,6 +145,50 @@ class GetOrderDetails extends StatelessWidget {
                 ],
               ),
             ),
+
+            // Padding(
+            //   padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         //'${getTranslated(context, 'WALLET_BAL')!} :',
+            //         'Advance Amount:',
+            //         style: Theme.of(context).textTheme.button!.copyWith(
+            //           color: Theme.of(context).colorScheme.lightBlack2,
+            //         ),
+            //       ),
+            //       Text(
+            //         '${DesignConfiguration.getPriceFormat(context, double.parse(model.advanceAmt!))!}',
+            //         style: Theme.of(context).textTheme.button!.copyWith(
+            //           color: Theme.of(context).colorScheme.lightBlack2,
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         //'${getTranslated(context, 'WALLET_BAL')!} :',
+            //         'Remaining Amount:',
+            //         style: Theme.of(context).textTheme.button!.copyWith(
+            //           color: Theme.of(context).colorScheme.lightBlack2,
+            //         ),
+            //       ),
+            //       Text(
+            //         '${DesignConfiguration.getPriceFormat(context, double.parse(model.remaingAmt!))!}',
+            //         style: Theme.of(context).textTheme.button!.copyWith(
+            //           color: Theme.of(context).colorScheme.lightBlack2,
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
+
             Padding(
               padding: const EdgeInsetsDirectional.only(
                   start: 15.0, end: 15.0, top: 5.0),
@@ -167,6 +211,8 @@ class GetOrderDetails extends StatelessWidget {
                 ],
               ),
             ),
+
+
             Padding(
               padding: const EdgeInsetsDirectional.only(
                 start: 15.0,
@@ -189,6 +235,50 @@ class GetOrderDetails extends StatelessWidget {
                           color: Theme.of(context).colorScheme.lightBlack,
                           fontWeight: FontWeight.bold,
                         ),
+                  )
+                ],
+              ),
+            ),
+
+            SizedBox(height: 10,),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    //'${getTranslated(context, 'WALLET_BAL')!} :',
+                    'Advance Amount:',
+                    style: Theme.of(context).textTheme.button!.copyWith(
+                      color: Theme.of(context).colorScheme.lightBlack2,
+                    ),
+                  ),
+                  Text(
+                    '${DesignConfiguration.getPriceFormat(context, double.parse(model.advanceAmt!))!}',
+                    style: Theme.of(context).textTheme.button!.copyWith(
+                      color: Theme.of(context).colorScheme.lightBlack2,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    //'${getTranslated(context, 'WALLET_BAL')!} :',
+                    'Remaining Amount:',
+                    style: Theme.of(context).textTheme.button!.copyWith(
+                      color: Theme.of(context).colorScheme.lightBlack2,
+                    ),
+                  ),
+                  Text(
+                    '${DesignConfiguration.getPriceFormat(context, double.parse(model.remaingAmt!))!}',
+                    style: Theme.of(context).textTheme.button!.copyWith(
+                      color: Theme.of(context).colorScheme.lightBlack2,
+                    ),
                   )
                 ],
               ),
@@ -422,14 +512,13 @@ List <String> itemIdList = [] ;
   }
 
 
-
   dwnInvoice(
     Future<List<Directory>?>? _externalStorageDirectories,
     OrderModel model,
     Function update,
   ) {
-    print('_____surendra______${model.invoice}______${model.id}____');
-    print('____ssssss_______${model.id}_________');
+    //print('_____surendra______${model.invoice}______${model.id}____');
+   // print('____ssssss_______${model.id}_________');
     return FutureBuilder<List<Directory>?>(
       future: _externalStorageDirectories,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -481,14 +570,10 @@ List <String> itemIdList = [] ;
               var targetFileName = 'Invoice_${model.id!}';
               var generatedPdfFile, filePath;
               try {
-                generatedPdfFile =
-                    await FlutterHtmlToPdf.convertFromHtmlContent(
-                        model.invoice ?? '<br>NO DATA</br>', directory?.path ?? '', targetFileName);
+                generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+                    model.invoice ?? '<br>NO DATA</br>', directory?.path ?? '', targetFileName);
                 filePath = generatedPdfFile.path;
-
-
               } catch (e) {
-
                 context
                     .read<UpdateOrdProvider>()
                     .changeStatus(UpdateOrdStatus.inProgress);
@@ -500,6 +585,7 @@ List <String> itemIdList = [] ;
                   .read<UpdateOrdProvider>()
                   .changeStatus(UpdateOrdStatus.isSuccsess);
               updateNow();
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

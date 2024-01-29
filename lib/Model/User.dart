@@ -148,6 +148,41 @@ class User {
         freeAmt: freeAmt,
         isDefault: isDefault);
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'userProfile': userProfile,
+      'date': date,
+      'rating': rating,
+      'comment': comment,
+      'email': email,
+      'mobile': mobile,
+      'address': address,
+      'dob': dob,
+      'city': city,
+      'area': area,
+      'street': street,
+      'password': password,
+      'pincode': pincode,
+      'fcmId': fcmId,
+      'latitude': latitude,
+      'longitude': longitude,
+      'userId': userId,
+      'name': name,
+      'type': type,
+      'altMob': altMob,
+      'landmark': landmark,
+      'areaId': areaId,
+      'cityId': cityId,
+      'isDefault': isDefault,
+      'state': state,
+      'country': country,
+      'imgList': imgList,
+      'deliveryCharge': deliveryCharge,
+      'freeAmt': freeAmt,
+    };
+  }
 }
 
 class imgModel {

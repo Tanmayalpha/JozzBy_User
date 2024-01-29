@@ -28,13 +28,14 @@ import '../Language/languageSettings.dart';
 import '../../widgets/networkAvailablity.dart';
 
 class VerifyOtp extends StatefulWidget {
-  final String? mobileNumber, countryCode, title;
+  final String? mobileNumber, countryCode, title,otp;
   String? responseOtp ;
   bool? isMobile ;
    VerifyOtp(
       {Key? key,
       required String this.mobileNumber,
       this.countryCode,this.isMobile,
+      this.otp,
       this.title,this.responseOtp})
       : super(key: key);
 
@@ -136,7 +137,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
           btnAnim: buttonSqueezeanimation,
           btnCntrl: buttonController,
           onBtnSelected: () async {
-
+               print(widget.isMobile);
             if(widget.isMobile ==true){
 
               verifyuser();
@@ -255,10 +256,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
                                   }
                                 } else {
                                   setSnackbar(
-                                      context
-                                          .read<ProductDetailProvider>()
-                                          .snackbarmessage,
-                                      context);
+                                      context.read<ProductDetailProvider>().snackbarmessage, context);
                                 }
                                 Routes.pop(context);
                                 await offCartAdd(userId.toString());
@@ -344,7 +342,6 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     }
 
 
-
     PhoneVerificationFailed verificationFailed() {
       return (FirebaseAuthException authException) {
         if (mounted) {
@@ -404,37 +401,33 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
    var request = http.MultipartRequest('POST', Uri.parse('${baseUrl}verify_otp'));
    request.fields.addAll({
      'mobile': '${widget.mobileNumber}',
-     'otp': '${otp}',
+     'otp': '${widget.otp}',
      'fcm_id': ''
    });
 
-
-   print("otp patramater ${baseUrl}verify_otp ${request.fields}");
+   print('otp patramater ${baseUrl}verify_otp ${request.fields}');
    request.headers.addAll(headers);
    http.StreamedResponse response = await request.send();
    if (response.statusCode == 200) {
      var Result = await response.stream.bytesToString();
      print('___________${Result}__________');
      var finalResult = jsonDecode(Result);
-
      if(finalResult['error']){
        setSnackbar(finalResult['message'], context);
-
      }else {
        var getdata = finalResult['data'][0];
 
-       UserProvider userProvider =
-       Provider.of<UserProvider>(context, listen: false);
+       UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
        userProvider.setName(getdata[USERNAME] ?? '');
        userProvider.setEmail(getdata[EMAIL] ?? '');
        userProvider.setProfilePic(getdata[IMAGE] ?? '');
-
-       SettingProvider settingProvider =
-       Provider.of<SettingProvider>(context, listen: false);
-
-
+        userProvider.setShopName(getdata[SHOPNAME] ?? '');
+       userProvider.setGstnumber(getdata["gst_number"] ?? '');
+       SettingProvider settingProvider = Provider.of<SettingProvider>(context, listen: false);
        settingProvider.saveUserDetail(
+         getdata[SHOPNAME],
+         getdata["gst_number"] ,
          getdata[ID],
          getdata[USERNAME],
          getdata[EMAIL],
@@ -449,24 +442,14 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
          context,
        );
        userId = getdata[ID];
-       offFavAdd().then(
-             (value) async {
+       offFavAdd().then((value) async {
            db.clearFav();
            context.read<FavoriteProvider>().setFavlist([]);
            List cartOffList = await db.getOffCart();
            if (singleSellerOrderSystem && cartOffList.isNotEmpty) {
              forLoginPageSingleSellerSystem = true;
-             offCartAdd(userId.toString()).then(
-                   (value) {
-                 db.clearCart();
-                 offSaveAdd().then(
-                       (value) {
-                     db.clearSaveForLater();
-                     Navigator.pushNamedAndRemoveUntil(
-                       context,
-                       '/home',
-                           (r) => false,
-                     );
+             offCartAdd(userId.toString()).then((value) {db.clearCart();
+               offSaveAdd().then((value) {db.clearSaveForLater();Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false,);
                    },
                  );
                },
@@ -477,17 +460,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
              //   },
              // );
            } else {
-             offCartAdd(userId.toString()).then(
-                   (value) {
-                 db.clearCart();
-                 offSaveAdd().then(
-                       (value) {
-                     db.clearSaveForLater();
-                     Navigator.pushNamedAndRemoveUntil(
-                       context,
-                       '/home',
-                           (r) => false,
-                     );
+             offCartAdd(userId.toString()).then((value) {db.clearCart();offSaveAdd().then((value) {db.clearSaveForLater();Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false,);
                    },
                  );
                },
@@ -675,25 +648,19 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       Provider.of<SettingProvider>(context, listen: false);
 
       await buttonController!.reverse();
-      setSnackbar(getTranslated(context, 'OTPMSG')!, context);
+      // setSnackbar(getTranslated(context, 'OTPMSG')!, context);
       settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
-      settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
+      // settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
 
     if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
         Future.delayed(const Duration(seconds: 2)).then((_) {
-
             Navigator.pushReplacement(context,
                 CupertinoPageRoute(builder: (context) =>  SignUp(mobileNumber: widget.mobileNumber,)));
-
-
         });
-      } else if (widget.title ==
-          getTranslated(context, 'FORGOT_PASS_TITLE')) {
+      } else if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
         Future.delayed(const Duration(seconds: 2)).then(
-              (_) {
-            Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute(
+              (_) {Navigator.pushReplacement(
+              context, CupertinoPageRoute(
                 builder: (context) => SetPass(
                   mobileNumber: widget.mobileNumber!,
                 ),
@@ -749,10 +716,6 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       setSnackbar(getTranslated(context, 'ENTEROTP')!, context);
       await buttonController!.reverse();
     }
-
-
-
-
   }
 
   Future<void> _playAnimation() async {
@@ -772,15 +735,30 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       padding: const EdgeInsetsDirectional.only(
         top: 60.0,
       ),
-      child: Text(
-        getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
-        style: Theme.of(context).textTheme.headline6!.copyWith(
+      child: Column(
+        children: [
+          Text(
+            getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
+            style: Theme.of(context).textTheme.headline6!.copyWith(
+                  color: Theme.of(context).colorScheme.fontColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textFontSize23,
+                  letterSpacing: 0.8,
+                  fontFamily: 'ubuntu',
+                ),
+          ),
+          Text(
+            "${widget.otp}",
+            // getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
+            style: Theme.of(context).textTheme.headline6!.copyWith(
               color: Theme.of(context).colorScheme.fontColor,
               fontWeight: FontWeight.bold,
               fontSize: textFontSize23,
               letterSpacing: 0.8,
               fontFamily: 'ubuntu',
             ),
+          ),
+        ],
       ),
     );
   }

@@ -31,6 +31,7 @@ class _UserTransactionsState extends State<UserTransactions>
     Future.delayed(Duration.zero).then((value) =>
         context.read<UserTransactionProvider>().getUserTransaction());
 
+
     controller.addListener(_scrollListener);
 
     buttonController = AnimationController(
@@ -92,7 +93,9 @@ class _UserTransactionsState extends State<UserTransactions>
                 itemCount: transactionsList.length,
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return ListIteamOfTransaction(
+                  return
+
+                    ListIteamOfTransaction(
                     transactionModelData: transactionsList,
                     index: index,
                     isLoadingMore: isLoadingMore,

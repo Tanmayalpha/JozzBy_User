@@ -46,6 +46,9 @@
         android:label="Jozzby Bazaar"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="flutter_deeplinking_enabled"
+            android:value="true" />
            
      <activity
             android:name="com.razorpay.CheckoutActivity"
@@ -56,15 +59,7 @@
             <intent-filter>
                 <action android:name="rzp.device_token.share"/>
             </intent-filter>
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
-            <data
-                android:scheme="https"
-                android:host="https://alphawizzserver.com" />
-        </intent-filter>
+
         </receiver>
 
         <activity
@@ -91,6 +86,33 @@
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+<!--            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />-->
+<!--            <intent-filter android:autoVerify="true" android:priority="1000">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+
+<!--                &lt;!&ndash; Specify the scheme and host for your deep link &ndash;&gt;-->
+<!--                <data-->
+<!--                    android:scheme="https"-->
+<!--                    android:host="jozzbybazaar.page.link"-->
+
+<!--                    />-->
+<!--                <data android:scheme="https" />-->
+<!--            </intent-filter>-->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="alphawizzserver.com" android:scheme="http"  android:pathPrefix="/product"/>
+                <data android:host="alphawizzserver.com" android:scheme="https"  android:pathPrefix="/product"/>
+                <data android:host="alphawizzserver.com
+                " android:scheme="https"
+                    android:pathPrefix="/product"
+                    />
+
+            </intent-filter>
             
         </activity>
         
@@ -102,7 +124,7 @@
 
         <!--After Adding Key, Uncomment below lines-->
       <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="PLACE_HERE_YOUR_GOOGLE_APP_ANDROID_API_KEY"/>
+            android:value="AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM"/>
 
         <meta-data
             android:name="vn.hunghd.flutterdownloader.NOTIFICATION_ICON"

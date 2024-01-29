@@ -24,7 +24,7 @@ class _OrderTrackDataBottomSheetState extends State<OrderTrackDataBottomSheet> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    print("____________________${widget.awb}_______");
     getTrackData(widget.awb ?? '').then((parsedData) {
       setState(() {
         data = parsedData;
@@ -34,6 +34,7 @@ class _OrderTrackDataBottomSheetState extends State<OrderTrackDataBottomSheet> {
     });
   }
   Widget build(BuildContext context) {
+
     return Center(
       child: data == null
           ? const CircularProgressIndicator()

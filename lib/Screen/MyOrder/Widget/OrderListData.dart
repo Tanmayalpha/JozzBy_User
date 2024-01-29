@@ -100,6 +100,9 @@ class OrderListData extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          SizedBox(height: 5,),
+                          orderItem.cancelIdentity == "user" ?
+                              Text("Wait For Admin Approval", style: TextStyle(color: Colors.red),): SizedBox(),
                         ],
                       ),
                     ),

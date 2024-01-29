@@ -74,9 +74,14 @@ class _MapState extends State<Map> {
   @override
   void initState() {
     super.initState();
+print("${widget.longitude}");
+print("${widget.latitude}");
+print("${widget.from}");
 
     _cameraPosition = const CameraPosition(target: LatLng(0, 0), zoom: 10.0);
     getCurrentLocation();
+
+
   }
 
   @override
@@ -84,7 +89,9 @@ class _MapState extends State<Map> {
     return Scaffold(
       appBar:
           getSimpleAppBar(getTranslated(context, 'CHOOSE_LOCATION')!, context),
-      body: SafeArea(
+      body:
+
+      SafeArea(
         child: Column(
           children: <Widget>[
             Expanded(
@@ -115,7 +122,11 @@ class _MapState extends State<Map> {
                             }
                           },
                         )
-                      : Container(),
+                      : Container(
+
+
+                    height: 100,
+                    child: Text('yyy'),),
                 ],
               ),
             ),

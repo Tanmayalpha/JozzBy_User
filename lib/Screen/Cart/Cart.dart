@@ -83,6 +83,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   String? rozorpayMsg;
   String orderId = '';
   double deliveryCharge = 0;
+  double deliveryCharge1 = 0;
   List<DeliveryChargeData> deliveryChargeList = [];
 
   Future<void> cartFun({
@@ -188,7 +189,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     );
   }
 
-  orderSummary(){
+  orderSummary() {
     return Card(
       elevation: 1,
       child: Padding(
@@ -197,9 +198,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${getTranslated(context, 'ORDER_SUMMARY')!} (${context
-                  .read<CartProvider>()
-                  .cartList.length} items)',
+              '${getTranslated(context, 'ORDER_SUMMARY')!} (${context.read<CartProvider>().cartList.length} items)',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.fontColor,
                 fontWeight: FontWeight.bold,
@@ -218,7 +217,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ),
                 ),
                 Text(
-                  '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
+                  //'${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
+                  '${context.read<CartProvider>().oriPrice}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.fontColor,
                     fontWeight: FontWeight.bold,
@@ -238,11 +238,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ),
                 ),
                 Text(
-                  '${DesignConfiguration.getPriceFormat(context,
+                  '+ ${DesignConfiguration.getPriceFormat(context,
                       //double.parse(deliCharge!) ??
-                      deliveryCharge
+                      deliveryCharge1
                       // context.read<CartProvider>().deliveryCharge
-                  )!} ',
+                      )!} ',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.fontColor,
                     fontWeight: FontWeight.bold,
@@ -253,47 +253,47 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             ),
             context.read<CartProvider>().isPromoValid!
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  getTranslated(context, 'PROMO_CODE_DIS_LBL')!,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.lightBlack2,
-                    fontFamily: 'ubuntu',
-                  ),
-                ),
-                Text(
-                  '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().promoAmt)!} ',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.fontColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'ubuntu',
-                  ),
-                )
-              ],
-            )
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getTranslated(context, 'PROMO_CODE_DIS_LBL')!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.lightBlack2,
+                          fontFamily: 'ubuntu',
+                        ),
+                      ),
+                      Text(
+                        '- ${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().promoAmt)!} ',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.fontColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'ubuntu',
+                        ),
+                      )
+                    ],
+                  )
                 : Container(),
             context.read<CartProvider>().isUseWallet!
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  getTranslated(context, 'WALLET_BAL')!,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.lightBlack2,
-                    fontFamily: 'ubuntu',
-                  ),
-                ),
-                Text(
-                  '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().usedBalance)!} ',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.fontColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'ubuntu',
-                  ),
-                )
-              ],
-            )
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getTranslated(context, 'WALLET_BAL')!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.lightBlack2,
+                          fontFamily: 'ubuntu',
+                        ),
+                      ),
+                      Text(
+                        '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().usedBalance)!} ',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.fontColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'ubuntu',
+                        ),
+                      )
+                    ],
+                  )
                 : Container(),
           ],
         ),
@@ -301,10 +301,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     );
   }
 
-
   callApi() async {
     context.read<CartProvider>().setProgress(false);
-
     if (CUR_USERID != null) {
       _getCart('0');
       _getSaveLater('1');
@@ -316,11 +314,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       _getOffSaveLater();
     }
     setState(() {});
-
-
-
   }
-
 
   Future<void> _refresh() async {
     if (mounted) {
@@ -426,26 +420,29 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor:colors.primary1,
+      backgroundColor: colors.primary1,
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: colors.whiteTemp,
-        title: const Text('Cart',style: TextStyle(color: colors.blackTemp),),
-        leading: Container(
-          margin: const EdgeInsets.all(10),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(circularBorderRadius4),
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Dashboard())),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_back_ios_rounded,
-                color: colors.primary,
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: colors.whiteTemp,
+          title: const Text(
+            'Cart',
+            style: TextStyle(color: colors.blackTemp),
+          ),
+          leading: Container(
+            margin: const EdgeInsets.all(10),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(circularBorderRadius4),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Dashboard())),
+              child: const Center(
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: colors.primary,
+                ),
               ),
             ),
-          ),
-        )
-      ),
+          )),
       // appBar:
       // widget.fromBottom
       //     ? null
@@ -485,10 +482,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   }
 
   Future getDeliveryCharge() async {
-
     try {
       CartRepository.fetchDeliveryCharge().then(
-            (value) {
+        (value) {
           if (!value['error']) {
             deliveryChargeList = value['deliveryCharge'];
             //context.read<CartProvider>().deliveryChargeList = value['deliveryCharge'];
@@ -517,112 +513,95 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             // //         context.read<CartProvider>().oriPrice ;
             // setState(() {});
 
-
-            if(context.read<CartProvider>().oriPrice < double.parse(deliveryChargeList.first.maximum ?? '0.0')){
-              context.read<CartProvider>().deliveryCharge = double.parse(deliveryChargeList.first.deliveryCharge ??'0.0');
-              deliveryCharge = double.parse(deliveryChargeList.first.deliveryCharge ??'0.0');
-              print('__________${context.read<CartProvider>().deductAmount == 0}_________');
-
-              context.read<CartProvider>().totalPrice =   context.read<CartProvider>().deliveryCharge +
-                  context.read<CartProvider>().oriPrice ;
-
-
-              // print('___________${context.read<CartProvider>().deliveryCharge}__________');
-            //  print('___________${context.read<CartProvider>().totalPrice}__________');
-
-            }else {
-              for(var i = 1 ; i < deliveryChargeList.length; i++) {
-                if (double.parse(deliveryChargeList[i].minimum ?? '0.0') <
-                    context
-                    .read<CartProvider>()
-                    .oriPrice && context
-                    .read<CartProvider>()
-                    .oriPrice <
-                    double.parse(deliveryChargeList[i].maximum ?? '0.0')) {
-
-                context
-                    .read<CartProvider>()
-                    .deliveryCharge = double.parse(
-                    deliveryChargeList[i].deliveryCharge ?? '0.0');
-                deliveryCharge = double.parse(
-                    deliveryChargeList[i].deliveryCharge ?? '0.0');
-                }
-              }
-              print('this is my delivery charge--->>> ${context
-                  .read<CartProvider>()
-                  .deliveryCharge}');
-
-              print('this is my delivery charge--->>> ${context.read<CartProvider>().oriPrice}');
-
+            if (context.read<CartProvider>().oriPrice <
+                double.parse(deliveryChargeList.first.maximum ?? '0.0')) {
+              context.read<CartProvider>().deliveryCharge =
+                  double.parse(
+                  deliveryChargeList.first.deliveryCharge ?? '0.0');
+              deliveryCharge = double.parse(
+                  deliveryChargeList.first.deliveryCharge ?? '0.0');
+              print(
+                  '__________${context.read<CartProvider>().deductAmount == 0}_________');
 
               context.read<CartProvider>().totalPrice =
                   context.read<CartProvider>().deliveryCharge +
-                      context.read<CartProvider>().oriPrice ;
-              setState(() {
+                      context.read<CartProvider>().oriPrice-context.read<CartProvider>().promoAmt;
 
-              });
+              // print('___________${context.read<CartProvider>().deliveryCharge}__________');
+              //  print('___________${context.read<CartProvider>().totalPrice}__________');
+            }
+            else {
+              for (var i = 1; i < deliveryChargeList.length; i++) {
+                if (double.parse(deliveryChargeList[i].minimum ?? '0.0') <
+                        context.read<CartProvider>().oriPrice &&
+                    context.read<CartProvider>().oriPrice <
+                        double.parse(deliveryChargeList[i].maximum ?? '0.0')) {
+                  context.read<CartProvider>().deliveryCharge = double.parse(
+                      deliveryChargeList[i].deliveryCharge ?? '0.0');
+                  deliveryCharge = double.parse(
+                      deliveryChargeList[i].deliveryCharge ?? '0.0');
+                }
+              }
+              print(
+                  'this is my delivery charge--->>> ${context.read<CartProvider>().deliveryCharge}');
+
+              print(
+                  'this is my delivery charge--->>> ${context.read<CartProvider>().oriPrice}');
+              print(
+                  'this is my promocode charge--->>> ${context.read<CartProvider>().promoAmt}');
+
+              context.read<CartProvider>().totalPrice =
+                  deliveryCharge1 +
+                      context.read<CartProvider>().oriPrice-context.read<CartProvider>().promoAmt;
+              setState(() {});
             }
             checkout();
-            print('this is my delivery charge--->>> ${context
-                .read<CartProvider>()
-                .deliveryCharge} ${context.read<CartProvider>().totalPrice}');
-
+            print(
+                'this is my delivery charge--->>> ${context.read<CartProvider>().deliveryCharge} ${context.read<CartProvider>().totalPrice}');
           }
         },
       );
     } catch (e) {}
   }
-bool notForCheckout = false ;
-  String cartMessage = '' ;
+
+  bool notForCheckout = false;
+  String cartMessage = '';
   Future<void> _getCart(String save) async {
     isNetworkAvail = await isNetworkAvailable();
-
     if (isNetworkAvail) {
       try {
         var parameter = {USER_ID: CUR_USERID, SAVE_LATER: save};
-        print('-------paramete--------${parameter}');
-        apiBaseHelper.postAPICall(getCartApi, parameter).then((getdata) async{
+        print('-----getcatrt--paramete--------$parameter');
+        apiBaseHelper.postAPICall(getCartApi, parameter).then((getdata) async {
           bool error = getdata['error'];
           String? msg = getdata['message'];
           if (!error) {
             var data = getdata['data'];
-
-            context.read<CartProvider>().oriPrice =
-                double.parse(getdata[SUB_TOTAL]);
-
-            context.read<CartProvider>().taxPer =
-                double.parse(getdata[TAX_PER]);
-
-
-            /*context.read<CartProvider>().totalPrice =
+            context.read<CartProvider>().oriPrice = double.parse(getdata[SUB_TOTAL]);
+            context.read<CartProvider>().taxPer = double.parse(getdata[TAX_PER]);
+            deliveryCharge1=double.parse("${getdata['delivery_charge']}");
+            setState(() {});
+            print("${getdata['TAX_PER']}"+"_____________________");
+       /*context.read<CartProvider>().totalPrice =
                 context.read<CartProvider>().deliveryCharge +
                     context.read<CartProvider>().oriPrice;*/
-
             // await getDeliveryCharge();
-
-           List<SectionModel> cartList = (data as List)
+            List<SectionModel> cartList = (data as List)
                 .map((data) => SectionModel.fromCart(data))
                 .toList();
-
             context.read<CartProvider>().setCartlist(cartList);
-
             if (getdata.containsKey(PROMO_CODES)) {
               var promo = getdata[PROMO_CODES];
-              context.read<CartProvider>().promoList =
-                  (promo as List).map((e) => Promo.fromJson(e)).toList();
+              context.read<CartProvider>().promoList = (promo as List).map((e) => Promo.fromJson(e)).toList();
             }
-
             for (int i = 0; i < cartList.length; i++) {
-              context
-                  .read<CartProvider>()
-                  .controller
-                  .add(TextEditingController());
+              context.read<CartProvider>().controller.add(TextEditingController());
             }
             setState(() {});
           } else {
-            if (msg != 'Cart Is Empty !')setSnackbar(msg!, _scaffoldKey);
-            notForCheckout =  true ;
-            cartMessage  = msg ?? '' ;
+            if (msg != 'Cart Is Empty !') setSnackbar(msg!, _scaffoldKey);
+            notForCheckout = true;
+            cartMessage = msg ?? '';
           }
           if (mounted) {
             setState(() {
@@ -686,7 +665,6 @@ bool notForCheckout = false ;
                       List<Product>? prList = [];
                       cartList[i].prVarientList![j].cartCount = qty;
                       prList.add(cartList[i]);
-
                       context.read<CartProvider>().addCartItem(
                             SectionModel(
                               id: cartList[i].id,
@@ -900,7 +878,7 @@ bool notForCheckout = false ;
         : cartList.isEmpty && context.read<CartProvider>().saveLaterList.isEmpty
             ? const EmptyCart()
             : Container(
-                color:colors.primary1,
+                color: colors.primary1,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -928,6 +906,31 @@ bool notForCheckout = false ;
                                       index: index,
                                       setState: setStateNow,
                                       saveForLatter: saveForLaterFun,
+                                      delete: (){
+                                        print("Delete+++++++++++=");
+                                        context.read<CartProvider>().setprescriptionImages([]);
+                                        context.read<CartProvider>().selectedMethod = null;
+                                        context.read<CartProvider>().selectedMethod = null;
+                                        context.read<CartProvider>().payMethod = null;
+                                        context.read<CartProvider>().deliverable = false;
+                                        callApi();
+                                        buttonController = AnimationController(
+                                            duration: const Duration(milliseconds: 2000), vsync: this);
+                                        buttonSqueezeanimation = Tween(
+                                          begin: deviceWidth! * 0.7,
+                                          end: 50.0,
+                                        ).animate(
+                                          CurvedAnimation(
+                                            parent: buttonController!,
+                                            curve: const Interval(
+                                              0.0,
+                                              0.150,
+                                            ),
+                                          ),
+                                        );
+                                        getDeliveryCharge();
+                                      },
+
                                     );
                                   },
                                 ),
@@ -952,20 +955,12 @@ bool notForCheckout = false ;
                                         ),
                                       )
                                     : Container(
-                                        height: 0,
-                                      ),
-                                if (context
-                                    .read<CartProvider>()
-                                    .saveLaterList
-                                    .isNotEmpty)
+                                        height: 0,),
+                                if (context.read<CartProvider>().saveLaterList.isNotEmpty)
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    itemCount: context
-                                        .read<CartProvider>()
-                                        .saveLaterList
-                                        .length,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: context.read<CartProvider>().saveLaterList.length,
+                                    physics: const NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return SaveLatterIteam(
                                         index: index,
@@ -1008,31 +1003,18 @@ bool notForCheckout = false ;
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+                                          Text(getTranslated(context, 'TOTAL_PRICE')!,),
                                           Text(
-                                            getTranslated(
-                                                context, 'TOTAL_PRICE')!,
-                                          ),
-                                          Text(
-                                            '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor,
-                                                  fontFamily: 'ubuntu',
-                                                ),
+                                            //'${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
+                                            "${double.parse("${context.read<CartProvider>().oriPrice}")-double.parse("${context.read<CartProvider>().promoAmt}")}"
+                                            ,style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).colorScheme.fontColor, fontFamily: 'ubuntu'),
                                           ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                              )
-                            : Container(
-                                height: 0,
-                              ),
+                              ):Container(height: 0,),
                       ],
                     ),
                     cartList.isNotEmpty
@@ -1059,10 +1041,8 @@ bool notForCheckout = false ;
         : context.read<CartProvider>().cartList.isEmpty &&
                 context.read<CartProvider>().saveLaterList.isEmpty
             ? const EmptyCart()
-            :
-
-    Container(
-              color: colors.primary1,
+            : Container(
+                color: colors.primary1,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1102,6 +1082,29 @@ bool notForCheckout = false ;
                                         index: index,
                                         setState: setStateNow,
                                         saveForLatter: saveForLaterFun,
+                                        delete: () async {
+                                          context.read<CartProvider>().setprescriptionImages([]);
+                                          context.read<CartProvider>().selectedMethod = null;
+                                          context.read<CartProvider>().selectedMethod = null;
+                                          context.read<CartProvider>().payMethod = null;
+                                          context.read<CartProvider>().deliverable = false;
+                                          callApi();
+                                          buttonController = AnimationController(
+                                              duration: const Duration(milliseconds: 2000), vsync: this);
+                                          buttonSqueezeanimation = Tween(
+                                            begin: deviceWidth! * 0.7,
+                                            end: 50.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: buttonController!,
+                                              curve: const Interval(
+                                                0.0,
+                                                0.150,
+                                              ),
+                                            ),
+                                          );
+                                          print("Delete+++++++++++=");
+                                        },
                                       );
                                     },
                                   ),
@@ -1232,18 +1235,18 @@ bool notForCheckout = false ;
                                     child: Container(
                                       padding: const EdgeInsets.all(11),
                                       decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: colors.primary
-                                        // gradient: LinearGradient(
-                                        //   begin: Alignment.topLeft,
-                                        //   end: Alignment.bottomRight,
-                                        //   colors: [
-                                        //     colors.grad1Color,
-                                        //     colors.grad2Color
-                                        //   ],
-                                        //   stops: [0, 1],
-                                        // ),
-                                      ),
+                                          shape: BoxShape.circle,
+                                          color: colors.primary
+                                          // gradient: LinearGradient(
+                                          //   begin: Alignment.topLeft,
+                                          //   end: Alignment.bottomRight,
+                                          //   colors: [
+                                          //     colors.grad1Color,
+                                          //     colors.grad2Color
+                                          //   ],
+                                          //   stops: [0, 1],
+                                          // ),
+                                          ),
                                       child: const Icon(
                                         Icons.arrow_forward,
                                         color: colors.whiteTemp,
@@ -1308,33 +1311,36 @@ bool notForCheckout = false ;
                                       ),
                                     ],
                                   ),
-                                cartMessage!= '' ? Text(cartMessage) : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        getTranslated(context, 'TOTAL_PRICE')!),
-                                    Text(
-                                      '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .fontColor,
-                                            fontFamily: 'ubuntu',
+                                cartMessage != ''
+                                    ? Text(cartMessage)
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(getTranslated(
+                                              context, 'TOTAL_PRICE')!),
+                                          Text(
+                                            '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1!
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .fontColor,
+                                                  fontFamily: 'ubuntu',
+                                                ),
                                           ),
-                                    ),
-                                  ],
-                                ),
+                                        ],
+                                      ),
                               ],
                             ),
                           ),
                         ),
                       ],
                     ),
-     !notForCheckout ?  SimBtn(
+                    // !notForCheckout ?
+                    SimBtn(
                       size: 0.9,
                       height: 40,
                       borderRadius: circularBorderRadius5,
@@ -1342,7 +1348,6 @@ bool notForCheckout = false ;
                           ? getTranslated(context, 'VALI_PRO_CODE')
                           : getTranslated(context, 'PROCEED_CHECKOUT'),
                       onBtnSelected: () async {
-
                         if (context.read<CartProvider>().isPromoLen == false) {
                           if (context.read<CartProvider>().oriPrice > 0) {
                             // await getDeliveryCharge();
@@ -1350,16 +1355,10 @@ bool notForCheckout = false ;
                             // FocusScope.of(context).unfocus();
                             await getDeliveryCharge();
                             if (isAvailable) {
-
-                              if (context.read<CartProvider>().totalPrice !=
-                                  0) {
-
-
-                              }
+                              if (context.read<CartProvider>().totalPrice != 0) {}
                             } else {
                               setSnackbar(
-                                  getTranslated(
-                                      context, 'CART_OUT_OF_STOCK_MSG')!,
+                                  getTranslated(context, 'CART_OUT_OF_STOCK_MSG')!,
                                   _scaffoldKey);
                             }
                             if (mounted) setState(() {});
@@ -1387,11 +1386,11 @@ bool notForCheckout = false ;
                           );
                         }
                       },
-                    ) : SizedBox(),
+                    )
+                    // : SizedBox(),
                   ],
                 ),
               );
-
   }
 
   checkout() {
@@ -1399,9 +1398,7 @@ bool notForCheckout = false ;
     deviceWidth = MediaQuery.of(context).size.width;
     List<SectionModel> tempCartListForTestCondtion =
         context.read<CartProvider>().cartList;
-
     print("paymethod****checkout****${context.read<CartProvider>().payMethod}");
-
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1412,7 +1409,9 @@ bool notForCheckout = false ;
         ),
       ),
       builder: (builder) {
-        context.read<CartProvider>().deliveryCharge = deliveryChargeList.isEmpty ? 0.0 : double.parse(deliveryChargeList.first.deliveryCharge ??'0.0');
+        context.read<CartProvider>().deliveryCharge = deliveryChargeList.isEmpty
+            ? 0.0
+            : double.parse(deliveryChargeList.first.deliveryCharge ?? '0.0');
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             context.read<CartProvider>().checkoutState = setState;
@@ -1438,24 +1437,14 @@ bool notForCheckout = false ;
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                tempCartListForTestCondtion[0]
-                                                            .productType ==
-                                                        'digital_product'
+                                                tempCartListForTestCondtion[0].productType == 'digital_product'
                                                     ? Container()
-                                                    : SetAddress(
-                                                        update: setStateNow),
-                                                AttachPrescriptionImages(
-                                                    cartList: context
-                                                        .read<CartProvider>()
-                                                        .cartList),
-                                                SelectPayment(
-                                                    updateCheckout:
-                                                        updateCheckout),
-                                                cartItems(context
-                                                    .read<CartProvider>()
-                                                    .cartList),
+                                                    : SetAddress(update: setStateNow),
+                                                AttachPrescriptionImages(cartList: context.read<CartProvider>().cartList),
+                                                SelectPayment(updateCheckout: updateCheckout),
+                                                cartItems(context.read<CartProvider>().cartList),
                                                 orderSummary(),
-                                               /* OrderSummery(
+                                                /* OrderSummery(
                                                   cartList: context
                                                       .read<CartProvider>()
                                                       .cartList,
@@ -1468,9 +1457,7 @@ bool notForCheckout = false ;
                                         ),
                                         Selector<CartProvider, bool>(
                                           builder: (context, data, child) {
-                                            return DesignConfiguration
-                                                .showCircularProgress(
-                                                    data, colors.primary);
+                                            return DesignConfiguration.showCircularProgress(data, colors.primary);
                                           },
                                           selector: (_, provider) =>
                                               provider.isProgress,
@@ -1483,19 +1470,15 @@ bool notForCheckout = false ;
                                     child: Row(
                                       children: <Widget>[
                                         Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.only(
-                                                  start: 15.0),
+                                          padding: const EdgeInsetsDirectional.only(start: 15.0),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                '${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().totalPrice)!} ',
+                                                //'${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().totalPrice)!} ',
+                                                '${double.parse("${context.read<CartProvider>().totalPrice}")}',
                                                 style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor,
+                                                  color: Theme.of(context).colorScheme.fontColor,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily: 'ubuntu',
                                                 ),
@@ -1521,35 +1504,18 @@ bool notForCheckout = false ;
                                                 context, 'PLACE_ORDER'),
                                             onBtnSelected: _placeOrder
                                                 ? () {
-                                                    context
-                                                        .read<CartProvider>()
-                                                        .checkoutState!(
+                                                    context.read<CartProvider>().checkoutState!(
                                                       () {
                                                         _placeOrder = false;
                                                       },
                                                     );
-                                                    if (context
-                                                                .read<
-                                                                    CartProvider>()
-                                                                .selAddress ==
+                                                    if (context.read<CartProvider>().selAddress ==
                                                             '' ||
-                                                        context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .selAddress!
-                                                            .isEmpty) {
-                                                      if (tempCartListForTestCondtion[
-                                                                  0]
-                                                              .productType !=
-                                                          'digital_product') {
-                                                        msg = getTranslated(
-                                                            context,
-                                                            'addressWarning');
-                                                        Routes
-                                                            .navigateToManageAddressScreen(
-                                                                context, false);
+                                                        context.read<CartProvider>().selAddress!.isEmpty) {
+                                                      if (tempCartListForTestCondtion[0].productType != 'digital_product') {
+                                                        msg = getTranslated(context, 'addressWarning');
+                                                        Routes.navigateToManageAddressScreen(context, false);
                                                       }
-
                                                       context
                                                           .read<CartProvider>()
                                                           .checkoutState!(
@@ -1557,69 +1523,36 @@ bool notForCheckout = false ;
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    } else if (context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .payMethod ==
+                                                    } else if (context.read<CartProvider>().payMethod ==
                                                         null) {
                                                       print("test pay***");
-
-                                                      msg = getTranslated(
-                                                          context,
-                                                          'payWarning');
-                                                      Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              Payment(
-                                                                  updateCheckout,
-                                                                  msg),
+                                                      msg = getTranslated(context, 'payWarning');
+                                                      Navigator.push(context, CupertinoPageRoute(builder: (BuildContextcontext) => Payment(updateCheckout, msg),
                                                         ),
-                                                      );
-                                                      context
-                                                          .read<CartProvider>()
-                                                          .checkoutState!(
+                                                      ).then((value) {
+                                                        print("back pop ");
+                                                        print("back pop ${value}");
+                                                        if (value != null) {
+                                                          print("neweew ${context.read<CartProvider>().payMethod}");
+                                                          placeOrder("");
+                                                          // context.read<CartProvider>().selAddress == null || context.read<CartProvider>().selAddress!.isEmpty ||  isPaymentSuccess == true;
+                                                        }
+
+
+                                                      });
+                                                      context.read<CartProvider>().checkoutState!(
                                                         () {
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    } else if (context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .isTimeSlot! &&
-                                                        int.parse(context
-                                                                .read<
-                                                                    PaymentProvider>()
-                                                                .allowDay!) >
-                                                            0 &&
-                                                        (context
-                                                                    .read<
-                                                                        CartProvider>()
-                                                                    .selDate ==
-                                                                null ||
-                                                            context
-                                                                .read<
-                                                                    CartProvider>()
-                                                                .selDate!
-                                                                .isEmpty)) {
-                                                      if (tempCartListForTestCondtion[
-                                                                  0]
-                                                              .productType !=
-                                                          'digital_product') {
-                                                        msg = getTranslated(
-                                                            context,
-                                                            'dateWarning');
+                                                    } else if (context.read<CartProvider>().isTimeSlot! &&
+                                                        int.parse(context.read<PaymentProvider>().allowDay!) > 0 &&
+                                                        (context.read<CartProvider>().selDate == null ||
+                                                            context.read<CartProvider>().selDate!.isEmpty)) {
+                                                      if (tempCartListForTestCondtion[0].productType != 'digital_product') {
+                                                        msg = getTranslated(context, 'dateWarning');
                                                         Navigator.push(
-                                                          context,
-                                                          CupertinoPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                Payment(
-                                                              updateCheckout,
-                                                              msg,
-                                                            ),
-                                                          ),
+                                                          context, CupertinoPageRoute(builder: (BuildContextcontext) => Payment(updateCheckout, msg,)),
                                                         );
                                                       }
                                                       context
@@ -1658,12 +1591,11 @@ bool notForCheckout = false ;
                                                         Navigator.push(
                                                           context,
                                                           CupertinoPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                Payment(
-                                                              updateCheckout,
-                                                              msg,
-                                                            ),
+                                                            builder:
+                                                                (BuildContextcontext) =>
+                                                                    Payment(
+                                                                        updateCheckout,
+                                                                        msg),
                                                           ),
                                                         );
                                                       }
@@ -1677,8 +1609,7 @@ bool notForCheckout = false ;
                                                     } else if (double.parse(
                                                             MIN_ALLOW_CART_AMT!) >
                                                         context
-                                                            .read<
-                                                                CartProvider>()
+                                                            .read<CartProvider>()
                                                             .oriPrice) {
                                                       setSnackbar(
                                                           getTranslated(context,
@@ -1691,7 +1622,8 @@ bool notForCheckout = false ;
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    } /*else if (!context
+                                                    }
+                                                    /*else if (!context
                                                         .read<CartProvider>()
                                                         .deliverable) {
                                                       checkDeliverable();
@@ -1702,8 +1634,11 @@ bool notForCheckout = false ;
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    }*/ else {
-                                                      confirmDialog(deliveryCharge: deliveryCharge);
+                                                    }*/
+                                                    else {
+                                                      confirmDialog(
+                                                          deliveryCharge:
+                                                              deliveryCharge);
                                                       context
                                                           .read<CartProvider>()
                                                           .checkoutState!(
@@ -1959,6 +1894,9 @@ bool notForCheckout = false ;
     }
   }
 
+
+
+
   void paytmPayment(String? tranId, String orderID, String? status, String? msg,
       bool redirect) async {
     String? paymentResponse;
@@ -2059,18 +1997,13 @@ bool notForCheckout = false ;
           context.read<CartProvider>().cartList;
       SettingProvider settingsProvider =
           Provider.of<SettingProvider>(context, listen: false);
-
       String? mob = settingsProvider.mobile;
-
       String? varientId, quantity;
-
       List<SectionModel> cartList = context.read<CartProvider>().cartList;
       for (SectionModel sec in cartList) {
-        varientId =
-            varientId != null ? '$varientId,${sec.varientId!}' : sec.varientId;
+        varientId = varientId != null ? '$varientId,${sec.varientId!}' : sec.varientId;
         quantity = quantity != null ? '$quantity,${sec.qty!}' : sec.qty;
       }
-
       String? payVia;
       if (context.read<CartProvider>().payMethod ==
           getTranslated(context, 'COD_LBL')) {
@@ -2081,12 +2014,10 @@ bool notForCheckout = false ;
       } else if (context.read<CartProvider>().payMethod ==
           getTranslated(context, 'PHONE_PAY')) {
         payVia = 'Phone Pay';
-      }
-      else if (context.read<CartProvider>().payMethod ==
+      } else if (context.read<CartProvider>().payMethod ==
           getTranslated(context, 'PHONE_PAY')) {
         payVia = 'Phone Pay';
-      }
-      else if (context.read<CartProvider>().payMethod ==
+      } else if (context.read<CartProvider>().payMethod ==
           getTranslated(context, 'RAZORPAY_LBL')) {
         payVia = 'RazorPay';
       } else if (context.read<CartProvider>().payMethod ==
@@ -2115,11 +2046,13 @@ bool notForCheckout = false ;
       }
       var request = http.MultipartRequest('POST', placeOrderApi);
       request.headers.addAll(headers);
-
+      print("place oredre paraaa ${request.fields}");
       try {
         request.fields[USER_ID] = CUR_USERID!;
-        request.fields['advance_amt'] = context.read<CartProvider>().deductAmount.toString();
-        request.fields['remaining_amt'] = context.read<CartProvider>().totalPrice.toString();
+        request.fields['advance_amt'] =
+            context.read<CartProvider>().deductAmount.toString();
+        request.fields['remaining_amt'] =
+            context.read<CartProvider>().totalPrice.toString();
         request.fields[MOBILE] = mob;
         request.fields[PRODUCT_VARIENT_ID] = varientId!;
         request.fields[QUANTITY] = quantity!;
@@ -2169,7 +2102,6 @@ bool notForCheckout = false ;
           request.fields[ACTIVE_STATUS] = WAITING;
         }
 
-
         if (context.read<CartProvider>().prescriptionImages.isEmpty) {
           for (var i = 0;
               i < context.read<CartProvider>().prescriptionImages.length;
@@ -2184,17 +2116,14 @@ bool notForCheckout = false ;
               context.read<CartProvider>().prescriptionImages[i].path,
               contentType: MediaType('image', extension[1]),
             );
-
             request.files.add(pic);
           }
         }
-
-        print('______place order parameterr _____${request.fields}_____${request.url}_____');
+        print(
+            '______place order parameterr _____${request.fields}_____${request.url}_____');
         var response = await request.send();
         print(request.fields);
         print(request.url);
-
-
         var responseData = await response.stream.toBytes();
         var responseString = String.fromCharCodes(responseData);
         _placeOrder = true;
@@ -2210,11 +2139,11 @@ bool notForCheckout = false ;
             } else if (context.read<CartProvider>().payMethod ==
                 getTranslated(context, 'PAYPAL_LBL')) {
               paypalPayment(orderId);
-
             } /*else if (context.read<CartProvider>().payMethod ==
                 getTranslated(context, 'PHONE_PAY')) {
              // getPhonpayURL();
-            }*/ else if (context.read<CartProvider>().payMethod ==
+            }*/
+            else if (context.read<CartProvider>().payMethod ==
                 getTranslated(context, 'STRIPE_LBL')) {
               // stripePayment(context.read<CartProvider>().stripePayId, orderId,
               //     tranId == 'succeeded' ? PLACED : WAITING, msg, true);
@@ -2304,10 +2233,9 @@ bool notForCheckout = false ;
   }
 
   String? mobile;
-  String url = '' ;
-  String? merchantId ;
-  String? merchantTransactionId  ;
-
+  String url = '';
+  String? merchantId;
+  String? merchantTransactionId;
 
 /*  Future<void> getPhonpayURL() async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -2559,10 +2487,8 @@ bool notForCheckout = false ;
                 ),
         );
         context.read<CartProvider>().setProgress(false);
-
         if (response.status.toString() == 'PaymentStatus.Success') {
           context.read<CartProvider>().setProgress(true);
-
           await updateOrderStatus(orderID: orderId, status: PLACED);
           addTransaction(
             response.paymentId,
@@ -2648,7 +2574,6 @@ bool notForCheckout = false ;
                           var data = getdata['data'];
                           if (!error) {
                             String statuscode = data['status_code'];
-
                             if (statuscode == '404') {
                               deleteOrder(orderId);
                               if (mounted) {
@@ -2660,7 +2585,6 @@ bool notForCheckout = false ;
                               }
                               context.read<CartProvider>().setProgress(false);
                             }
-
                             if (statuscode == '200') {
                               String transactionStatus =
                                   data['transaction_status'];
@@ -2861,7 +2785,6 @@ bool notForCheckout = false ;
             } else {
               setSnackbar(msg!, _checkscaffoldKey);
             }
-
             context.read<CartProvider>().setProgress(false);
           },
           onError: (error) {
@@ -2897,28 +2820,28 @@ bool notForCheckout = false ;
                   Radius.circular(circularBorderRadius5),
                 ),
               ),
-              content:  GetContent(deliveryCharge: deliveryCharge),
+              content: GetContent(deliveryCharge: deliveryCharge),
               actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    getTranslated(context, 'CANCEL')!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack,
-                      fontSize: textFontSize15,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'ubuntu',
-                    ),
-                  ),
-                  onPressed: () {
-                    context.read<CartProvider>().checkoutState!(
-                      () {
-                        _placeOrder = true;
-                        context.read<CartProvider>().isPromoValid = false;
-                      },
-                    );
-                    Routes.pop(context);
-                  },
-                ),
+                // TextButton(
+                //   child: Text(
+                //     getTranslated(context, 'CANCEL')!,
+                //     style: TextStyle(
+                //       color: Theme.of(context).colorScheme.lightBlack,
+                //       fontSize: textFontSize15,
+                //       fontWeight: FontWeight.bold,
+                //       fontFamily: 'ubuntu',
+                //     ),
+                //   ),
+                //   onPressed: () {
+                //     context.read<CartProvider>().checkoutState!(
+                //       () {
+                //         _placeOrder = true;
+                //         context.read<CartProvider>().isPromoValid = false;
+                //       },
+                //     );
+                //     Routes.pop(context);
+                //   },
+                // ),
                 TextButton(
                   child: Text(
                     getTranslated(context, 'DONE')!,
@@ -2935,7 +2858,7 @@ bool notForCheckout = false ;
                         getTranslated(context, 'BANKTRAN')) {
                       bankTransfer();
                     } else {
-                      placeOrder('');
+                      // placeOrder('');
                     }
                   },
                 )
@@ -3001,10 +2924,8 @@ bool notForCheckout = false ;
                   ),
                   onPressed: () {
                     Routes.pop(context);
-
                     context.read<CartProvider>().setProgress(true);
-
-                    placeOrder('');
+                    // placeOrder('');
                   },
                 )
               ],

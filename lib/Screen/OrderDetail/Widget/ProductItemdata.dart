@@ -110,7 +110,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.orderItem.name!,
+                          widget.orderItem.name??"",
                           style: Theme.of(context)
                               .textTheme
                               .subtitle1!
@@ -365,12 +365,12 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                             color: Theme.of(context).colorScheme.lightBlack,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        "${getTranslated(context, "OTP")!} : ",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.lightBlack,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      // Text(
+                      //   "${getTranslated(context, "OTP")!} : ",
+                      //   style: TextStyle(
+                      //       color: Theme.of(context).colorScheme.lightBlack,
+                      //       fontWeight: FontWeight.bold),
+                      // ),
                       widget.orderItem.courier_agency! != ''
                           ? Text(
                               "${getTranslated(context, 'COURIER_AGENCY')!}: ",
@@ -417,12 +417,12 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                           );
                         },
                       ),
-                      Text(
-                        '${widget.orderItem.item_otp} ',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.lightBlack2,
-                        ),
-                      ),
+                      // Text(
+                      //   '${widget.orderItem.item_otp} ',
+                      //   style: TextStyle(
+                      //     color: Theme.of(context).colorScheme.lightBlack2,
+                      //   ),
+                      // ),
                       widget.orderItem.courier_agency! != ''
                           ? Text(
                               widget.orderItem.courier_agency!,
@@ -432,7 +432,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                               ),
                             )
                           : Container(),
-                      widget.orderItem.tracking_id! != ''
+                          widget.orderItem.tracking_id! != ''
                           ? RichText(
                               text: TextSpan(
                                 children: [
@@ -618,6 +618,14 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                       ),
                     ),
                   ),
+                widget.orderItem.cancelIdentity == "user"?
+                Row(
+                  children: [
+                    Text("Wait For Admin Approval", style: TextStyle(color: Colors.red),),
+                  ],
+                ):
+                Text(""),
+
                 if (!widget.orderItem.listStatus!.contains(DELIVERD) &&
                     (!widget.orderItem.listStatus!.contains(RETURNED)) &&
                     widget.orderItem.isCancle == '1' &&
@@ -667,6 +675,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                                           onPressed: () {
                                             if(cancelReasonController.text.isNotEmpty) {
                                               Routes.pop(context);
+                                              // Navigator.pop(context);
                                               context
                                                   .read<UpdateOrdProvider>()
                                                   .isReturnClick = false;
@@ -678,19 +687,11 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                                                   getTranslated(context,
                                                       'Status Updated Successfully')!,
                                                   context);*/
-                                              Future.delayed(Duration.zero)
-                                                  .then(
-                                                (value) => context
-                                                    .read<UpdateOrdProvider>()
-                                                    .cancelOrder(
-                                                        widget.orderItem.id!,
-                                                        updateOrderItemApi,
-                                                        CANCLED,
-                                                        context,msg: cancelReasonController.text)
-                                                    .then(
-                                                      (value) {},
-                                                    ),
+                                              Future.delayed(Duration.zero).then(
+                                                (value) => context.read<UpdateOrdProvider>().cancelOrder(widget.orderItem.id!, updateOrderItemApi,
+                                                    CANCLED, context,msg: cancelReasonController.text).then((value) {}),
                                               );
+                                              Navigator.pop(context);
                                             }
                                             else{
                                               setSnackbar('Please enter cancel reason!', context);
@@ -700,9 +701,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                                         TextButton(
                                           child: Text(
                                             getTranslated(context, 'NO')!,
-                                            style: const TextStyle(
-                                                color: colors.primary),
-                                          ),
+                                            style: const TextStyle(color: colors.primary)),
                                           onPressed: () {
                                             Routes.pop(context);
                                           },
@@ -769,16 +768,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                                                         UpdateOrdStatus
                                                             .inProgress);
 
-                                                Future.delayed(Duration.zero)
-                                                    .then(
-                                                  (value) => context
-                                                      .read<UpdateOrdProvider>()
-                                                      .cancelOrder(
-                                                        widget.orderItem.id!,
-                                                        updateOrderItemApi,
-                                                        RETURNED,
-                                                        context,
-                                                      ),
+                                                Future.delayed(Duration.zero).then(
+                                                  (value) => context.read<UpdateOrdProvider>().cancelOrder(widget.orderItem.id!, updateOrderItemApi, RETURNED, context,),
                                                 );
                                               },
                                             ),

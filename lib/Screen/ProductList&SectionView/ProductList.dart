@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:eshop_multivendor/Provider/explore_provider.dart';
 import 'package:eshop_multivendor/Screen/ProductList&SectionView/Widget/ListcompareGrid.dart';
@@ -12,6 +13,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import '../../Helper/Color.dart';
 import '../../Helper/Constant.dart';
 import '../../Helper/String.dart';
+import '../../Model/GetBrandsModel.dart';
 import '../../Model/Section_Model.dart';
 import '../../Provider/productListProvider.dart';
 import '../../widgets/ButtonDesing.dart';
@@ -25,6 +27,7 @@ import '../NoInterNetWidget/NoInterNet.dart';
 import '../Product Detail/Widget/commanFiledsofProduct.dart';
 import '../homePage/homepageNew.dart';
 import 'Widget/ListcompareList.dart';
+import 'package:http/http.dart' as http;
 
 class ProductList extends StatefulWidget {
    String? name, id,brandId,brandName;
@@ -98,6 +101,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    getBrands();
    setState(() {
      widget.getBrand = false;
      print('------------jjjjjkkkkkkkkkkkkkk-------------${widget.getBrand}');
@@ -275,10 +279,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       LIMIT: perPage.toString(),
       OFFSET: offset.toString(),
       TOP_RETAED: top,
-      'brand': widget.getBrand == false ? widget.brandId ?? "": ""
+      'brand': widget.getBrand == false ? widget.brandId ?? "" : ""
     };
-
-    print('-----getProductApi--parameter--------------${parameter}');
+    print('-----getProductApi--parameter--------------$parameter');
     print('___________${selId}_____selId_____');
     if (selId != '') {
       parameter[ATTRIBUTE_VALUE_ID] = selId;
@@ -1112,6 +1115,28 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       ),
     );
   }
+  List<BrandsData> brandsList = [];
+  BrandsData? brandsValue;
+
+
+  getBrands() async {
+    var headers = {
+      'Cookie': 'ci_session=06dfdc4d3993137b7a348ecf6f66d7cffbcd25b9'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var finalResponse = await response.stream.bytesToString();
+      var userData = json.decode(finalResponse);
+      setState(() {
+        brandsList = GetBrandsModel.fromJson(userData).data!;
+      });
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
 
   void filterDialog() {
     showModalBottomSheet(
@@ -1158,6 +1183,36 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           ),
                         );
                       },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                  child: Container(
+                    width: double.maxFinite,
+                    height: 50,
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      value: brandsValue,
+                      hint: const Text('Brands', style: TextStyle(color: Colors.black),),
+                      // Down Arrow Icon
+                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                      // Array list of items
+                      items: brandsList.map((items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Container(
+                              child: Text(items.name.toString())),
+                        );
+                      }).toList(),
+                      onChanged: (BrandsData? value) {
+                        setState(() {
+                          brandsValue = value!;
+                        });
+                      },
+                      underline: Container(),
                     ),
                   ),
                 ),
@@ -1252,19 +1307,19 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                 for (int i = 0; i < att.length; i++) {
                                   Widget itemLabel;
                                   if (attSType[i] == '1') {
-                                    String clr = (attSValue[i].substring(1));
+                                    // String clr = (attSValue[i].substring(1));
 
-                                    String color = '0xff$clr';
+                                    // String color = '0xff$clr';
 
                                     itemLabel = Container(
                                       width: 25,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Color(
-                                          int.parse(
-                                            color,
-                                          ),
-                                        ),
+                                        // color: Color(
+                                        //   int.parse(
+                                        //     color,
+                                        //   ),
+                                        // ),
                                       ),
                                     );
                                   } else if (attSType[i] == '2') {
@@ -1425,7 +1480,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           title: getTranslated(context, 'APPLY'),
                           onBtnSelected: () {
                             selId = selectedId.join(',');
-
                             if (mounted) {
                               setState(
                                 () {

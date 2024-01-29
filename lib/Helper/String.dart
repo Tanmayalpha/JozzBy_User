@@ -10,8 +10,7 @@ final Uri getImageSliderApi = Uri.parse('${baseUrl}get_slider_images_bottom');
 final Uri getCatApi = Uri.parse('${baseUrl}get_categories');
 final Uri getSectionApi = Uri.parse('${baseUrl}get_sections');
 final Uri getSettingApi = Uri.parse('${baseUrl}get_settings');
-final Uri getSubcatApi =
-    Uri.parse('${baseUrl}get_subcategories_by_category_id');
+final Uri getSubcatApi = Uri.parse('${baseUrl}get_subcategories_by_category_id');
 final Uri getProductApi = Uri.parse('${baseUrl}get_products');
 final Uri manageCartApi = Uri.parse('${baseUrl}manage_cart');
 final Uri phonePayPaymentIntiat = Uri.parse('${baseUrl}initiate_phone_payment');
@@ -21,6 +20,7 @@ final Uri getUserSignUpApi = Uri.parse('${baseUrl}register_user');
 final Uri getVerifyUserApi = Uri.parse('${baseUrl}verify_user');
 final Uri resendUserApi = Uri.parse('${baseUrl}resend_otp');
 final Uri sendOtpApi = Uri.parse('${baseUrl}send_otp');
+final Uri brandsApi = Uri.parse('${baseUrl}get_brands');
 final Uri setFavoriteApi = Uri.parse('${baseUrl}add_to_favorites');
 final Uri removeFavApi = Uri.parse('${baseUrl}remove_from_favorites');
 final Uri getRatingApi = Uri.parse('${baseUrl}get_product_rating');
@@ -65,8 +65,7 @@ final Uri flutterwaveApi = Uri.parse('${baseUrl}flutterwave_webview');
 final Uri getMsgApi = Uri.parse('${baseUrl}get_messages');
 final Uri setBankProofApi = Uri.parse('${baseUrl}send_bank_transfer_proof');
 final Uri checkDeliverableApi = Uri.parse('${baseUrl}is_product_delivarable');
-final Uri checkCartDelApi =
-    Uri.parse('${baseUrl}check_cart_products_delivarable');
+final Uri checkCartDelApi = Uri.parse('${baseUrl}check_cart_products_delivarable');
 final Uri getPromoCodeApi = Uri.parse('${baseUrl}get_promo_codes');
 final Uri deleteUserApi = Uri.parse('${baseUrl}delete_user');
 final Uri getProductFaqsApi = Uri.parse('${baseUrl}get_product_faqs');
@@ -177,6 +176,7 @@ const String REV_IMG = 'review_images';
 
 const String USER_NAME = 'user_name';
 const String USERNAME = 'username';
+const String SHOPNAME = 'shop_name';
 const String ADDRESS = 'address';
 const String EMAIL = 'email';
 const String MOBILE = 'mobile';

@@ -7,6 +7,8 @@ import '../Helper/String.dart';
 import '../repository/authRepository.dart';
 import 'package:http/http.dart' as http;
 
+import 'UserProvider.dart';
+
 class AuthenticationProvider extends ChangeNotifier {
   // value for parameter
   String? mobilennumberPara, passwordPara;
@@ -88,13 +90,17 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   //get System Policies
-  Future<Map<String, dynamic>> getLoginData() async {
+  Future<Map<String, dynamic>> getLoginData(BuildContext context) async {
     try {
       var parameter = {MOBILE: mobilennumberPara, PASSWORD: passwordPara};
       var result = await AuthRepository.fetchLoginData(parameter: parameter);
 
       errorMessage = result['message'];
+
       error = result['error'];
+
+      print(result.toString()+"_______________________++++++++++++++");
+      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
       if (!error!) {
         var getdata = result['data'][0];
         id = getdata[ID];
@@ -108,6 +114,9 @@ class AuthenticationProvider extends ChangeNotifier {
         latitude = getdata[LATITUDE];
         longitude = getdata[LONGITUDE];
         image = getdata[IMAGE];
+        print("${getdata["gst_number"]}"+"+++++++++++++++++++++++=");
+        userProvider.setShopName(getdata[SHOPNAME] ?? '');
+        userProvider.setGstnumber(getdata["gst_number"] ?? '');
         CUR_USERID = id;
         return result;
       } else {
@@ -124,6 +133,7 @@ class AuthenticationProvider extends ChangeNotifier {
     try {
       var parameter = {
         MOBILE: mobilennumberPara,
+        // "type":"forget"
       };
       var result =
           await AuthRepository.fetchverificationData(parameter: parameter);
@@ -165,10 +175,7 @@ class AuthenticationProvider extends ChangeNotifier {
 
   //for singUp
   Future<Map<String, dynamic>> getSingUPData( String? mobile) async {
-
     try {
-
-
       var headers = {
         'Cookie': 'ci_session=e385397905c87228193b6d52283c2a83c33b72d4'
       };
@@ -189,8 +196,6 @@ class AuthenticationProvider extends ChangeNotifier {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-
-
       if (response.statusCode == 200) {
        var result = await response.stream.bytesToString();
        var fainalResult = jsonDecode(result);
@@ -201,15 +206,14 @@ class AuthenticationProvider extends ChangeNotifier {
         var result = await response.stream.bytesToString();
         var fainalResult = jsonDecode(result);
         return fainalResult ;
-
       }
-
-
       /*var result = await AuthRepository.fetchSingUpData(parameter: parameter);
       return result;*/
     } catch (e) {
       errorMessage = e.toString();
-      return {};
+      return {
+
+      };
     }
   }
 

@@ -48,6 +48,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
               oldPassword: passwordController.text,
               username: '',
               userEmail: '',
+              shopname: ''
             )
             .then(
           (value) {
@@ -62,7 +63,6 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
         passwordController.clear();
         newPasswordTextController.clear();
         confirmPasswordTextController.clear();
-
         Routes.pop(context);
       }
       return true;
@@ -106,23 +106,28 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
   }
 
   Widget setForgotPasswordLabel(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: InkWell(
-          child: Text(getTranslated(context, 'FORGOT_PASSWORD_LBL')!),
-          onTap: () {
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => SendOtp(
-                  title: getTranslated(context, 'FORGOT_PASS_TITLE'),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+    return Selector<UserProvider, String>(
+        selector: (_, provider) => provider.mob,
+      builder: (context, userMobile, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: InkWell(
+              child: Text(getTranslated(context, 'FORGOT_PASSWORD_LBL')!),
+              onTap: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => SendOtp(
+                      title: getTranslated(context, 'FORGOT_PASS_TITLE'), mobileFromChangePasswordScreen: userMobile,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
     );
   }
 

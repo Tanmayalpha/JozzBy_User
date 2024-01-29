@@ -164,20 +164,22 @@ class _AllCategoryState extends State<AllCategory>
                       builder: (context, data, child) {
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: (data == ThemeMode.system &&
-                              MediaQuery.of(context).platformBrightness ==
-                                  Brightness.light) ||
-                              data == ThemeMode.light
-                              ? SvgPicture.asset(
-                            DesignConfiguration.setSvgPath('voice_search'),
-                            height: 15,
-                            width: 15,
-                          )
-                              : SvgPicture.asset(
+                          child:
+                          // (data == ThemeMode.system &&
+                          //     MediaQuery.of(context).platformBrightness ==
+                          //         Brightness.light) ||
+                          //     data == ThemeMode.light
+                          //     ? SvgPicture.asset(
+                          //   DesignConfiguration.setSvgPath('voice_search'),
+                          //   height: 15,
+                          //   width: 15,
+                          // )
+                          //     :
+                          SvgPicture.asset(
                             DesignConfiguration.setSvgPath(
-                                'voice_search_white'),
-                            height: 15,
-                            width: 15,
+                                'voice_search'),
+                            height: 25,
+                            width: 25,
                           ),
                         );
                       },

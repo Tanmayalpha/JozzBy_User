@@ -17,7 +17,7 @@ const String iosLink = 'your ios link here';
 const String appStoreId = '123456789';
 
 //Link for share product (get From Firebase)
-const String deepLinkUrlPrefix = 'https://jozzby.page.link/product';
+const String deepLinkUrlPrefix = 'https://jozzbybazaar.page.link';
 const String deepLinkName = 'jozzby_bazar';
 
 //Set labguage
@@ -78,9 +78,9 @@ ApiBaseHelper apiBaseHelper = ApiBaseHelper();
 // const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
 // const String imageUrl = 'https://admin.jossbuy.com/';
 //const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
-const String imageUrl = 'https://admin.jossbuy.com/';
+const String imageUrl = 'https://alphawizzserver.com/';
 // const String baseUrl = 'https://alphawizzserver.com/jozzby_bazar_new/app/v1/api/';
- const String baseUrl = 'https://admin.jossbuy.com/app/v1/api/';
-//const String baseUrl = 'https://alphawizzserver.com/jozzby_bazar_new/app/v1/api/';
+ //const String baseUrl = 'https://admin.jossbuy.com/app/v1/api/';
+const String baseUrl = 'https://alphawizzserver.com/jossbuy/app/v1/api/';
 const String ecomExpressUrl = 'https://clbeta.ecomexpress.in/track_me/api/mawbd/';
 const String jwtKey = 'https://alphawizzserver.com/';

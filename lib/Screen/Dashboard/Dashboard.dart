@@ -9,13 +9,17 @@ import 'package:eshop_multivendor/Provider/Theme.dart';
 import 'package:eshop_multivendor/Screen/Profile/MyProfile.dart';
 import 'package:eshop_multivendor/Screen/ExploreSection/explore.dart';
 import 'package:eshop_multivendor/Screen/Search/Search.dart';
+import 'package:eshop_multivendor/deeplinking/deeplinking_service.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
 import '../../Helper/String.dart';
 import '../../widgets/security.dart';
 import '../../widgets/systemChromeSettings.dart';
@@ -58,8 +62,10 @@ class _DashboardPageState extends State<Dashboard>
   void initState() {
     SystemChromeSettings.setSystemButtomNavigationBarithTopAndButtom();
     SystemChromeSettings.setSystemUIOverlayStyleWithNoSpecification();
+   // DynamicLinkHandler().initDynamicLinks(context);
 
-    initDynamicLinks();
+   // initDynamicLinks();
+    init();
     _tabController = TabController(
       length: 5,
       vsync: this,
@@ -112,21 +118,77 @@ class _DashboardPageState extends State<Dashboard>
       },
     );
   }
+   Future<void> init({checkActualVersion = false}) async {
+    // This is used for cases when: APP is not running and the user clicks on a link.
+    try {
+      final Uri? uri = await getInitialUri();
+      _uniLinkHandler(uri: uri);
+    } on PlatformException {
+      if (kDebugMode) print("(PlatformException) Failed to receive initial uri.");
+    } on FormatException catch (error) {
+      if (kDebugMode) print("(FormatException) Malformed Initial URI received. Error: $error");
+    }
+
+    // This is used for cases when: APP is already running and the user clicks on a link.
+    uriLinkStream.listen((Uri? uri) async {
+      _uniLinkHandler(uri: uri);
+    }, onError: (error) {
+      if (kDebugMode) print('UniLinks onUriLink error: $error');
+    });
+  }
+
+   Future<void> _uniLinkHandler({required Uri? uri}) async {
+    if (uri == null || uri.queryParameters.isEmpty) return;
+    Map<String, String> params = uri.queryParameters;
+    getProduct(params['data'].toString(), int.parse(params['index'].toString()), int.parse(params['secPos'].toString()),  params['list']=="true"?true:false);
+
+     // String receivedPromoId = params['promo-id'] ?? '';
+    // if (receivedPromoId.isEmpty) return;
+    // _promoId = receivedPromoId;
+    //
+    // if (_promoId == 'ABC1') {
+    //
+    // }
+    //
+    // if (_promoId == 'ABC2') {
+    //
+    // }
+  }
 
   void initDynamicLinks() async {
+    print("****************************8");
     streamSubscription = FirebaseDynamicLinks.instance.onLink.listen(
       (event) {
         final Uri deepLink = event.link;
         if (deepLink.queryParameters.isNotEmpty) {
-          int index = int.parse(deepLink.queryParameters['index']!);
-
-          int secPos = int.parse(deepLink.queryParameters['secPos']!);
-
-          String? id = deepLink.queryParameters['id'];
-
-          String? list = deepLink.queryParameters['list'];
-
-          getProduct(id!, index, secPos, list == 'true' ? true : false);
+          print("${ deepLink}");
+          print("${ deepLink.queryParameters['index']}");
+        //   int index = int.parse(deepLink.queryParameters['index']!);
+        //
+        //   int secPos = int.parse(deepLink.queryParameters['secPos']!);
+        //
+        //   String? id = deepLink.queryParameters['data'];
+        //
+        // //  String? list = deepLink.queryParameters['list'];
+        //   int? index;
+        //   int? secPos;
+        //   String? id;
+        //
+        //   if (deepLink.queryParameters.containsKey('index')) {
+        //     index = int.tryParse(deepLink.queryParameters['index']??"0");
+        //   }
+        //
+        //   if (deepLink.queryParameters.containsKey('secPos')) {
+        //     secPos = int.tryParse(deepLink.queryParameters['secPos']??"0");
+        //   }
+        //
+        //   id = deepLink.queryParameters['data'];
+        //
+        //   print('Index: $index');
+        //   print('SecPos: $secPos');
+        //   print('ID: $id');
+        //
+           getProduct(deepLink.queryParameters['data'].toString(), int.parse(deepLink.queryParameters['index'].toString()), int.parse(deepLink.queryParameters['secPos'].toString()),  deepLink.queryParameters['list']=="true"?true:false);
         }
       },
     );
@@ -298,6 +360,7 @@ class _DashboardPageState extends State<Dashboard>
               },
               child: Icon(
                 Icons.search,color:colors.blackTemp,
+                size: 25,
 
               ),
             ),
@@ -404,7 +467,7 @@ class _DashboardPageState extends State<Dashboard>
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: Container(
-                width:80,
+                width:90,
                 child: Text(
                   getTranslated(context, name)!,
                   style: TextStyle(
@@ -413,11 +476,11 @@ class _DashboardPageState extends State<Dashboard>
                         : Theme.of(context).colorScheme.lightBlack,
                     fontWeight: FontWeight.w400,
                     fontStyle: FontStyle.normal,
-                    fontSize: textFontSize9,
+                    fontSize: textFontSize8,
                     fontFamily: 'ubuntu',
                   ),
                   textAlign: TextAlign.center,
-                  maxLines:2,
+                  maxLines:1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

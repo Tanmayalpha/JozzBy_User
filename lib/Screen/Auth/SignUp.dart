@@ -42,6 +42,8 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
       email,
       password,
       mobile,
+  shopname,
+  gstnumber,
       id,
       countrycode,
       city,
@@ -110,13 +112,16 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
 
               id = i[ID];
               name = i[USERNAME];
+              shopname=i[SHOPNAME];
+              gstnumber=i["gst_number"];
+
               email = i[EMAIL];
               mobile = i[MOBILE];
               CUR_USERID = id;
               UserProvider userProvider = context.read<UserProvider>();
               userProvider.setName(name ?? '');
               SettingProvider settingProvider = context.read<SettingProvider>();
-              settingProvider.saveUserDetail (id!, name, email, mobile, city,
+              settingProvider.saveUserDetail (shopname,gstnumber,id!, name, email, mobile, city,
                   area, address, pincode, latitude, longitude, '', context);
               Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
             } else {

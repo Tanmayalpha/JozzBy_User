@@ -281,18 +281,17 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                     builder: (context, data, child) {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: (data == ThemeMode.system &&
-                                    MediaQuery.of(context).platformBrightness ==
-                                        Brightness.light) ||
-                                data == ThemeMode.light
-                            ? SvgPicture.asset(
-                                DesignConfiguration.setSvgPath('voice_search'),
-                                height: 25,
-                                width: 25,
-                              )
-                            : SvgPicture.asset(
+                        child:
+                        // (data == ThemeMode.system && MediaQuery.of(context).platformBrightness == Brightness.dark) || data == ThemeMode.light
+                        //     ? SvgPicture.asset(
+                        //         DesignConfiguration.setSvgPath('voice_search_white'),
+                        //         height: 25,
+                        //         width: 25,
+                        //       )
+                        //     :
+                        SvgPicture.asset(
                                 DesignConfiguration.setSvgPath(
-                                    'voice_search_white'),
+                                    'voice_search'),
                                 height: 25,
                                 width: 25,
                               ),

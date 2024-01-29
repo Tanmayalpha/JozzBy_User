@@ -48,7 +48,7 @@ class StatePreview extends State<ProductPreview> {
 
     if (widget.from! && widget.videoType == 'youtube') {
       _controller = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(widget.video!)!,
+        initialVideoId: YoutubePlayer.convertUrlToId(widget.video??"")??"",
         flags: const YoutubePlayerFlags(
           autoPlay: true,
           mute: false,

@@ -310,8 +310,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                               );
                             },
                           ),
-                          Selector<UserProvider, String>(
-                            selector: (_, provider) => provider.mob,
+                          Selector<UserProvider, String>(selector: (_, provider) => provider.mob,
                             builder: (context, userMobile, child) {
                               return userMobile != ''
                                   ? Text(

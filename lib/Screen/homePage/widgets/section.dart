@@ -634,9 +634,9 @@ class SingleSectionContainer extends StatelessWidget {
                                             : deviceHeight! * 0.6,
                                         child: SingleProductContainer(
                                           sectionPosition: index,
-                                          index: 0,
-                                          pictureFlex: 5,
-                                          textFlex: 4,
+                                                                                                                                                                                                                                                                                          index: 0,
+                                          pictureFlex: 3,
+                                          textFlex: 4,    
                                           productDetails: productList[0],
                                           length: productList.length,
                                           showDiscountAtSameLine: false,
@@ -658,7 +658,7 @@ class SingleSectionContainer extends StatelessWidget {
                                                 child: SingleProductContainer(
                                                   sectionPosition: index,
                                                   index: 1,
-                                                  pictureFlex: 5,
+                                                  pictureFlex: 3,
                                                   textFlex: 4,
                                                   productDetails:
                                                       productList[1],
@@ -684,8 +684,8 @@ class SingleSectionContainer extends StatelessWidget {
                                       child: SingleProductContainer(
                                         sectionPosition: index,
                                         index: 2,
-                                        pictureFlex: 10,
-                                        textFlex: 2,
+                                        pictureFlex: 7,
+                                        textFlex: 3,
                                         productDetails: productList[2],
                                         length: productList.length,
                                         showDiscountAtSameLine: true,

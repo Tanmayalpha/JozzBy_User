@@ -35,6 +35,7 @@ class SingleProductContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(pictureFlex);
     var db = DatabaseHelper();
     if (length > index) {
       String? offPer;
@@ -55,6 +56,7 @@ class SingleProductContainer extends StatelessWidget {
       double width = deviceWidth! * 0.5;
 
       return Container(
+
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(circularBorderRadius10),
           color: Theme.of(context).colorScheme.white,
@@ -120,8 +122,7 @@ class SingleProductContainer extends StatelessWidget {
                         ),
                         double.parse(productDetails
                             .prVarientList![0].disPrice!) !=
-                            0 &&
-                            !showDiscountAtSameLine
+                            0
                             ? Padding(
                           padding: const EdgeInsetsDirectional.only(
                             start: 10.0,
@@ -194,64 +195,65 @@ class SingleProductContainer extends StatelessWidget {
                                 ),
                               ),
 
-                              showDiscountAtSameLine
-                                  ? Expanded(
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsetsDirectional.only(
-                                          start: 8.0,
-                                          top: 1,
-                                        ),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              double.parse(productDetails
-                                                          .prVarientList![0]
-                                                          .disPrice!) !=
-                                                      0
-                                                  ? 'MRP: ${DesignConfiguration.getPriceFormat(context, double.parse(productDetails.prVarientList![0].price!))}'
-                                                  : '',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .overline!
-                                                  .copyWith(
-                                                color: colors.darkColor3,
-                                                    fontFamily: 'ubuntu',
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    decorationColor:
-                                                        colors.darkColor3,
-                                                    decorationStyle:
-                                                        TextDecorationStyle
-                                                            .solid,
-                                                    decorationThickness: 2,
-                                                    letterSpacing: 0,
-                                                    fontSize: textFontSize14,
-                                                    fontWeight: FontWeight.normal,
-                                                    fontStyle: FontStyle.normal,
-                                                  ),
-                                            ),
-                                            Text(
-                                              '  ${double.parse(offPer).round().toStringAsFixed(2)}%',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .overline!
-                                                  .copyWith(
-                                                    fontFamily: 'ubuntu',
-                                                    color: colors.primary,
-                                                    letterSpacing: 0,
-                                                    fontSize: textFontSize10,
-                                                    fontWeight: FontWeight.normal,
-                                                    fontStyle: FontStyle.normal,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
+                              // showDiscountAtSameLine
+                              //     ?
+                              // Expanded(
+                              //         child: Padding(
+                              //           padding:
+                              //               const EdgeInsetsDirectional.only(
+                              //             start: 8.0,
+                              //             top: 1,
+                              //           ),
+                              //           child: Row(
+                              //             children: <Widget>[
+                              //               Text(
+                              //                 double.parse(productDetails
+                              //                             .prVarientList![0]
+                              //                             .disPrice!) !=
+                              //                         0
+                              //                     ? 'MRP: ${DesignConfiguration.getPriceFormat(context, double.parse(productDetails.prVarientList![0].price!))}'
+                              //                     : '',
+                              //                 style: Theme.of(context)
+                              //                     .textTheme
+                              //                     .overline!
+                              //                     .copyWith(
+                              //                   color: colors.darkColor3,
+                              //                       fontFamily: 'ubuntu',
+                              //                       decoration: TextDecoration
+                              //                           .lineThrough,
+                              //                       decorationColor:
+                              //                           colors.darkColor3,
+                              //                       decorationStyle:
+                              //                           TextDecorationStyle
+                              //                               .solid,
+                              //                       decorationThickness: 2,
+                              //                       letterSpacing: 0,
+                              //                       fontSize: textFontSize14,
+                              //                       fontWeight: FontWeight.normal,
+                              //                       fontStyle: FontStyle.normal,
+                              //                     ),
+                              //               ),
+                              //               Text(
+                              //                 '  ${double.parse(offPer).round().toStringAsFixed(2)}%',
+                              //                 maxLines: 1,
+                              //                 overflow: TextOverflow.ellipsis,
+                              //                 style: Theme.of(context)
+                              //                     .textTheme
+                              //                     .overline!
+                              //                     .copyWith(
+                              //                       fontFamily: 'ubuntu',
+                              //                       color: colors.primary,
+                              //                       letterSpacing: 0,
+                              //                       fontSize: textFontSize10,
+                              //                       fontWeight: FontWeight.normal,
+                              //                       fontStyle: FontStyle.normal,
+                              //                     ),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       )
+                              //     : Container(),
                             ],
                           ),
                         ),

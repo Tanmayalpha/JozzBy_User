@@ -33,7 +33,7 @@ class ListIteamOfTransaction extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(15),
           child: Container(
             padding: const EdgeInsets.all(5.0),
             decoration: BoxDecoration(
@@ -42,97 +42,103 @@ class ListIteamOfTransaction extends StatelessWidget {
                     width: 0.5,
                     color: Theme.of(context).disabledColor,
                     style: BorderStyle.solid)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        '${getTranslated(context, 'AMOUNT')!} : ${DesignConfiguration.getPriceFormat(context, double.parse(transactionModelData[index].amt!))!}',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.fontColor,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'ubuntu',
-                        ),
-                      ),
-                    ),
-                    Text(
-                      transactionModelData[index].date!,
-                      style: const TextStyle(
-                        fontFamily: 'ubuntu',
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(thickness: 0.5),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          '${getTranslated(context, 'ORDER_ID_LBL')!} : ${transactionModelData[index].orderId!}',
-                          style: const TextStyle(
+                          '${getTranslated(context, 'AMOUNT')!} : ${DesignConfiguration.getPriceFormat(context, double.parse(transactionModelData[index].amt!))!}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.fontColor,
+                            fontWeight: FontWeight.bold,
                             fontFamily: 'ubuntu',
                           ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 8),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: back,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(circularBorderRadius4),
-                          ),
-                        ),
-                        child: Text(
-                          StringValidation.capitalize(
-                              transactionModelData[index].status!),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.fontColor,
-                            fontFamily: 'ubuntu',
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                transactionModelData[index].type!.isNotEmpty
-                    ? Text(
-                        '${getTranslated(context, 'PAYMENT_METHOD_LBL')!} : ${transactionModelData[index].type!}',
+                      Text(
+                        transactionModelData[index].date!,
                         style: const TextStyle(
                           fontFamily: 'ubuntu',
                         ),
-                      )
-                    : Container(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: transactionModelData[index].msg!.isNotEmpty
+                      ),
+                    ],
+                  ),
+                  const Divider(thickness: 0.5),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '${getTranslated(context, 'ORDER_ID_LBL')!} : ${transactionModelData[index].orderId!}',
+                            style: const TextStyle(
+                              fontFamily: 'ubuntu',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color:"${transactionModelData[index].status}"==""?Colors.green: back,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(circularBorderRadius4),
+                            ),
+                          ),
+                          child: Text(
+                          //  "${transactionModelData[index].status}",
+                            StringValidation.capitalize(
+                                "${transactionModelData[index].status}"==""?"success":"${transactionModelData[index].status}"
+
+                            ),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.fontColor,
+                              fontFamily: 'ubuntu',
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  transactionModelData[index].type!.isNotEmpty
                       ? Text(
-                          '${getTranslated(context, 'MSG')!} : ${transactionModelData[index].msg!}',
+                          '${getTranslated(context, 'PAYMENT_METHOD_LBL')!} : ${transactionModelData[index].type!}',
                           style: const TextStyle(
                             fontFamily: 'ubuntu',
                           ),
                         )
                       : Container(),
-                ),
-                transactionModelData[index].txnID != '' &&
-                        transactionModelData[index].txnID!.isNotEmpty
-                    ? Text(
-                        '${getTranslated(context, 'Txn_id')!} : ${transactionModelData[index].txnID!}',
-                        style: const TextStyle(
-                          fontFamily: 'ubuntu',
-                        ),
-                      )
-                    : Container(),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: transactionModelData[index].msg!.isNotEmpty
+                        ? Text(
+                            '${getTranslated(context, 'MSG')!} : ${transactionModelData[index].msg!}',
+                            style: const TextStyle(
+                              fontFamily: 'ubuntu',
+                            ),
+                          )
+                        : Container(),
+                  ),
+                  transactionModelData[index].txnID != '' &&
+                          transactionModelData[index].txnID!.isNotEmpty
+                      ? Text(
+                          '${getTranslated(context, 'Txn_id')!} : ${transactionModelData[index].txnID!}',
+                          style: const TextStyle(
+                            fontFamily: 'ubuntu',
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
             ),
           ),
         ),

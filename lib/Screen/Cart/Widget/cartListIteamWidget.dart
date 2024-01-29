@@ -7,6 +7,7 @@ import '../../../Model/Section_Model.dart';
 import '../../../Provider/CartProvider.dart';
 import '../../../Provider/SettingProvider.dart';
 import '../../../widgets/desing.dart';
+import '../../../widgets/snackbar.dart';
 import '../../Language/languageSettings.dart';
 import '../../Dashboard/Dashboard.dart';
 
@@ -14,11 +15,13 @@ class CartListViewLayOut extends StatefulWidget {
   int index;
   Function setState;
   Function saveForLatter;
+  VoidCallback delete;
   CartListViewLayOut({
     Key? key,
     required this.index,
     required this.setState,
     required this.saveForLatter,
+     required this.delete,
   }) : super(key: key);
 
   @override
@@ -232,6 +235,23 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                     letterSpacing: 0.7),
 
                               ),
+                              cartList[index].tax_percentage!="0" ?
+                              Text(
+                                'Tax ${cartList[index].tax_percentage}%',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .overline!
+                                    .copyWith(
+                                    fontFamily: 'ubuntu',
+
+                                    decorationColor: colors.darkColor3,
+                                    decorationStyle:
+                                    TextDecorationStyle.solid,
+                                    fontSize: textFontSize12,
+                                    decorationThickness: 2,
+                                    letterSpacing: 0.7),
+
+                              ):SizedBox.shrink(),
                             ],
                           ),
                         ),
@@ -297,10 +317,13 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                         ),
                                         onTap: () {
 
+
                                           if (context
                                               .read<CartProvider>()
                                               .isProgress ==
                                               false) {
+
+
                                             if (CUR_USERID != null) {
 
                                               context
@@ -321,7 +344,9 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                                     .text,
                                                 isRemove: true
                                               );
-                                            } else {
+                                              setSnackbar(getTranslated(context, 'Minimum Order is Fix')!, context);
+                                            }
+                                            else {
                                               if ((int.parse(
                                                   cartList[index]
                                                       .productList![0]
@@ -369,12 +394,11 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                               }
                                             }
                                           }
+
+
                                         },
                                       ),
-                                      cartList[index].productList![0].type ==
-                                          'digital_product'
-                                          ? Container()
-                                          : SizedBox(
+                                      cartList[index].productList![0].type == 'digital_product' ? Container() : SizedBox(
                                         width: 37,
                                         height: 20,
                                         child: Stack(
@@ -383,16 +407,10 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                               textAlign: TextAlign.center,
                                               readOnly: true,
                                               style: TextStyle(
-                                                  fontSize:
-                                                  textFontSize12,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor),
-                                              controller: context
-                                                  .read<CartProvider>()
-                                                  .controller[index],
-                                              decoration:
-                                              const InputDecoration(
+                                                  fontSize: textFontSize12,
+                                                  color: Theme.of(context).colorScheme.fontColor),
+                                              controller: context.read<CartProvider>().controller[index],
+                                              decoration: const InputDecoration(
                                                 border: InputBorder.none,
                                               ),
                                             ),
@@ -403,79 +421,32 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                                 size: 1,
                                               ),
                                               onSelected: (String value) {
-                                                if (context
-                                                    .read<
-                                                    CartProvider>()
-                                                    .isProgress ==
-                                                    false) {
-                                                  if (CUR_USERID !=
-                                                      null) {
-                                                    context
-                                                        .read<
-                                                        CartProvider>()
-                                                        .addToCart(
-                                                        index: index,
-                                                        qty: value,
-                                                        cartList:
-                                                        cartList,
-                                                        context:
-                                                        context,
-                                                        update: widget
-                                                            .setState);
+                                                if (context.read<CartProvider>().isProgress == false) {
+                                                  if (CUR_USERID != null) {
+                                                    context.read<CartProvider>().addToCart(
+                                                        index: index, qty: value,
+                                                        cartList: cartList, context:
+                                                        context, update: widget.setState);
                                                   } else {
                                                     context.read<CartProvider>().addAndRemoveQty(
                                                         qty: value,
                                                         from: 3,
-                                                        totalLen: cartList[
-                                                        index]
-                                                            .productList![
-                                                        0]
-                                                            .itemsCounter!
-                                                            .length *
-                                                            int.parse(cartList[
-                                                            index]
-                                                                .productList![
-                                                            0]
-                                                                .qtyStepSize!),
+                                                        totalLen: cartList[index].productList![0].itemsCounter!.length * int.parse(cartList[index].productList![0].qtyStepSize!),
                                                         index: index,
                                                         price: price,
-                                                        selectedPos:
-                                                        selectedPos,
-                                                        total: total,
-                                                        cartList:
-                                                        cartList,
-                                                        itemCounter: int
-                                                            .parse(cartList[
-                                                        index]
-                                                            .productList![
-                                                        0]
-                                                            .qtyStepSize!),
-                                                        context: context,
-                                                        update: widget
-                                                            .setState);
+                                                        selectedPos: selectedPos, total: total, cartList: cartList, itemCounter: int.parse(cartList[index].productList![0].qtyStepSize!),
+                                                        context: context, update: widget.setState);
                                                   }
                                                 }
                                               },
-                                              itemBuilder:
-                                                  (BuildContext context) {
-                                                return cartList[index]
-                                                    .productList![0]
-                                                    .itemsCounter!
-                                                    .map<
-                                                    PopupMenuItem<
-                                                        String>>(
-                                                      (String value) {
+                                              itemBuilder: (BuildContext context) {
+                                                return cartList[index].productList![0].itemsCounter!.map<PopupMenuItem<String>>((String value) {
                                                     return PopupMenuItem(
                                                       value: value,
                                                       child: Text(
                                                         value,
                                                         style: TextStyle(
-                                                          color: Theme.of(
-                                                              context)
-                                                              .colorScheme
-                                                              .fontColor,
-                                                          fontFamily:
-                                                          'ubuntu',
+                                                          color: Theme.of(context).colorScheme.fontColor, fontFamily: 'ubuntu',
                                                         ),
                                                       ),
                                                     );
@@ -486,8 +457,7 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                           ],
                                         ),
                                       ),
-                                      cartList[index].productList![0].type ==
-                                          'digital_product'
+                                      cartList[index].productList![0].type == 'digital_product'
                                           ? Container()
                                           : InkWell(
                                         child: const Padding(
@@ -498,55 +468,26 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                           ),
                                         ),
                                         onTap: () {
-                                          if (context
-                                              .read<CartProvider>()
-                                              .isProgress ==
-                                              false) {
-                                            if (CUR_USERID != null) {
-                                              context.read<CartProvider>().addToCart(
-                                                  index: index,
-                                                  qty: (int.parse(cartList[
-                                                  index]
-                                                      .qty!) +
-                                                      int.parse(cartList[
-                                                      index]
-                                                          .productList![
-                                                      0]
-                                                          .qtyStepSize!))
-                                                      .toString(),
+                                          if (context.read<CartProvider>().isProgress == false) {
+                                            if (CUR_USERID != null) {context.read<CartProvider>().addToCart(
+                                                  index: index, qty: (int.parse(cartList[index].qty!) + int.parse(cartList[index].productList![0].qtyStepSize!)).toString(),
                                                   cartList: cartList,
                                                   context: context,
-                                                  update:
-                                                  widget.setState);
+                                                  update: widget.setState);
                                             } else {
-                                              context
-                                                  .read<CartProvider>()
-                                                  .addAndRemoveQty(
-                                                qty: cartList[index]
-                                                    .productList![0]
-                                                    .prVarientList![
-                                                selectedPos]
-                                                    .cartCount!,
+                                              context.read<CartProvider>().addAndRemoveQty(
+                                                qty: cartList[index].productList![0].prVarientList![
+                                                selectedPos].cartCount!,
                                                 from: 1,
                                                 totalLen: cartList[
-                                                index]
-                                                    .productList![
-                                                0]
-                                                    .itemsCounter!
-                                                    .length *
-                                                    int.parse(cartList[
-                                                    index]
-                                                        .productList![
-                                                    0]
-                                                        .qtyStepSize!),
+                                                index].productList![0].itemsCounter!.length * int.parse(cartList[index].productList![0].qtyStepSize!),
                                                 index: index,
                                                 price: price,
                                                 selectedPos:
                                                 selectedPos,
                                                 total: total,
                                                 cartList: cartList,
-                                                itemCounter: int
-                                                    .parse(cartList[
+                                                itemCounter: int.parse(cartList[
                                                 index]
                                                     .productList![
                                                 0]
@@ -627,15 +568,15 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // Text(
-                                //   ' ${DesignConfiguration.getPriceFormat(context, price)!} ',
-                                //   style: TextStyle(
-                                //     color:Colors.white,
-                                //     fontWeight: FontWeight.bold,
-                                //     fontSize: textFontSize12,
-                                //     fontFamily: 'ubuntu',
-                                //   ),
-                                // ),
+                                Text(
+                                  ' ${DesignConfiguration.getPriceFormat(context, price)!} ',
+                                  style: TextStyle(
+                                    color:Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: textFontSize12,
+                                    fontFamily: 'ubuntu',
+                                  ),
+                                ),
 
                                 InkWell(
                                   child: Padding(
@@ -652,6 +593,8 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                     ),
                                   ),
                                   onTap: () async {
+                                    print("Delete+++++++++++=");
+                                    widget.delete();
                                     if (context.read<CartProvider>().isProgress ==
                                         false) {
                                       if (CUR_USERID != null) {
@@ -668,6 +611,7 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                               .promoC
                                               .text,
                                         );
+
                                       } else {
                                         if (singleSellerOrderSystem) {
                                           if (cartList.length == 1) {

@@ -133,11 +133,11 @@ class RadioItem extends StatelessWidget {
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -151,14 +151,15 @@ class RadioModel {
   bool? isSelected;
   final String? add;
   final String? name;
+  final String? mobile;
   final User? addItem;
   final VoidCallback? onEditSelected;
   final VoidCallback? onDeleteSelected;
   final VoidCallback? onSetDefault;
   final show;
-
   RadioModel({
     this.isSelected,
+    this.mobile,
     this.name,
     this.add,
     this.addItem,

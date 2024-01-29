@@ -1122,7 +1122,12 @@ class _FavProductDataState extends State<FavProductData> {
             ),
           );
         },
-        selector: (_, provider) => Tuple2(
+        selector:
+
+            (_, provider) =>
+
+
+            Tuple2(
           provider.cartIdList,
           provider.qtyList(
             widget.favList[widget.index!].id!,

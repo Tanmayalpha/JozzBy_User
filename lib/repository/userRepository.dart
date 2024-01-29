@@ -97,7 +97,7 @@ class UserRepository {
 
   //This method is used to update user profile
   static Future<Map<String, dynamic>> updateUser(
-      {required String userID, oldPwd, newPwd, username, userEmail}) async {
+      {required String userID, oldPwd, newPwd, username, userEmail, shopname,gstnumber}) async {
     try {
       var data = {USER_ID: userID};
       if ((oldPwd != '') && (newPwd != '')) {
@@ -106,6 +106,9 @@ class UserRepository {
       } else if ((username != '') && (userEmail != '')) {
         data[USERNAME] = username;
         data[EMAIL] = userEmail;
+        data['shop_name']=shopname;
+        data['gst_number']=gstnumber;
+
       }
 
       final result = await ApiBaseHelper().postAPICall(getUpdateUserApi, data);

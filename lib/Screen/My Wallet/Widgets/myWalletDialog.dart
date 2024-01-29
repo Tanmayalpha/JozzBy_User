@@ -172,6 +172,7 @@ class MyWalletDialog {
                       context
                           .read<UserProvider>()
                           .setBalance((result['newBalance']).toString());
+
                     }
                   },
                 );

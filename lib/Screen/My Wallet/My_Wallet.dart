@@ -335,8 +335,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                             borderRadius: circularBorderRadius5,
                             size: 0.8,
                             title: getTranslated(context, 'Withdraw'),
-                            onBtnSelected: () {
-                              MyWalletDialog.showWithdrawAmountDialog(context);
+                            onBtnSelected: () async {
+                             await MyWalletDialog.showWithdrawAmountDialog(context);
+                              // Navigator.pop(context);
+                             await updateUserWalletAmount();
                             },
                           ),
                         ),
@@ -409,6 +411,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   }
   String? currentBalance ;
   Future<void> updateUserWalletAmount() async {
+    print("+++++++++++++++++++++++===");
     try {
       currentBalance =
       await context.read<PaymentProvider>().getUserCurrentBalance();

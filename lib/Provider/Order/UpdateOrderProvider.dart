@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:eshop_multivendor/Screen/MyOrder/MyOrder.dart';
 import 'package:eshop_multivendor/repository/Order/UpdateOrderRepository.dart';
 import 'package:flutter/material.dart';
 import '../../Helper/String.dart';
@@ -50,14 +51,11 @@ class UpdateOrdProvider extends ChangeNotifier {
 
   Future<void> cancelOrder(
       String ordId, Uri api, String status, BuildContext context,{String? msg}) async {
-
-
     try {
       changeStatus(UpdateOrdStatus.inProgress);
       var parameter = {ORDERID: ordId, STATUS: status, CANCEL_REASON: msg ?? '' };
 
-      var result = await UpdateOrderRepository.cancelOrder(
-          parameter: parameter, api: api);
+      var result = await UpdateOrderRepository.cancelOrder(parameter: parameter, api: api);
 
       print('___________${parameter}__________');
       print('___________${result}__________');
@@ -66,6 +64,8 @@ class UpdateOrdProvider extends ChangeNotifier {
       if (error == false) {
         Navigator.pop(context, 'update');
         setSnackbar(result['message'], context);
+        // Navigator.pop(context);
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrder()));
         /*Future.delayed(const Duration(seconds: 1)).then(
           (_) async {
 
@@ -79,7 +79,6 @@ class UpdateOrdProvider extends ChangeNotifier {
       changeStatus(UpdateOrdStatus.isSuccsess);
     } catch (e) {
       errorMessage = e.toString();
-
       changeStatus(UpdateOrdStatus.isFailure);
     }
   }

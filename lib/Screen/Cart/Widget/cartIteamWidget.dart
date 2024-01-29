@@ -89,7 +89,6 @@ class _CartIteamState extends State<CartIteam> {
     if (context.read<CartProvider>().deliverableList.isNotEmpty) {
       id = cartList[index].id;
       varId = cartList[index].productList![0].prVarientList![selectedPos].id;
-
       for (int i = 0;
           i < context.read<CartProvider>().deliverableList.length;
           i++) {
@@ -536,7 +535,8 @@ class _CartIteamState extends State<CartIteam> {
                   ),
                 ),
                 Text(
-                  ' ${DesignConfiguration.getPriceFormat(context, ((double.parse(cartList[index].singleItemTaxAmount!)) * double.parse(cartList[index].qty!)))}',
+                  '${DesignConfiguration.getPriceFormat(context, ((double.parse(cartList[index].singleItemTaxAmount!)) * double.parse(cartList[index].qty!)))}',
+                  // ' ${DesignConfiguration.getPriceFormat(context, ((double.parse(cartList[index].singleItemTaxAmount!)) * double.parse(cartList[index].qty!)))}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.lightBlack2,
                     fontFamily: 'ubuntu',
@@ -566,13 +566,17 @@ class _CartIteamState extends State<CartIteam> {
                       )
                     : Container(),
                 Text(
-                  DesignConfiguration.getPriceFormat(
-                    context,
-                    (((double.parse(cartList[index].singleItemNetAmount!)) *
-                            double.parse(cartList[index].qty!)) +
-                        (((double.parse(cartList[index].singleItemTaxAmount!)) *
-                            double.parse(cartList[index].qty!)))),
-                  )!,
+                  "${ (((double.parse(cartList[index].singleItemNetAmount!)) *
+    double.parse(cartList[index].qty!)) +
+    (((double.parse(cartList[index].singleItemTaxAmount!)) *
+    double.parse(cartList[index].qty!))))}",
+                  // DesignConfiguration.getPriceFormat(
+                  //   context,
+                  //   (((double.parse(cartList[index].singleItemNetAmount!)) *
+                  //           double.parse(cartList[index].qty!)) +
+                  //       (((double.parse(cartList[index].singleItemTaxAmount!)) *
+                  //           double.parse(cartList[index].qty!)))),
+                  // )!,
                   style: TextStyle(
                     fontFamily: 'ubuntu',
                     fontWeight: FontWeight.bold,

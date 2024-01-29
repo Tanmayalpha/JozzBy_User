@@ -213,11 +213,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     if (productsController!.offset >=
             productsController!.position.maxScrollExtent &&
         !productsController!.position.outOfRange) {
+      print("+++++++++++++++++++++++++++++=");
       if (mounted) {
 
         setState(
           () {
-            getProduct('0');
+          //  getProduct('0');
           },
         );
       }
@@ -233,12 +234,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
       if (mounted) {
         if (context.read<SellerDetailProvider>().sellerListOffsetValue <
             context.read<SellerDetailProvider>().totalSellerCountValue) {
-          Future.delayed(Duration.zero).then(
+         /* Future.delayed(Duration.zero).then(
             (value) => context.read<SellerDetailProvider>().getSeller(
                   '',
                   _controller.text.trim(),
                 ),
-          );
+          );*/
           setState(
             () {},
           );
@@ -625,6 +626,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           ORDER: orderBy,
           TOP_RETAED: showTopRated,
         };
+        print("parararraarar ${parameter}");
         if (selId != '') {
           parameter[ATTRIBUTE_VALUE_ID] = selId;
         }
@@ -651,7 +653,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
             ) async {
               bool error = value['error'];
               String? search = value['search'];
-              context.read<ExploreProvider>().setProductTotal(value['total'] ??
+              print('${value['total']}______________________ggdfgggdfgfdgfgdgfg');
+              context.read<ExploreProvider>().setProductTotal(value['data'].length.toString() ??
                   context.read<ExploreProvider>().totalProducts);
               notificationisgettingdata = false;
               if (notificationoffset == 0) notificationisnodata = error;

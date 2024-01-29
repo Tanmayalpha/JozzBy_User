@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../Helper/String.dart';
+import '../../deeplinking/deeplinking_service.dart';
 import '../../widgets/desing.dart';
 import '../../widgets/systemChromeSettings.dart';
 
@@ -31,8 +32,8 @@ class _SplashScreen extends State<Splash> with TickerProviderStateMixin {
   void initState() {
     SystemChromeSettings.setSystemButtomNavigationBarithTopAndButtom();
     SystemChromeSettings.setSystemUIOverlayStyleWithNoSpecification();
-    initializeAnimationController();
-    startTime();
+    //initializeAnimationController();
+     startTime();
     super.initState();
   }
 

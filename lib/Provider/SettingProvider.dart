@@ -20,6 +20,8 @@ class SettingProvider {
   String get mobile => _sharedPreferences.getString(MOBILE) ?? '';
 
   String get profileUrl => _sharedPreferences.getString(IMAGE) ?? '';
+  String get shopName => _sharedPreferences.getString(SHOPNAME) ?? '';
+  String get gstNumber => _sharedPreferences.getString("gst_number") ?? '';
 
   setPrefrence(String key, String value) {
     _sharedPreferences.setString(key, value);
@@ -75,7 +77,10 @@ class SettingProvider {
   }
 
   Future<void> saveUserDetail(
+      String? shopName,
+      String ?gstNumber,
       String userId,
+
       String? name,
       String? email,
       String? mobile,
@@ -85,6 +90,7 @@ class SettingProvider {
       String? pincode,
       String? latitude,
       String? longitude,
+
       String? image,
       BuildContext context) async {
     final waitList = <Future<void>>[];
@@ -92,6 +98,8 @@ class SettingProvider {
     waitList.add(_sharedPreferences.setString(USERNAME, name ?? ''));
     waitList.add(_sharedPreferences.setString(EMAIL, email ?? ''));
     waitList.add(_sharedPreferences.setString(MOBILE, mobile ?? ''));
+     waitList.add(_sharedPreferences.setString(SHOPNAME, shopName ?? ''));
+    waitList.add(_sharedPreferences.setString('gst_number', gstNumber ?? ''));
     waitList.add(_sharedPreferences.setString(CITY, city ?? ''));
     waitList.add(_sharedPreferences.setString(AREA, area ?? ''));
     waitList.add(_sharedPreferences.setString(ADDRESS, address ?? ''));
@@ -100,9 +108,10 @@ class SettingProvider {
     waitList.add(_sharedPreferences.setString(LONGITUDE, longitude ?? ''));
     waitList.add(_sharedPreferences.setString(IMAGE, image ?? ''));
 
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.setName(name ?? '');
+     userProvider.setShopName(shopName ?? '');
+     userProvider.setGstnumber(gstNumber??'');
     userProvider.setBalance('');
     userProvider.setCartCount('');
     userProvider.setProfilePic(image ?? '');

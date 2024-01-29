@@ -24,7 +24,6 @@ class SelectPayment extends StatelessWidget {
                   builder: (BuildContext context) =>
                       Payment(updateCheckout, ''))).then((value) {
             context.read<CartProvider>().checkoutState!(() {});
-
           });
         },
         child: Padding(

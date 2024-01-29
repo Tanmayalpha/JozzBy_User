@@ -100,8 +100,10 @@ class ListViewLayOutWidget extends StatelessWidget {
                         filterList[index]['swatche_value'].split(',');
 
                     for (int i = 0; i < att.length; i++) {
+
                       Widget itemLabel;
                       if (attSType[i] == '1') {
+
                         String clr = (attSValue[i].substring(1));
 
                         String color = '0xff$clr';

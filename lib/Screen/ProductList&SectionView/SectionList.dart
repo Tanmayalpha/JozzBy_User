@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Provider/explore_provider.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../Helper/Color.dart';
 import '../../Helper/Constant.dart';
 import '../../Helper/String.dart';
+import '../../Model/GetBrandsModel.dart';
 import '../../Model/Section_Model.dart';
 import '../../Provider/productListProvider.dart';
 import '../../widgets/ButtonDesing.dart';
@@ -20,6 +22,7 @@ import '../../widgets/simmerEffect.dart';
 import '../../widgets/snackbar.dart';
 import '../NoInterNetWidget/NoInterNet.dart';
 import 'Widget/GridView.dart';
+import 'package:http/http.dart' as http;
 import 'Widget/ListViewWidget.dart';
 
 class SectionList extends StatefulWidget {
@@ -76,9 +79,9 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    getBrands();
     widget.section_model!.productList!.clear();
     widget.section_model!.offset = widget.section_model!.productList!.length;
-
     widget.section_model!.selectedId = [];
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2200));
@@ -526,6 +529,9 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
     );
   }
 
+  List<BrandsData> brandsList = [];
+  BrandsData? brandsValue;
+
   void filterDialog() {
     showModalBottomSheet(
       context: context,
@@ -573,6 +579,36 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                  child: Container(
+                    width: double.maxFinite,
+                    height: 50,
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      value: brandsValue,
+                      hint: const Text('Brands', style: TextStyle(color: Colors.black),),
+                      // Down Arrow Icon
+                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                      // Array list of items
+                      items: brandsList.map((items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Container(
+                              child: Text(items.name.toString())),
+                        );
+                      }).toList(),
+                      onChanged: (BrandsData? value) {
+                        setState(() {
+                          brandsValue = value!;
+                        });
+                      },
+                      underline: Container(),
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: Container(
                     color: Theme.of(context).colorScheme.lightWhite,
@@ -582,10 +618,8 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                         ? ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            padding:
-                                const EdgeInsetsDirectional.only(top: 10.0),
-                            itemCount:
-                                widget.section_model!.filterList!.length + 1,
+                            padding: const EdgeInsetsDirectional.only(top: 10.0),
+                            itemCount: widget.section_model!.filterList!.length + 1,
                             itemBuilder: (context, index) {
                               if (index == 0) {
                                 return Column(
@@ -603,11 +637,8 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                                                 .textTheme
                                                 .subtitle1!
                                                 .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .lightBlack,
-                                                    fontWeight:
-                                                        FontWeight.normal),
+                                                    color: Theme.of(context).colorScheme.lightBlack,
+                                                    fontWeight: FontWeight.normal),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                           ),
@@ -661,15 +692,14 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                                 for (int i = 0; i < att.length; i++) {
                                   Widget itemLabel;
                                   if (attSType[i] == '1') {
-                                    String clr = (attSValue[i].substring(1));
-
-                                    String color = '0xff$clr';
-
+                                    // String clr = (attSValue[i].substring(1));
+                                    // String color = '0xff$clr';
                                     itemLabel = Container(
                                       width: 25,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(int.parse(color))),
+                                          // color: Color(int.parse(color))
+                                      ),
                                     );
                                   } else if (attSType[i] == '2') {
                                     itemLabel = ClipRRect(
@@ -679,10 +709,7 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                                         attSValue[i],
                                         width: 80,
                                         height: 80,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                DesignConfiguration.erroWidget(
-                                          80,
+                                        errorBuilder: (context, error, stackTrace) => DesignConfiguration.erroWidget(80,
                                         ),
                                       ),
                                     );
@@ -828,8 +855,7 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                           title: getTranslated(context, 'APPLY'),
                           onBtnSelected: () {
                             if (widget.section_model!.selectedId != null) {
-                              selId =
-                                  widget.section_model!.selectedId!.join(',');
+                              selId = widget.section_model!.selectedId!.join(',');
                               clearList('0');
                               Navigator.pop(context, 'Product Filter');
                             }
@@ -884,6 +910,27 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
     if (mounted) setState(() {});
   }
 
+  // GetBrandsModel? brands;
+  getBrands() async {
+    var headers = {
+      'Cookie': 'ci_session=06dfdc4d3993137b7a348ecf6f66d7cffbcd25b9'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var finalResponse = await response.stream.bytesToString();
+      var userData = json.decode(finalResponse);
+      setState(() {
+        brandsList = GetBrandsModel.fromJson(userData).data!;
+      });
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+
   Future<void> getSection(String top) async {
     isNetworkAvail = await isNetworkAvailable();
     if (isNetworkAvail) {
@@ -894,8 +941,9 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
         TOP_RETAED: top,
         PSORT: sortBy,
         PORDER: orderBy,
+        // "brand": brandsValue.toString(),
       };
-      print("this is a parameter______>section${parameter}");
+      print('this is a parameter______>section $parameter');
       if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
       if (selId != null && selId != '') {
         parameter[ATTRIBUTE_VALUE_ID] = selId;
@@ -919,17 +967,13 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
             String? msg = value['message'];
             if (!error) {
               var data = value['data'];
-
               minPrice = value[MINPRICE].toString();
               maxPrice = value[MAXPRICE].toString();
-              currentRangeValues =
-                  RangeValues(double.parse(minPrice ?? '0.0'), double.parse(maxPrice ?? '0.0'));
+              currentRangeValues = RangeValues(double.parse(minPrice ?? '0.0'), double.parse(maxPrice ?? '0.0'));
               offset = widget.section_model!.productList!.length;
               total = int.parse(data[0]['total']);
               if (offset! < total!) {
-                List<SectionModel> temp = (data as List)
-                    .map((data) => SectionModel.fromJson(data))
-                    .toList();
+                List<SectionModel> temp = (data as List).map((data) => SectionModel.fromJson(data)).toList();
                 getAvailVarient(temp[0].productList!);
                 offset = widget.section_model!.offset! + perPage;
                 widget.section_model!.offset = offset;

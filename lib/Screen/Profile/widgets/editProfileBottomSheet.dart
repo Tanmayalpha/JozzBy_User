@@ -29,6 +29,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController shopeNameController = TextEditingController();
   final gstController = TextEditingController();
   Widget getUserImage(String profileImage, VoidCallback? onBtnSelected) {
     return Stack(
@@ -113,8 +114,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
             borderRadius: BorderRadius.circular(circularBorderRadius10),
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
             child: TextFormField(
               style: TextStyle(
                   color: Theme.of(context).colorScheme.fontColor,
@@ -226,22 +226,15 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     if (result != null) {
       var image = File(result.files.single.path!);
       if (mounted) {
-        Map result = await context
-            .read<UserProvider>()
-            .updateUserProfilePicture(image: image);
-
+        Map result = await context.read<UserProvider>().updateUserProfilePicture(image: image);
         if (!result['error']) {
           String? imageURL;
           var data = result['data'];
-
           for (var i in data) {
             imageURL = i[IMAGE];
           }
-
-          await Provider.of<SettingProvider>(context, listen: false)
-              .setPrefrence(IMAGE, imageURL!);
-          Provider.of<UserProvider>(context, listen: false)
-              .setProfilePic(imageURL);
+          await Provider.of<SettingProvider>(context, listen: false).setPrefrence(IMAGE, imageURL!);
+          Provider.of<UserProvider>(context, listen: false).setProfilePic(imageURL);
           setSnackbar(getTranslated(context, 'PROFILE_UPDATE_MSG')!, context);
         } else {
           setSnackbar(result['message'], context);
@@ -258,20 +251,26 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     form.save();
     if (form.validate()) {
       await context
-          .read<UserProvider>()
-          .updateUserProfile(
+            .read<UserProvider>()
+            .updateUserProfile(
             userID: CUR_USERID!,
             newPassword: '',
             oldPassword: '',
             username: nameController.text,
             userEmail: emailController.text,
-          )
-          .then(
+            shopname: shopeNameController.text,
+            gstnumber: gstController.text
+
+          ).then(
         (value) {
           if (value['error'] == false) {
             var settingProvider = Provider.of<SettingProvider>(context, listen: false);
             var userProvider = Provider.of<UserProvider>(context, listen: false);
             settingProvider.setPrefrence(USERNAME, nameController.text);
+            settingProvider.setPrefrence(SHOPNAME, shopeNameController.text);
+           userProvider.setShopName(shopeNameController.text);
+            userProvider.setGstnumber(gstController.text);
+            settingProvider.setPrefrence("gst_number",gstController.text);
             userProvider.setName(nameController.text);
             settingProvider.setPrefrence(EMAIL, emailController.text);
             userProvider.setEmail(emailController.text);
@@ -293,6 +292,8 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
       (value) {
         nameController.text = context.read<UserProvider>().curUserName;
         emailController.text = context.read<UserProvider>().email;
+        shopeNameController.text = context.read<UserProvider>().shopName;
+        gstController.text=context.read<UserProvider>().gstNumber;
       },
     );
     super.initState();
@@ -334,6 +335,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                           return setEmailField(email: userEmail);
                         }),
                     setGST(),
+                    setShopName(),
                     saveButton(
                       title: getTranslated(context, 'SAVE_LBL')!,
                       onBtnSelected: () {
@@ -355,6 +357,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     FocusScope.of(context).requestFocus(nextFocus);
   }
   FocusNode? gstFocus;
+
   setGST() {
     return Padding(
       padding: const EdgeInsets.only(top: 20,left: 10,right: 10),
@@ -381,7 +384,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                 vertical: 1,
               ),
               hintText: getTranslated(context, 'GST_LBL'),
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                   color:colors.blackTemp,
                   fontWeight: FontWeight.bold,
                   fontSize: textFontSize13),
@@ -405,6 +408,58 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
       ),
     );
   }
+
+  setShopName() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20,left: 10,right: 10),
+      child: Container(
+        height:50,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          color: colors.whiteTemp,
+          borderRadius: BorderRadius.circular(circularBorderRadius10),
+        ),
+        alignment: Alignment.center,
+        child: TextFormField(
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.7),
+              fontWeight: FontWeight.bold,
+              fontSize: textFontSize13),
+          keyboardType: TextInputType.text,
+          focusNode: gstFocus,
+          textInputAction: TextInputAction.next,
+          controller: shopeNameController,
+          decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 1,
+              ),
+              hintText: getTranslated(context, 'SHOP_NAME'),
+              hintStyle: const TextStyle(
+                  color:colors.blackTemp,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textFontSize13),
+              fillColor: Theme.of(context).colorScheme.lightWhite,
+              border: InputBorder.none),
+          /*validator: (val) => StringValidation.validateField(
+            val!,
+            getTranslated(context, 'GST_LBL'),
+          ),*/
+          onSaved: (String? value) {
+            context.read<AuthenticationProvider>().setGST(value);
+          },
+          onFieldSubmitted: (v) {
+            _fieldFocusChange(
+              context,
+              gstFocus!,
+              nameFocus,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     nameController.dispose();
