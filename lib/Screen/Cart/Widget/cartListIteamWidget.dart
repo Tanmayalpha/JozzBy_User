@@ -176,13 +176,11 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                    )
-                                  : Container(),
+                                    ): Container(),
                             ),
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -212,15 +210,9 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                     .productList![0]
                                     .prVarientList![selectedPos]
                                     .disPrice!) !=
-                                    0
-                                    ? DesignConfiguration.getPriceFormat(
+                                    0 ? DesignConfiguration.getPriceFormat(
                                   context,
-                                  double.parse(cartList[index]
-                                      .productList![0]
-                                      .prVarientList![selectedPos]
-                                      .price!),
-                                )!
-                                    : '',
+                                  double.parse(cartList[index].productList![0].prVarientList![selectedPos].price!),)! : '',
                                 style: Theme.of(context)
                                     .textTheme
                                     .overline!
@@ -233,8 +225,21 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                     fontSize: textFontSize12,
                                     decorationThickness: 2,
                                     letterSpacing: 0.7),
-
                               ),
+                              CUR_USERID == null ? Text(
+                          'Tax ${cartList[index].productList?.first.tax}%',
+                          style: Theme.of(context)
+                          .textTheme
+                          .overline!
+                          .copyWith(
+                          fontFamily: 'ubuntu',
+                          decorationColor: colors.darkColor3,
+                          decorationStyle:
+                          TextDecorationStyle.solid,
+                          fontSize: textFontSize12,
+                          decorationThickness: 2,
+                          letterSpacing: 0.7),
+                         ):
                               cartList[index].tax_percentage!="0" ?
                               Text(
                                 'Tax ${cartList[index].tax_percentage}%',
@@ -243,14 +248,12 @@ class _CartListViewLayOutState extends State<CartListViewLayOut> {
                                     .overline!
                                     .copyWith(
                                     fontFamily: 'ubuntu',
-
                                     decorationColor: colors.darkColor3,
                                     decorationStyle:
                                     TextDecorationStyle.solid,
                                     fontSize: textFontSize12,
                                     decorationThickness: 2,
                                     letterSpacing: 0.7),
-
                               ):SizedBox.shrink(),
                             ],
                           ),

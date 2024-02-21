@@ -17,6 +17,7 @@ import '../../Provider/CartProvider.dart';
 import '../../Provider/paymentProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/security.dart';
 import '../../widgets/snackbar.dart';
 import 'Widget/PaymentRadio.dart';
 import '../../widgets/appBar.dart';
@@ -44,8 +45,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
   Animation? buttonSqueezeanimation;
   AnimationController? buttonController;
-  int? paymentIndex ;
-  bool isAdvancePaymentSuccess = true ;
+  int? paymentIndex;
+  bool isAdvancePaymentSuccess = true;
   double? deductAmount;
 
   setStateNow() {
@@ -55,7 +56,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-     // getPhonpayURL();
+    // getPhonpayURL();
 
     context.read<PaymentProvider>().payModel.clear();
     context.read<PaymentProvider>().getdateTime(context, setStateNow);
@@ -66,7 +67,6 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-
 
     Future.delayed(
       Duration.zero,
@@ -114,6 +114,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       ),
     );
   }
+
   InAppWebViewController? _webViewController;
   String _paymentStatus = '';
   @override
@@ -135,7 +136,10 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       (_) async {
         isNetworkAvail = await isNetworkAvailable();
         if (isNetworkAvail) {
-          context.read<PaymentProvider>().getdateTime(context, setStateNow,);
+          context.read<PaymentProvider>().getdateTime(
+                context,
+                setStateNow,
+              );
         } else {
           await buttonController!.reverse();
           if (mounted) setState(() {});
@@ -144,14 +148,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    List<SectionModel> tempCartListForTestCondtion = context.read<CartProvider>().cartList;
+    List<SectionModel> tempCartListForTestCondtion =
+        context.read<CartProvider>().cartList;
     return WillPopScope(
       onWillPop: () async {
-       /* if(paymentIndex== 3   && (isPhonePayPaymentSuccess ?? false)){
+        /* if(paymentIndex== 3   && (isPhonePayPaymentSuccess ?? false)){
           return true;
         }else if( paymentIndex== 3  && !(isPhonePayPaymentSuccess ?? false)){
           initiatePayment();
@@ -160,7 +163,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
         }else if(razorAdvancePaySuccess!= true && paymentIndex==1){
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please pay first advance payment in case on cash on delivery')));
         }*/
-        if(paymentIndex== 3 && !(isPhonePayPaymentSuccess ?? false)){
+        if (paymentIndex == 3 && !(isPhonePayPaymentSuccess ?? false)) {
           setSnackbar(
             'Payment Not Done',
             context,
@@ -168,12 +171,12 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
           context.read<CartProvider>().payMethod = null;
           context.read<CartProvider>().selectedMethod = null;
         }
-        if(paymentIndex==1 && !(razorAdvancePaySuccess== true)) {
+        if (paymentIndex == 1 && !(razorAdvancePaySuccess == true)) {
           setSnackbar(
             'Advance Payment Not Done',
             context,
           );
-          context.read<CartProvider>().payMethod = null ;
+          context.read<CartProvider>().payMethod = null;
           context.read<CartProvider>().selectedMethod = null;
         }
         return true;
@@ -183,11 +186,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
         key: _scaffoldKey,
         // appBar: getSimpleAppBar(getTranslated(context, 'PAYMENT_METHOD_LBL')!, context),
         appBar: AppBar(
-          title: Text('${getTranslated(context, 'PAYMENT_METHOD_LBL')}',style: const TextStyle(
-            color: colors.whiteTemp,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'ubuntu',
-          ),
+          title: Text(
+            '${getTranslated(context, 'PAYMENT_METHOD_LBL')}',
+            style: const TextStyle(
+              color: colors.whiteTemp,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'ubuntu',
+            ),
           ),
           leading: Builder(
             builder: (BuildContext context) {
@@ -205,29 +210,28 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                     }else if(razorAdvancePaySuccess!= true && paymentIndex==1){
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please pay first advance payment in case on cash on delivery')));
                     }*/
-                    if(paymentIndex== 3  && !(isPhonePayPaymentSuccess ?? false)){
+                    if (paymentIndex == 3 &&
+                        !(isPhonePayPaymentSuccess ?? false)) {
                       setSnackbar(
                         'Payment Not Done',
                         context,
                       );
-                      context.read<CartProvider>().payMethod = null ;
+                      context.read<CartProvider>().payMethod = null;
                       context.read<CartProvider>().selectedMethod = null;
                     }
 
-                    if(paymentIndex==1 && !(razorAdvancePaySuccess== true)) {
+                    if (paymentIndex == 1 &&
+                        !(razorAdvancePaySuccess == true)) {
                       setSnackbar(
                         'Advance Payment Not Done',
                         context,
                       );
                       context.read<CartProvider>().payMethod = null;
                       context.read<CartProvider>().selectedMethod = null;
-
                     }
 
                     Navigator.of(context).pop();
-                  //  print("paymentIndex______$paymentIndex  isPhonePayPaymentSuccess________$isPhonePayPaymentSuccess    razorAdvancePaySuccess_____ $razorAdvancePaySuccess");
-
-
+                    //  print("paymentIndex______$paymentIndex  isPhonePayPaymentSuccess________$isPhonePayPaymentSuccess    razorAdvancePaySuccess_____ $razorAdvancePaySuccess");
                   },
                   child: const Center(
                     child: Icon(
@@ -239,14 +243,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
               );
             },
           ),
-
         ),
         body: isNetworkAvail
             ? context.read<PaymentProvider>().isLoading
                 ? DesignConfiguration.getProgress()
                 : Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
                     child: Column(
                       children: [
                         Expanded(
@@ -263,8 +266,9 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                   .curBalance.isNotEmpty &&
                                               userProvider.curBalance != ''
                                           ? Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: CheckboxListTile(
                                                 dense: true,
                                                 contentPadding:
@@ -277,7 +281,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                     setState(
                                                       () {
                                                         context
-                                                            .read<CartProvider>()
+                                                            .read<
+                                                                CartProvider>()
                                                             .isUseWallet = value;
                                                         if (value!) {
                                                           if (context
@@ -290,8 +295,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                             context
                                                                 .read<
                                                                     CartProvider>()
-                                                                .remWalBal = (double
-                                                                    .parse(userProvider
+                                                                .remWalBal = (double.parse(
+                                                                    userProvider
                                                                         .curBalance) -
                                                                 context
                                                                     .read<
@@ -306,9 +311,10 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                                         CartProvider>()
                                                                     .totalPrice;
                                                             context
-                                                                .read<
-                                                                    CartProvider>()
-                                                                .payMethod = 'Wallet';
+                                                                    .read<
+                                                                        CartProvider>()
+                                                                    .payMethod =
+                                                                'Wallet';
 
                                                             context
                                                                 .read<
@@ -393,12 +399,12 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                       .subtitle1,
                                                 ),
                                                 subtitle: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 8.0),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8.0),
                                                   child: Text(
                                                     context
-                                                            .read<CartProvider>()
+                                                            .read<
+                                                                CartProvider>()
                                                             .isUseWallet!
                                                         ? '${getTranslated(context, 'REMAIN_BAL')!} : ${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().remWalBal)}'
                                                         : '${getTranslated(context, 'TOTAL_BAL')!} : ${DesignConfiguration.getPriceFormat(context, double.parse(userProvider.curBalance))!}',
@@ -425,7 +431,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
                                                 getTranslated(
                                                     context, 'PREFERED_TIME')!,
@@ -441,11 +448,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                             const Divider(),
                                             Container(
                                               height: 90,
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
                                               child: ListView.builder(
                                                 shrinkWrap: true,
-                                                scrollDirection: Axis.horizontal,
+                                                scrollDirection:
+                                                    Axis.horizontal,
                                                 itemCount: int.parse(context
                                                     .read<PaymentProvider>()
                                                     .allowDay!),
@@ -471,7 +480,11 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                         ),
                                       )
                                     : Container(),
-                                context.read<CartProvider>().isPayLayShow! && context.read<PaymentProvider>().payModel.isNotEmpty
+                                context.read<CartProvider>().isPayLayShow! &&
+                                        context
+                                            .read<PaymentProvider>()
+                                            .payModel
+                                            .isNotEmpty
                                     ? Card(
                                         elevation: 0,
                                         child: Column(
@@ -480,11 +493,15 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
-                                                getTranslated(context, 'SELECT_PAYMENT')!,
+                                                getTranslated(
+                                                    context, 'SELECT_PAYMENT')!,
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.fontColor,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .fontColor,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: textFontSize16,
                                                 ),
@@ -493,18 +510,31 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                             const Divider(),
                                             ListView.builder(
                                               shrinkWrap: true,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              itemCount: context.read<PaymentProvider>().paymentMethodList.length,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: context
+                                                  .read<PaymentProvider>()
+                                                  .paymentMethodList
+                                                  .length,
                                               itemBuilder: (context, index) {
                                                 if (index == 1 &&
-                                                    context.read<PaymentProvider>().cod &&
-                                                    tempCartListForTestCondtion[0].productType != 'digital_product') {
+                                                    context
+                                                        .read<PaymentProvider>()
+                                                        .cod &&
+                                                    tempCartListForTestCondtion[
+                                                                0]
+                                                            .productType !=
+                                                        'digital_product') {
                                                   return paymentItem(index);
                                                 } else if (index == 2 &&
-                                                    context.read<PaymentProvider>().paypal) {
+                                                    context
+                                                        .read<PaymentProvider>()
+                                                        .paypal) {
                                                   return paymentItem(index);
                                                 } else if (index == 3 &&
-                                                    context.read<PaymentProvider>().phonepay) {
+                                                    context
+                                                        .read<PaymentProvider>()
+                                                        .phonepay) {
                                                   return paymentItem(index);
                                                 }
                                                 // else if (index == 3 &&
@@ -519,7 +549,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                         .read<PaymentProvider>()
                                                         .razorpay) {
                                                   return paymentItem(index);
-                                                }else if (index == 5 &&
+                                                } else if (index == 5 &&
                                                     context
                                                         .read<PaymentProvider>()
                                                         .paystack) {
@@ -559,30 +589,50 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                         .read<PaymentProvider>()
                                                         .myfatoorah) {
                                                   return paymentItem(index);
-                                                }
-                                                else {
+                                                } else {
                                                   return Container();
                                                 }
                                               },
                                             ),
-                                           paymentIndex == 1 ? Align(
-                                             alignment: Alignment.topCenter,
-                                             child: Card(
-                                               elevation: 0,
-                                               child: Column(children: [
-                                               Text('*Pay $ADVANCE_PERCENT% Advance amount of Order amount'),
-                                                 razorAdvancePaySuccess == true ?SizedBox():   ElevatedButton(onPressed: (){
-                                                 print('_____sddssssds______${context.read<CartProvider>().totalPrice}__________');
-                                                 double percent = double.parse(ADVANCE_PERCENT ?? '0.0');
-                                                 deductAmount = context.read<CartProvider>().totalPrice*percent /100 ;
-                                                 openCheckout();
-                                                // initiatePayment();
-                                                 setState(() {});
-                                               }, child: Text('Pay ${deductAmount ?? ''}'))
-                                             ],
-                                               ),
-                                             ),
-                                           ) : SizedBox(),
+                                            paymentIndex == 1
+                                                ? Align(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    child: Card(
+                                                      elevation: 0,
+                                                      child: Column(
+                                                        children: [
+                                                          Text(
+                                                              '*Pay $ADVANCE_PERCENT% Advance amount of Order amount'),
+                                                          razorAdvancePaySuccess ==
+                                                                  true
+                                                              ? SizedBox()
+                                                              : ElevatedButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    print(
+                                                                        '_____sddssssds______${context.read<CartProvider>().totalPrice}__________');
+                                                                    double
+                                                                        percent =
+                                                                        double.parse(ADVANCE_PERCENT ??
+                                                                            '0.0');
+                                                                    deductAmount = context
+                                                                            .read<CartProvider>()
+                                                                            .totalPrice *
+                                                                        percent /
+                                                                        100;
+                                                                    openCheckout();
+                                                                    // initiatePayment();
+                                                                    setState(
+                                                                        () {});
+                                                                  },
+                                                                  child: Text(
+                                                                      'Pay ${deductAmount ?? ''}'))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                : SizedBox(),
                                             // paymentIndex ==1 ?
                                             // InkWell(
                                             //   onTap: initiatePayment,
@@ -595,48 +645,48 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                         SimBtn(
-                          borderRadius: circularBorderRadius5,
-                          size: 0.8,
-                          title: getTranslated(context, 'DONE'),
-      //                     onBtnSelected: /*paymentIndex==1 && isAdvancePaymentSuccess ? (){
-      //                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please pay advance amount first')));
-      //                     } :*/
-      //
-      //                     paymentIndex== 3   && (isPhonePayPaymentSuccess ?? false) ? (){
-      //                                      Routes.pop(context);
-      //                                  }:
-      //                     razorAdvancePaySuccess== true && paymentIndex==1 ? (){Routes.pop(context);}
-      // :  paymentIndex== 3  && !(isPhonePayPaymentSuccess ?? false) ? initiatePayment : (){
-      //                       Routes.pop(context);
-      //                     }
+                        SimBtn(
+                            borderRadius: circularBorderRadius5,
+                            size: 0.8,
+                            title: getTranslated(context, 'DONE'),
+                            //                     onBtnSelected: /*paymentIndex==1 && isAdvancePaymentSuccess ? (){
+                            //                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please pay advance amount first')));
+                            //                     } :*/
+                            //
+                            //                     paymentIndex== 3   && (isPhonePayPaymentSuccess ?? false) ? (){
+                            //                                      Routes.pop(context);
+                            //                                  }:
+                            //                     razorAdvancePaySuccess== true && paymentIndex==1 ? (){Routes.pop(context);}
+                            // :  paymentIndex== 3  && !(isPhonePayPaymentSuccess ?? false) ? initiatePayment : (){
+                            //                       Routes.pop(context);
+                            //                     }
 
-                           ///------------
-                             onBtnSelected: (){
-                               if(context
-                                   .read<CartProvider>()
-                                   .isUseWallet==true){
+                            ///------------
+                            onBtnSelected: () {
+                              if (context.read<CartProvider>().isUseWallet ==
+                                  true) {
+                                Navigator.pop(context, true);
+                                // print("sdffffffsfsfsf");
+                              } else if (paymentIndex == 3 &&
+                                  (isPhonePayPaymentSuccess ?? false)) {
+                                Routes.pop(context);
+                              } else if (paymentIndex == 3 &&
+                                  !(isPhonePayPaymentSuccess ?? false)) {
+                                initiatePayment();
+                              } else if (razorAdvancePaySuccess == true &&
+                                  paymentIndex == 1) {
+                                Routes.pop(context);
+                              } else if (razorAdvancePaySuccess != true &&
+                                  paymentIndex == 1) {
+                                print(
+                                    '___________${razorAdvancePaySuccess}__________');
+                                setSnackbar(
+                                    'Please pay first advance payment in case on cash on delivery',
+                                    context);
+                              }
 
-                                 Navigator.pop(context,true);
-                                 // print("sdffffffsfsfsf");
-                               } else if(paymentIndex== 3   && (isPhonePayPaymentSuccess ?? false)){
-                              Routes.pop(context);
-                            }else if( paymentIndex== 3  && !(isPhonePayPaymentSuccess ?? false)){
-                              initiatePayment();
-                            }else if(razorAdvancePaySuccess== true && paymentIndex==1 ){
-                              Routes.pop(context);
-                            }else if(razorAdvancePaySuccess!= true && paymentIndex==1){
-                              print('___________${razorAdvancePaySuccess}__________');
-                              setSnackbar('Please pay first advance payment in case on cash on delivery', context);
-
-
-
-                            }
-
-                        //    fsfsf
-
-                             }
-                        ),
+                              //    fsfsf
+                            }),
                       ],
                     ),
                   )
@@ -648,14 +698,14 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       ),
     );
   }
-  bool? isPhonePayPaymentSuccess ;
-  String url = '' ;
 
+  bool? isPhonePayPaymentSuccess;
+  String url = '';
 
   void initiatePayment() {
     // Replace this with the actual PhonePe payment URL you have
     String phonePePaymentUrl = url;
-     callBackUrl = "https://admin.jossbuy.com/home/phonepay_success";
+    callBackUrl = "https://admin.jossbuy.com/home/phonepay_success";
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -668,35 +718,27 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
             onWebViewCreated: (controller) {
               _webViewController = controller;
             },
-            onLoadStart: ((controller, url) {
-
-            }),
+            onLoadStart: ((controller, url) {}),
             onLoadStop: (controller, url) async {
-
               if (url.toString().contains(callBackUrl!)) {
                 // Extract payment status from URL
-               /// String? paymentStatus = extractPaymentStatusFromUrl(url.toString());
+                /// String? paymentStatus = extractPaymentStatusFromUrl(url.toString());
                 ///
                 _handlePaymentStatus(url.toString());
 
-
                 await _webViewController?.stopLoading();
 
-                if(await _webViewController?.canGoBack() ?? false){
+                if (await _webViewController?.canGoBack() ?? false) {
                   await _webViewController?.goBack();
-                }else {
+                } else {
                   Navigator.pop(context);
                 }
-
-
 
                 // Update payment status
                 /*setState(() {
                   _paymentStatus = paymentStatus!;
                 });*/
                 // Stop loading and close WebView
-
-
               }
             },
           ),
@@ -705,41 +747,42 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     );
   }
 
-  void _handlePaymentStatus(String url) async{
-    Map<String, dynamic> responseData = await fetchDataFromUrl() ;
+  void _handlePaymentStatus(String url) async {
+    Map<String, dynamic> responseData = await fetchDataFromUrl();
 
     String isError = responseData['data'][0]['error'];
 
-
-    if (isError == 'true' ) {
+    if (isError == 'true') {
       // Payment success
       _paymentStatus = 'Payment Failure';
-      isPhonePayPaymentSuccess= false ;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Payment Failure')));
-
+      isPhonePayPaymentSuccess = false;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment Failure')));
     } else {
       isAdvancePaymentSuccess = false;
-      context.read<CartProvider>().totalPrice = context.read<CartProvider>().totalPrice - deductAmount!;
-      context.read<CartProvider>().deductAmount = deductAmount ?? 0.0 ;
-      setState(() {
-      });
+      context.read<CartProvider>().totalPrice =
+          context.read<CartProvider>().totalPrice - deductAmount!;
+      context.read<CartProvider>().deductAmount = deductAmount ?? 0.0;
+      setState(() {});
       // Payment failure
       _paymentStatus = 'Payment Success';
-      isPhonePayPaymentSuccess= true;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Payment Success')));
-
+      isPhonePayPaymentSuccess = true;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment Success')));
     }
     print('___________${_paymentStatus}____vssdfff______');
 
     setState(() {});
   }
 
-
- String?  callBackUrl;
- String?  merchantId;
- String?  merchantTransactionId;
+  String? callBackUrl;
+  String? merchantId;
+  String? merchantTransactionId;
   Future<Map<String, dynamic>> fetchDataFromUrl() async {
-    final response = await http.post(Uri.parse("${baseUrl}/check_phonepay_status"),body: {"transaction_id" : merchantTransactionId});
+    final response = await http.post(
+        Uri.parse("${baseUrl}/check_phonepay_status"),
+        body: {"transaction_id": merchantTransactionId},
+        headers: headers);
     if (response.statusCode == 200) {
       // If the request is successful, parse the JSON response and return it
       return json.decode(response.body);
@@ -749,34 +792,34 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     }
   }
 
-
   getPhonpayURL({int? i}) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     mobile = preferences.getString("mobile");
-    var headers = {
-      'Cookie': 'ci_session=21a0cce4198ce39adcae5825f47e9ae7fb206970; ekart_security_cookie=66d94dbdccb45e35b890fe9e55cb162e'
-    };
-    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/initiate_phone_payment'));
+
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$baseUrl/initiate_phone_payment'));
     request.fields.addAll({
       'user_id': CUR_USERID.toString(),
       'mobile': mobile.toString(),
-      'amount': i != null  ? '$deductAmount'
+      'amount': i != null
+          ? '$deductAmount'
           : '${context.read<CartProvider>().totalPrice}'
     });
     print('_______request.fields____${request.fields}__________');
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-    var result =   await response.stream.bytesToString();
-    var finalResult =  jsonDecode(result);
-    url = finalResult['data']['data']['instrumentResponse']['redirectInfo']['url'];
-    merchantId = finalResult['data']['data']['merchantId'];
-    merchantTransactionId = finalResult['data']['data']['merchantTransactionId'];
-  //  print('_____merchantTransactionId______${merchantTransactionId}_____${merchantId}_____');
-    //print("aaaaaaaaaaaaaaaaaaaaaa${url}");
-    }
-    else {
-    print(response.reasonPhrase);
+      var result = await response.stream.bytesToString();
+      var finalResult = jsonDecode(result);
+      url = finalResult['data']['data']['instrumentResponse']['redirectInfo']
+          ['url'];
+      merchantId = finalResult['data']['data']['merchantId'];
+      merchantTransactionId =
+          finalResult['data']['data']['merchantTransactionId'];
+      //  print('_____merchantTransactionId______${merchantTransactionId}_____${merchantId}_____');
+      //print("aaaaaaaaaaaaaaaaaaaaaa${url}");
+    } else {
+      print(response.reasonPhrase);
     }
   }
 
@@ -804,7 +847,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 //   }
 
   dateCell(int index) {
-    DateTime today = DateTime.parse(context.read<PaymentProvider>().startingDate!);
+    DateTime today =
+        DateTime.parse(context.read<PaymentProvider>().startingDate!);
     return InkWell(
       child: Container(
         decoration: BoxDecoration(
@@ -953,7 +997,6 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
               }
               context.read<PaymentProvider>().timeModel[index].isSelected =
                   true;
-
             },
           );
         }
@@ -979,15 +1022,14 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
               context.read<PaymentProvider>().payModel[index].isSelected = true;
 
-              if(index == 1){
-                paymentIndex = index ;
-                getPhonpayURL(i: index) ;
+              if (index == 1) {
+                paymentIndex = index;
+                getPhonpayURL(i: index);
               }
-              if(index == 3){
-                paymentIndex = index ;
-                getPhonpayURL() ;
+              if (index == 3) {
+                paymentIndex = index;
+                getPhonpayURL();
               }
-
             },
           );
         }
@@ -996,23 +1038,33 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
         children: [
           RadioItem(
             context.read<PaymentProvider>().payModel[index],
-
           ),
-          if (index == 3 && (context.read<PaymentProvider>().payModel[index].isSelected ?? false)) InkWell(
-            onTap: (){
-              bool userIsAvailable = true ;
-              if(userIsAvailable){
-                if(int.parse(availableCredit ?? '0') < context.read<CartProvider>().totalPrice){
-                  context.read<CartProvider>().totalPrice = context.read<CartProvider>().totalPrice - int.parse(availableCredit ?? '0') ;
-                   initiatePayment();
-                  //openCheckout(amount: context.read<CartProvider>().totalPrice);
+          if (index == 3 &&
+              (context.read<PaymentProvider>().payModel[index].isSelected ??
+                  false))
+            InkWell(
+              onTap: () {
+                bool userIsAvailable = true;
+                if (userIsAvailable) {
+                  if (int.parse(availableCredit ?? '0') <
+                      context.read<CartProvider>().totalPrice) {
+                    context.read<CartProvider>().totalPrice =
+                        context.read<CartProvider>().totalPrice -
+                            int.parse(availableCredit ?? '0');
+                    initiatePayment();
+                    //openCheckout(amount: context.read<CartProvider>().totalPrice);
+                  }
                 }
-              }
-            },
-            child: const Align(
-              alignment: Alignment.topRight,
-                child: Text('*Pay in advance', style: TextStyle(decoration: TextDecoration.underline),)),
-          ) else const SizedBox(),
+              },
+              child: const Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    '*Pay in advance',
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  )),
+            )
+          else
+            const SizedBox(),
           Text(availableCredit ?? '')
         ],
       ),
@@ -1027,10 +1079,10 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
     String? phone = prefs.getString('phone');
-    int amt = deductAmount?.toInt() ?? 0 ;
+    int amt = deductAmount?.toInt() ?? 0;
     var options = {
       'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': amount?.toInt() ?? amt*100,
+      'amount': amount?.toInt() ?? amt * 100,
       'name': 'Jozz by Bazar',
       'description': 'Jozz by Bazar',
       "currency": "INR",
@@ -1046,7 +1098,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     }
   }
 
-bool razorAdvancePaySuccess = false;
+  bool razorAdvancePaySuccess = false;
 
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
     // RazorpayDetailApi();
@@ -1060,7 +1112,8 @@ bool razorAdvancePaySuccess = false;
     print("++++++++++++++++++++++++++++++++++++++");
     isAdvancePaymentSuccess = false;
     razorAdvancePaySuccess = true;
-    context.read<CartProvider>().totalPrice = context.read<CartProvider>().totalPrice - deductAmount!;
+    context.read<CartProvider>().totalPrice =
+        context.read<CartProvider>().totalPrice - deductAmount!;
     context.read<CartProvider>().deductAmount = deductAmount!;
 
     //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment Success')));
@@ -1077,10 +1130,12 @@ bool razorAdvancePaySuccess = false;
     //     toastLength: Toast.LENGTH_SHORT);
     print('${response.error}________error_________');
     print('${response.code}________code_________');
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment cancelled by user')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Payment cancelled by user')));
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('EXTERNAL_WALLET: ${response.walletName!}')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('EXTERNAL_WALLET: ${response.walletName!}')));
   }
 }

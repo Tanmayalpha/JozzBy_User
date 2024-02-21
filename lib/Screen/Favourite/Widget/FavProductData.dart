@@ -926,7 +926,6 @@ class _FavProductDataState extends State<FavProductData> {
                                                                         widget
                                                                             .favList,
                                                                       );*/
-
                                                                       quantityList[
                                                                           widget.index ??
                                                                               0] += int.parse(widget

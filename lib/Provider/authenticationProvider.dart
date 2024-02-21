@@ -7,6 +7,7 @@ import '../Helper/String.dart';
 import '../repository/authRepository.dart';
 import 'package:http/http.dart' as http;
 
+import '../widgets/security.dart';
 import 'UserProvider.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
@@ -14,7 +15,13 @@ class AuthenticationProvider extends ChangeNotifier {
   String? mobilennumberPara, passwordPara;
 
   // singup data
-  String? name, countrycode, referCode, friendCode, sinUpPassword, singUPemail, gst;
+  String? name,
+      countrycode,
+      referCode,
+      friendCode,
+      sinUpPassword,
+      singUPemail,
+      gst;
   // for reset password
   String? newPassword;
 
@@ -54,6 +61,7 @@ class AuthenticationProvider extends ChangeNotifier {
     singUPemail = value;
     notifyListeners();
   }
+
   setGST(String? value) {
     gst = value;
     notifyListeners();
@@ -99,8 +107,9 @@ class AuthenticationProvider extends ChangeNotifier {
 
       error = result['error'];
 
-      print(result.toString()+"_______________________++++++++++++++");
-      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+      print(result.toString() + "_______________________++++++++++++++");
+      UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
       if (!error!) {
         var getdata = result['data'][0];
         id = getdata[ID];
@@ -114,7 +123,7 @@ class AuthenticationProvider extends ChangeNotifier {
         latitude = getdata[LATITUDE];
         longitude = getdata[LONGITUDE];
         image = getdata[IMAGE];
-        print("${getdata["gst_number"]}"+"+++++++++++++++++++++++=");
+        print("${getdata["gst_number"]}" + "+++++++++++++++++++++++=");
         userProvider.setShopName(getdata[SHOPNAME] ?? '');
         userProvider.setGstnumber(getdata["gst_number"] ?? '');
         CUR_USERID = id;
@@ -144,14 +153,13 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-
   Future<Map<String, dynamic>> resendOtpUser() async {
     try {
       var parameter = {
         MOBILE: mobilennumberPara,
       };
-      var result =
-      await AuthRepository.resendfetchverificationData(parameter: parameter);
+      var result = await AuthRepository.resendfetchverificationData(
+          parameter: parameter);
       return result;
     } catch (e) {
       errorMessage = e.toString();
@@ -164,8 +172,7 @@ class AuthenticationProvider extends ChangeNotifier {
       var parameter = {
         MOBILE: mobilennumberPara,
       };
-      var result =
-      await AuthRepository.fetchOtpData(parameter: parameter);
+      var result = await AuthRepository.fetchOtpData(parameter: parameter);
       return result;
     } catch (e) {
       errorMessage = e.toString();
@@ -174,11 +181,8 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   //for singUp
-  Future<Map<String, dynamic>> getSingUPData( String? mobile) async {
+  Future<Map<String, dynamic>> getSingUPData(String? mobile) async {
     try {
-      var headers = {
-        'Cookie': 'ci_session=e385397905c87228193b6d52283c2a83c33b72d4'
-      };
       var request = http.MultipartRequest('POST', getUserSignUpApi);
       request.fields.addAll({
         MOBILE: mobile ?? '',
@@ -197,23 +201,20 @@ class AuthenticationProvider extends ChangeNotifier {
 
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
-       var result = await response.stream.bytesToString();
-       var fainalResult = jsonDecode(result);
-       return fainalResult ;
-      }
-      else {
+        var result = await response.stream.bytesToString();
+        var fainalResult = jsonDecode(result);
+        return fainalResult;
+      } else {
         print(response.reasonPhrase);
         var result = await response.stream.bytesToString();
         var fainalResult = jsonDecode(result);
-        return fainalResult ;
+        return fainalResult;
       }
       /*var result = await AuthRepository.fetchSingUpData(parameter: parameter);
       return result;*/
     } catch (e) {
       errorMessage = e.toString();
-      return {
-
-      };
+      return {};
     }
   }
 

@@ -105,9 +105,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="alphawizzserver.com" android:scheme="http"  android:pathPrefix="/product"/>
-                <data android:host="alphawizzserver.com" android:scheme="https"  android:pathPrefix="/product"/>
-                <data android:host="alphawizzserver.com
+                <data android:host="admin.jossbuy.com" android:scheme="http"  android:pathPrefix="/product"/>
+                <data android:host="admin.jossbuy.com" android:scheme="https"  android:pathPrefix="/product"/>
+                <data android:host="admin.jossbuy.com
                 " android:scheme="https"
                     android:pathPrefix="/product"
                     />

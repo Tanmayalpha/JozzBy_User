@@ -395,9 +395,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
 
  Future<void> verifyuser() async {
 
-   var headers = {
-     'Cookie': 'ci_session=02250dbf2e1d3cccb38f822763edbb0ad432555e'
-   };
+  
    var request = http.MultipartRequest('POST', Uri.parse('${baseUrl}verify_otp'));
    request.fields.addAll({
      'mobile': '${widget.mobileNumber}',
@@ -747,17 +745,17 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
                   fontFamily: 'ubuntu',
                 ),
           ),
-          Text(
-            "${widget.otp}",
-            // getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
-            style: Theme.of(context).textTheme.headline6!.copyWith(
-              color: Theme.of(context).colorScheme.fontColor,
-              fontWeight: FontWeight.bold,
-              fontSize: textFontSize23,
-              letterSpacing: 0.8,
-              fontFamily: 'ubuntu',
-            ),
-          ),
+          // Text(
+          //   "${widget.otp}",
+          //   // getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
+          //   style: Theme.of(context).textTheme.headline6!.copyWith(
+          //     color: Theme.of(context).colorScheme.fontColor,
+          //     fontWeight: FontWeight.bold,
+          //     fontSize: textFontSize23,
+          //     letterSpacing: 0.8,
+          //     fontFamily: 'ubuntu',
+          //   ),
+          // ),
         ],
       ),
     );

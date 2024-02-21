@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Helper/String.dart';
 import '../../../Helper/routes.dart';
 import '../../../widgets/desing.dart';
+import '../../../widgets/security.dart';
 import '../../Language/languageSettings.dart';
 import '../../../widgets/snackbar.dart';
 import '../../../widgets/validation.dart';
@@ -318,9 +319,7 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
   late Razorpay _razorpay;
 
   addwalletPayment() async{
-    var headers = {
-      'Cookie': 'ci_session=9f7f06b524a9ac470a477208730848bbd6b33b56'
-    };
+   
     var request = http.MultipartRequest('POST', Uri.parse('${baseUrl}wallet_post'));
     request.fields.addAll({
       'user_id':CUR_USERID ?? '1',
@@ -341,7 +340,6 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
     else {
     print(response.reasonPhrase);
     }
-
   }
 
   @override

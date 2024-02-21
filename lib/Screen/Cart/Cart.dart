@@ -581,7 +581,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             context.read<CartProvider>().taxPer = double.parse(getdata[TAX_PER]);
             deliveryCharge1=double.parse("${getdata['delivery_charge']}");
             setState(() {});
-            print("${getdata['TAX_PER']}"+"_____________________");
+            print("${getdata['TAX_PER']}"+"_________tax percentage____________");
        /*context.read<CartProvider>().totalPrice =
                 context.read<CartProvider>().deliveryCharge +
                     context.read<CartProvider>().oriPrice;*/
@@ -2805,6 +2805,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   }
 
   void confirmDialog({double? deliveryCharge}) {
+    print("========payment method=======${context.read<CartProvider>().payMethod}===========");
     showGeneralDialog(
       barrierColor: Theme.of(context).colorScheme.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {

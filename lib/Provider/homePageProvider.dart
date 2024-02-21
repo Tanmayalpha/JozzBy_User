@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:developer';
 
@@ -16,6 +15,7 @@ import '../Helper/routes.dart';
 import '../Model/Model.dart';
 import '../Model/Section_Model.dart';
 import '../widgets/networkAvailablity.dart';
+import '../widgets/security.dart';
 import '../widgets/snackbar.dart';
 import 'CategoryProvider.dart';
 import 'Favourite/FavoriteProvider.dart';
@@ -146,51 +146,38 @@ class HomePageProvider extends ChangeNotifier {
   }
 
   getImagesApi() async {
-    var headers = {
-      'Cookie': 'ci_session=072b6f29be0b884e59f61a1530aec13e11b5f470'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_slider_images_bottom'));
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('$baseUrl/get_slider_images_bottom'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-      var  result = await response.stream.bytesToString();
+      var result = await response.stream.bytesToString();
       var finalResult = GetImagesModel.fromJson(jsonDecode(result));
 
-        homeImageSliderList =  finalResult.data ?? [];
-    }
-    else {
+      homeImageSliderList = finalResult.data ?? [];
+    } else {
       print(response.reasonPhrase);
     }
-
   }
 
   getImagesThirdSliderApi() async {
-    var headers = {
-      'Cookie': 'ci_session=072b6f29be0b884e59f61a1530aec13e11b5f470'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_slider_images_third'));
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('$baseUrl/get_slider_images_third'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-      var  result = await response.stream.bytesToString();
+      var result = await response.stream.bytesToString();
       var finalResult = GetImagesModel.fromJson(jsonDecode(result));
 
-      homeImageThiredSliderList =  finalResult.data ?? [];
-
-
-
-    }
-    else {
+      homeImageThiredSliderList = finalResult.data ?? [];
+    } else {
       print(response.reasonPhrase);
     }
-
   }
 
   int sellerListOffset = 0;
   int totalSelletCount = 0;
   List<Product> sellerList = [];
-
-
 
   void getSeller() {
     Map parameter = {
@@ -205,7 +192,7 @@ class HomePageProvider extends ChangeNotifier {
     // }
 
     apiBaseHelper.postAPICall(getSellerApi, parameter).then(
-          (getdata) {
+      (getdata) {
         print('_____cccccccccccc______${getSellerApi}______${parameter}____');
         bool error = getdata['error'];
         String? msg = getdata['message'];
@@ -219,29 +206,21 @@ class HomePageProvider extends ChangeNotifier {
               (data as List).map((data) => Product.fromSeller(data)).toList();
           sellerListOffset += perPage;
         } else {
-         // setSnackbar1(msg!,);
+          // setSnackbar1(msg!,);
         }
         sellerList.addAll(tempSellerList);
         print('___________${sellerList.length}____selletLength______');
         setSellerLoading(false);
         notifyListeners();
-        for(var i=0;i<sellerList.length;i++){
-
-
-        }
-
+        for (var i = 0; i < sellerList.length; i++) {}
       },
       onError: (error) {
-       // setSnackbar1(error.toString());
+        // setSnackbar1(error.toString());
         setSellerLoading(false);
         notifyListeners();
-
       },
     );
-
   }
-
-
 
   //This method is used to get Categories from server
   Future<void> getCategories(
@@ -316,7 +295,6 @@ class HomePageProvider extends ChangeNotifier {
       },
     );
   }
-
 
   //
   //This method is used to get offer Images from server
@@ -438,10 +416,9 @@ class HomePageProvider extends ChangeNotifier {
         apiBaseHelper.postAPICall(getFavApi, parameter).then(
           (getdata) {
             bool error = getdata['error'];
-              String? msg = getdata['message'];
+            String? msg = getdata['message'];
             if (!error) {
               var data = getdata['data'];
-
 
               List<Product> tempList =
                   (data as List).map((data) => Product.fromJson(data)).toList();

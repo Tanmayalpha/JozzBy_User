@@ -2,7 +2,7 @@ name: eshop_multivendor
 description: Jozzby Bazaarvendor App
 publish_to: "none"
 
-version: 1.0.0+6
+version: 1.0.0+8
 # version: 2.1.0+7
 
 environment:

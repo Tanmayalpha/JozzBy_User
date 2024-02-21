@@ -34,9 +34,9 @@ const int perPage = 10;
 const double textFontSize7 = 7;
 const double textFontSize8 = 8;
 const double textFontSize9 = 9;
-const double textFontSize10 =11;
+const double textFontSize10 = 11;
 const double textFontSize11 = 11;
-const double textFontSize12 =13;
+const double textFontSize12 = 13;
 const double textFontSize13 = 13;
 const double textFontSize14 = 14;
 const double textFontSize15 = 15;
@@ -76,11 +76,12 @@ ApiBaseHelper apiBaseHelper = ApiBaseHelper();
 
 // for demo panels
 // const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
-// const String imageUrl = 'https://admin.jossbuy.com/';
+const String imageUrl = 'https://alphawizzserver.com/jossbuy/';
 //const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
-const String imageUrl = 'https://alphawizzserver.com/';
+// const String imageUrl = 'https://alphawizzserver.com/';
 // const String baseUrl = 'https://alphawizzserver.com/jozzby_bazar_new/app/v1/api/';
- //const String baseUrl = 'https://admin.jossbuy.com/app/v1/api/';
 const String baseUrl = 'https://alphawizzserver.com/jossbuy/app/v1/api/';
-const String ecomExpressUrl = 'https://clbeta.ecomexpress.in/track_me/api/mawbd/';
-const String jwtKey = 'https://alphawizzserver.com/';
+// const String baseUrl = 'https://alphawizzserver.com/jossbuy/app/v1/api/';
+const String ecomExpressUrl =
+    'https://clbeta.ecomexpress.in/track_me/api/mawbd/';
+const String jwtKey = '56a1ea67a60392285e2cbe4c55d705cb4b84b509';

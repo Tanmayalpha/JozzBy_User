@@ -16,6 +16,7 @@ import '../../Provider/UserProvider.dart';
 import '../../Provider/authenticationProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/security.dart';
 import '../../widgets/snackbar.dart';
 import '../../widgets/systemChromeSettings.dart';
 import '../Language/languageSettings.dart';
@@ -60,9 +61,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   forgetPass() async {
     print("wokingg");
-    var headers = {
-      'Cookie': 'ci_session=03c6f9fffd7b185ae5fde3db348e854c047843c4'
-    };
+    
     var request = http.MultipartRequest('POST',
         Uri.parse('https://admin.jossbuy.com/app/v1/api/verify_user_forgot'));
     request.fields.addAll({'mobile': mobileController.text});
@@ -101,9 +100,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     isNetworkAvail = await isNetworkAvailable();
     if (isNetworkAvail) {
       if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
-        var headers = {
-          'Cookie': 'ci_session=03c6f9fffd7b185ae5fde3db348e854c047843c4'
-        };
+      
         var request = http.MultipartRequest(
             'POST',
             Uri.parse(

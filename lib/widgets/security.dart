@@ -8,6 +8,7 @@ String getToken() {
     issuedAt: DateTime.now().toUtc(),
   );
   String token = issueJwtHS256(claimSet, jwtKey);
+  print("My token: $token");
   return token;
 }
 

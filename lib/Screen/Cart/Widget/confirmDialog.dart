@@ -28,7 +28,8 @@ class GetContent extends StatelessWidget {
                     color: Theme.of(context).colorScheme.fontColor,
                     fontFamily: 'ubuntu',
                   ),
-            )),
+            ),
+        ),
         Divider(color: Theme.of(context).colorScheme.lightBlack),
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
@@ -103,7 +104,6 @@ class GetContent extends StatelessWidget {
               // )
             ],
           ) :SizedBox(),
-
         context.read<CartProvider>().isPromoValid!
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,8 +114,7 @@ class GetContent extends StatelessWidget {
                               .textTheme
                               .subtitle2!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.lightBlack2,
+                                color: Theme.of(context).colorScheme.lightBlack2,
                                 fontFamily: 'ubuntu',
                               ),
                         ),
@@ -160,7 +159,7 @@ class GetContent extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.fontColor,
                                 fontWeight: FontWeight.bold,
                               ),
-                        )
+                        ),
                       ],
                     )
                   : Container(),

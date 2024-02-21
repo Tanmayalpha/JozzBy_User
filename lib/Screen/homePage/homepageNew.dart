@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uni_links/uni_links.dart';
 
 import 'package:flutter/services.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'package:eshop_multivendor/Helper/ApiBaseHelper.dart';
 import 'package:eshop_multivendor/Helper/Color.dart';
 import 'package:eshop_multivendor/Helper/Constant.dart';
@@ -55,6 +55,7 @@ import '../ProductList&SectionView/ProductList.dart';
 import '../SellerDetail/Seller_Details.dart';
 
 String? brandId;
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -75,15 +76,14 @@ class _HomePageState extends State<HomePage>
   ApiBaseHelper apiBaseHelper = ApiBaseHelper();
 
   int count = 1;
- String? brandId,brandName, brandImage;
+  String? brandId, brandName, brandImage;
   String? s_id;
   int sellerListOffset = 0;
   int totalSelletCount = 0;
   String? seller_id;
   String? sellerImage;
-  String? sellerStoreName,sellerRating,storeDesc;
+  String? sellerStoreName, sellerRating, storeDesc;
   List<Product> sellerList = [];
-
 
   @override
   bool get wantKeepAlive => true;
@@ -117,9 +117,9 @@ class _HomePageState extends State<HomePage>
     getImagesThirdSliderApi();
     getImagesFourthdSliderApi();
     getBrandApi();
-   // getSeller();
+    // getSeller();
 
-    isSet =true;
+    isSet = true;
 
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     SettingProvider setting =
@@ -165,8 +165,6 @@ class _HomePageState extends State<HomePage>
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -198,21 +196,32 @@ class _HomePageState extends State<HomePage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const HorizontalCategoryList(),
-                            const SizedBox(height: 20,),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             CustomSlider(),
                             InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const BrandList()));
-                            },
-                            child: Image.asset('assets/images/png/app products_1.gif')),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const BrandList()));
+                                },
+                                child: Image.asset(
+                                    'assets/images/png/app products_1.gif')),
 
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             const Section(),
                             //getImagesModel?.data?.isEmpty ?? true ? const SizedBox() :  imageCard(),
 
-                           // context.read<HomePageProvider>().sellerList.isEmpty ? const Text('Seller Not Found',style: TextStyle(color: colors.blackTemp),):getSellerList(),
-                            const SizedBox(height: 10,),
-                           /* const Divider(
+                            // context.read<HomePageProvider>().sellerList.isEmpty ? const Text('Seller Not Found',style: TextStyle(color: colors.blackTemp),):getSellerList(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            /* const Divider(
                               thickness: 0.6,
                               color:Colors.grey,
                             ),*/
@@ -229,12 +238,18 @@ class _HomePageState extends State<HomePage>
                            brandcard()*/
                             const Divider(
                               thickness: 1,
-                              color:Colors.grey,
+                              color: Colors.grey,
                             ),
                             const MostLikeSection(),
-                            const SizedBox(height: 10,),
-                            getImagesModel3?.data?.isEmpty ?? true ? const SizedBox() :  imageCard3(),
-                            const SizedBox(height: 50,),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            getImagesModel3?.data?.isEmpty ?? true
+                                ? const SizedBox()
+                                : imageCard3(),
+                            const SizedBox(
+                              height: 50,
+                            ),
                           ],
                         ),
                       )
@@ -387,9 +402,9 @@ class _HomePageState extends State<HomePage>
 
  }*/
 
-  brandcard(){
+  brandcard() {
     return Padding(
-      padding: const EdgeInsets.only(left:5.0,right: 5),
+      padding: const EdgeInsets.only(left: 5.0, right: 5),
       child: Container(
         height: 130,
         decoration: BoxDecoration(
@@ -401,28 +416,40 @@ class _HomePageState extends State<HomePage>
             children: [
               Container(
                 height: 40,
-                width: MediaQuery.of(context).size.width/1,
+                width: MediaQuery.of(context).size.width / 1,
                 decoration: BoxDecoration(
                     color: colors.secondary,
-                  borderRadius: BorderRadius.circular(5)
-                ),
-                child: const Center(child: Text('The brand List',style: TextStyle(fontWeight: FontWeight.bold,fontSize:20),)),
+                    borderRadius: BorderRadius.circular(5)),
+                child: const Center(
+                    child: Text(
+                  'The brand List',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                )),
               ),
-              const SizedBox(height: 10,),
-              const Text('For Brands this is botton to redirect list',style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text('For Brands this is botton to redirect list',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(
+                height: 10,
+              ),
               InkWell(
                 onTap: () {
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BrandList()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => BrandList()));
                 },
                 child: Container(
                     height: 40,
                     width: 110,
                     decoration: BoxDecoration(
-                      color: colors.secondary,
-                      borderRadius: BorderRadius.circular(80)
-                    ),
-                    child:Center(child: Text('CLICK HERE',style: TextStyle(color: colors.whiteTemp),))),
+                        color: colors.secondary,
+                        borderRadius: BorderRadius.circular(80)),
+                    child: Center(
+                        child: Text(
+                      'CLICK HERE',
+                      style: TextStyle(color: colors.whiteTemp),
+                    ))),
               ),
             ],
           ),
@@ -431,251 +458,256 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  imageCard(){
+  imageCard() {
     return SizedBox(
-      height:200,
-        width:double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemCount:getImagesModel?.data?.length ,
-            // physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-            return ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network("${getImagesModel?.data?[index].image}",fit: BoxFit.fill,width: MediaQuery.of(context).size.width/1.05,));
-          },)
-
-        ));
-  }
-  imageCard2(){
-    return SizedBox(
-        height:200,
-        width:double.infinity,
+        height: 200,
+        width: double.infinity,
         child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView.builder(
-              itemCount:getImagesModel2?.data?.length ,
+              itemCount: getImagesModel?.data?.length,
               // physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network("${getImagesModel2?.data?[index].image}",fit: BoxFit.fill,width: MediaQuery.of(context).size.width/1.05,));
-              },)
-
-        ));
+                    child: Image.network(
+                      "${getImagesModel?.data?[index].image}",
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width / 1.05,
+                    ));
+              },
+            )));
   }
 
-  imageCard3(){
+  imageCard2() {
     return SizedBox(
-        height:200,
-        width:double.infinity,
+        height: 200,
+        width: double.infinity,
         child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView.builder(
-              itemCount:getImagesModel3?.data?.length ,
+              itemCount: getImagesModel2?.data?.length,
               // physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network("${getImagesModel3?.data?[index].image}",fit: BoxFit.fill,width: MediaQuery.of(context).size.width/1.05,));
-              },)
-
-        ));
+                    child: Image.network(
+                      "${getImagesModel2?.data?[index].image}",
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width / 1.05,
+                    ));
+              },
+            )));
   }
 
-  brandListCart(){
+  imageCard3() {
+    return SizedBox(
+        height: 200,
+        width: double.infinity,
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.builder(
+              itemCount: getImagesModel3?.data?.length,
+              // physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      "${getImagesModel3?.data?[index].image}",
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width / 1.05,
+                    ));
+              },
+            )));
+  }
+
+  brandListCart() {
     return Container(
-     color: colors.primary1,
+      color: colors.primary1,
       height: 160,
       child: ListView.separated(
-          itemCount: getBrandsModel?.data?.length.toInt()??0,
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
-        scrollDirection: Axis.horizontal,
+          itemCount: getBrandsModel?.data?.length.toInt() ?? 0,
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(),
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (c, i) {
+            return Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () async {
+                      setState(() {
+                        brandId = getBrandsModel!.data![i].id;
+                        brandName = getBrandsModel?.data?[i].name;
+                        brandImage = getBrandsModel?.data?[i].image;
+                      });
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      pref.setString('brand_name', brandName!);
+                      print(
+                          'brandName------kkkk------------${getBrandsModel!.data![i].name}__________');
 
-          itemBuilder: (c,i){
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () async {
-
-                setState(() {
-                  brandId =   getBrandsModel!.data![i].id;
-                  brandName = getBrandsModel?.data?[i].name;
-                  brandImage = getBrandsModel?.data?[i].image;
-                });
-                SharedPreferences pref = await SharedPreferences.getInstance();
-                pref.setString('brand_name', brandName!);
-                print('brandName------kkkk------------${getBrandsModel!.data![i].name}__________');
-
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => ProductList(getBrand: true,brandId: brandId,brandName: brandName,),
-                  ),
-                );
-
-            },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color:Color(0xffEFEFEF),
-                    borderRadius: BorderRadius.circular(10)
-                  ),
-                     width: 100,
-                    height: 180,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => ProductList(
+                            getBrand: true,
+                            brandId: brandId,
+                            brandName: brandName,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xffEFEFEF),
+                            borderRadius: BorderRadius.circular(10)),
+                        width: 100,
+                        height: 180,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Container(
-                            height: 90,
-                             width: double.infinity,
-                             child: ClipRRect(
-                               borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
-                                 child:getBrandsModel?.data?[i].image==null||getBrandsModel?.data?[i].image==""?Image.asset('assets/images/png/placeholder.png'): Image.network("$imageUrl${getBrandsModel?.data?[i].image}",fit: BoxFit.fill,))),
-                            const SizedBox(height:10,),
+                                height: 90,
+                                width: double.infinity,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)),
+                                    child: getBrandsModel?.data?[i].image ==
+                                                null ||
+                                            getBrandsModel?.data?[i].image == ""
+                                        ? Image.asset(
+                                            'assets/images/png/placeholder.png')
+                                        : Image.network(
+                                            "$imageUrl${getBrandsModel?.data?[i].image}",
+                                            fit: BoxFit.fill,
+                                          ))),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Container(
                                 width: 90,
-                                child: Center(child: Text("${getBrandsModel?.data?[i].name}",overflow: TextOverflow.ellipsis,maxLines: 2,textAlign: TextAlign.center,))),
-
-                    ],
-                  )
+                                child: Center(
+                                    child: Text(
+                                  "${getBrandsModel?.data?[i].name}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                ))),
+                          ],
+                        )),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              height:150,
-              width:0.50,
-              color: Colors.grey,
-            ),
-          ],
-        );
-      }),
+                Container(
+                  height: 150,
+                  width: 0.50,
+                  color: Colors.grey,
+                ),
+              ],
+            );
+          }),
     );
   }
+
   GetImagesModel? getImagesModel;
   GetImagesModel? getImagesModel2;
   GetImagesModel? getImagesModel3;
 
   getImagesApi() async {
-    var headers = {
-      'Cookie': 'ci_session=072b6f29be0b884e59f61a1530aec13e11b5f470'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_slider_images_bottom'));
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('$baseUrl/get_slider_images_bottom'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       print('_______________imagesPath_________________');
-   var  result = await response.stream.bytesToString();
-   var finalResult = GetImagesModel.fromJson(jsonDecode(result));
+      var result = await response.stream.bytesToString();
+      var finalResult = GetImagesModel.fromJson(jsonDecode(result));
       setState(() {
-        getImagesModel =  finalResult;
+        getImagesModel = finalResult;
       });
 
-   print('____imagesPath_______${result}__________');
-
+      print('____imagesPath_______${result}__________');
+    } else {
+      print(response.reasonPhrase);
     }
-    else {
-    print(response.reasonPhrase);
-    }
-
   }
 
   getImagesThirdSliderApi() async {
-    var headers = {
-      'Cookie': 'ci_session=072b6f29be0b884e59f61a1530aec13e11b5f470'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_slider_images_third'));
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('$baseUrl/get_slider_images_third'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       print('_______________imagesPath_________________');
-      var  result = await response.stream.bytesToString();
+      var result = await response.stream.bytesToString();
       var finalResult = GetImagesModel.fromJson(jsonDecode(result));
       setState(() {
-        getImagesModel2 =  finalResult;
+        getImagesModel2 = finalResult;
       });
 
       print('____imagesPath_______${result}__________');
-
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
 
   getImagesFourthdSliderApi() async {
-    var headers = {
-      'Cookie': 'ci_session=072b6f29be0b884e59f61a1530aec13e11b5f470'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_slider_images_fourth'));
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('$baseUrl/get_slider_images_fourth'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       print('_______________imagesPath_________________');
-      var  result = await response.stream.bytesToString();
+      var result = await response.stream.bytesToString();
       var finalResult = GetImagesModel.fromJson(jsonDecode(result));
       setState(() {
-        getImagesModel3 =  finalResult;
+        getImagesModel3 = finalResult;
       });
 
       print('____imagesPath_______${result}__________');
-
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
-
 
   GetBrandsModel? getBrandsModel;
 
   getBrandApi() async {
-    var headers = {
-      'Cookie': 'ci_session=b458202437d40c57fd9d5ea22c70e00ddc4d2723'
-    };
+  
     var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_brand'));
 
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-       var result =  await response.stream.bytesToString();
-       var finalResult =  GetBrandsModel.fromJson(jsonDecode(result));
-       setState(() {
-         getBrandsModel = finalResult;
+      var result = await response.stream.bytesToString();
+      var finalResult = GetBrandsModel.fromJson(jsonDecode(result));
+      setState(() {
+        getBrandsModel = finalResult;
 
-         for(var i=0;i<getBrandsModel!.data!.length;i++){
-           brandId = getBrandsModel!.data![i].id;
+        for (var i = 0; i < getBrandsModel!.data!.length; i++) {
+          brandId = getBrandsModel!.data![i].id;
 
-           print('----------brand_id--------------${brandId}');
-
-         }
-       });
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
     }
-    else {
-    print(response.reasonPhrase);
-    }
-
   }
 
   StreamSubscription? _sub;
   Uri? _latestUri;
   Object? _err;
 
-
   void _handleIncomingLinks() {
-
     if (!kIsWeb) {
-
       // It will handle app links while the app is already started - be it in
       // the foreground or in the background.
       _sub = uriLinkStream.listen((Uri? uri) {
@@ -699,8 +731,6 @@ class _HomePageState extends State<HomePage>
       });
     }
   }
-
-
 
   Future<void> _refresh() {
     context.read<HomePageProvider>().catLoading = true;
@@ -753,13 +783,6 @@ class _HomePageState extends State<HomePage>
     }
     return;
   }
-
-
-
-
-
-
-
 
   void getSetting() {
     CUR_USERID = context.read<SettingProvider>().userId;
@@ -842,7 +865,6 @@ class _HomePageState extends State<HomePage>
           try {
             var parameter = {
               'product_ids': proIds.join(','),
-
             };
 
             Response response =
@@ -1085,19 +1107,18 @@ class SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
                         child:
-                        // (data == ThemeMode.system &&
-                        //             MediaQuery.of(context).platformBrightness ==
-                        //                 Brightness.light) ||
-                        //         data == ThemeMode.light
-                        //     ? SvgPicture.asset(
-                        //         DesignConfiguration.setSvgPath('voice_search'),
-                        //         height: 15,
-                        //         width: 15,
-                        //       )
-                        //     :
-                        SvgPicture.asset(
-                          DesignConfiguration.setSvgPath(
-                              'voice_search'),
+                            // (data == ThemeMode.system &&
+                            //             MediaQuery.of(context).platformBrightness ==
+                            //                 Brightness.light) ||
+                            //         data == ThemeMode.light
+                            //     ? SvgPicture.asset(
+                            //         DesignConfiguration.setSvgPath('voice_search'),
+                            //         height: 15,
+                            //         width: 15,
+                            //       )
+                            //     :
+                            SvgPicture.asset(
+                          DesignConfiguration.setSvgPath('voice_search'),
                           height: 25,
                           width: 25,
                         ),
@@ -1129,4 +1150,5 @@ class SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
     return true;
   }
 }
-bool isSet= true ;
+
+bool isSet = true;

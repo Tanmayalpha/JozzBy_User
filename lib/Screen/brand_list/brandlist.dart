@@ -8,6 +8,7 @@ import 'package:http/http.dart'as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Helper/Constant.dart';
 import '../../Model/Get_brands_model.dart';
+import '../../widgets/security.dart';
 import '../ProductList&SectionView/ProductList.dart';
 import '../homePage/homepageNew.dart';
 
@@ -23,9 +24,7 @@ class _BrandListState extends State<BrandList> {
   GetBrandsModel? getBrandsModel;
 
   getBrandApi() async {
-    var headers = {
-      'Cookie': 'ci_session=b458202437d40c57fd9d5ea22c70e00ddc4d2723'
-    };
+   
     var request = http.MultipartRequest('GET', Uri.parse('$baseUrl/get_brand'));
 
     request.headers.addAll(headers);

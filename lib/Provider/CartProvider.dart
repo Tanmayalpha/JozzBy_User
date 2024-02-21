@@ -175,9 +175,6 @@ class CartProvider extends ChangeNotifier {
             (value) {
           if (!value['error']) {
             deliveryChargeList = value['deliveryCharge'];
-
-
-
           }
         },
       );
@@ -844,16 +841,15 @@ class CartProvider extends ChangeNotifier {
     if (isNetworkAvail) {
       try {
         setProgress(true);
-
         if (int.parse(qty) < cartList[index].productList![0].minOrderQuntity!) {
           qty = cartList[index].productList![0].minOrderQuntity.toString();
           setSnackbar("${getTranslated(context, 'MIN_MSG')}$qty", context);
         }
         var parameter = {
-          PRODUCT_VARIENT_ID: cartList[index].varientId,
+          PRODUCT_VARIENT_ID: cartList[index].varientId ,
           USER_ID: CUR_USERID,
-          QTY: cartList[index].productList![0].qtyStepSize,//qty,
-          // QTY: qty,
+          QTY: cartList[index].productList![0].qtyStepSize == "1"? qty: cartList[index].productList![0].qtyStepSize,//qty,
+          //  QTY: qty,
           REMOVE: '1'
         };
         print('------------parameter1111------------$parameter');
@@ -892,9 +888,7 @@ class CartProvider extends ChangeNotifier {
               deliveryCharge = 0;
             }
           }*/
-
            getDeliveryCharge();
-
           // if(oriPrice < double.parse(deliveryChargeList.first.maximum ?? '0.0')){
           //   deliveryCharge = double.parse(deliveryChargeList.first.deliveryCharge ?? '0.0');
           // }

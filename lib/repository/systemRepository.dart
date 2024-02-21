@@ -23,6 +23,7 @@ class SystemRepository {
     required Map<String, dynamic> parameter,
   }) async {
     try {
+      print('${parameter}______perametersfdf');
       var systemSetting =
           await ApiBaseHelper().postAPICall(getSettingApi, parameter);
 

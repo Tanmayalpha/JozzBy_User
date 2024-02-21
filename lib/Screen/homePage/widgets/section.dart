@@ -43,10 +43,7 @@ class Section extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    print('___________${context
-                        .read<HomePageProvider>()
-                        .sectionList[index]
-                        .title}__________');
+
                     return SingleSection(
                       index: index,
                       from: 1,

@@ -19,6 +19,7 @@ import '../../Provider/productListProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/appBar.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/security.dart';
 import '../Language/languageSettings.dart';
 import '../../widgets/networkAvailablity.dart';
 import '../../widgets/simmerEffect.dart';
@@ -30,15 +31,24 @@ import 'Widget/ListcompareList.dart';
 import 'package:http/http.dart' as http;
 
 class ProductList extends StatefulWidget {
-   String? name, id,brandId,brandName;
+  String? name, id, brandId, brandName;
   final bool? tag, fromSeller;
   final int? dis;
-   final  bool? istrueId;
+  final bool? istrueId;
 
-   bool? getBrand;
+  bool? getBrand;
 
-   ProductList(
-      {Key? key, this.id, this.name, this.tag, this.fromSeller, this.dis,this.brandId,this.istrueId,this.getBrand,this.brandName})
+  ProductList(
+      {Key? key,
+      this.id,
+      this.name,
+      this.tag,
+      this.fromSeller,
+      this.dis,
+      this.brandId,
+      this.istrueId,
+      this.getBrand,
+      this.brandName})
       : super(key: key);
 
   @override
@@ -102,12 +112,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   @override
   void initState() {
     getBrands();
-   setState(() {
-     widget.getBrand = false;
-     print('------------jjjjjkkkkkkkkkkkkkk-------------${widget.getBrand}');
-   });
+    /*setState(() {
+      //widget.getBrand = false;
+    });*/
 
-  print('my brand Id--------------------${widget.brandId}');
+    print('my brand Id--------------------${widget.brandId}');
 
     super.initState();
     controller.addListener(_scrollListener);
@@ -210,18 +219,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
     print('____ssssss_______${widget.brandId}_______${widget.istrueId}___');
     return Scaffold(
       backgroundColor: colors.primary1,
-      appBar:
-      getAppBar(
-        widget.name==null?'Brand Details':widget.name!,
-              context,
-              setStateNow,
-            ),
+      appBar: getAppBar(
+        widget.name == null ? 'Brand Details' : widget.name!,
+        context,
+        setStateNow,
+      ),
       key: _scaffoldKey,
-      body:
-
-
-
-      isNetworkAvail
+      body: isNetworkAvail
           ? Stack(
               children: <Widget>[
                 _showForm(),
@@ -231,8 +235,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 ),
               ],
             )
-          :
-      NoInterNet(
+          : NoInterNet(
               setStateNoInternate: setStateNoInternate,
               buttonSqueezeanimation: buttonSqueezeanimation,
               buttonController: buttonController,
@@ -279,9 +282,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       LIMIT: perPage.toString(),
       OFFSET: offset.toString(),
       TOP_RETAED: top,
-      'brand': widget.getBrand == false ? widget.brandId ?? "" : ""
+      'brand': brandsValue!=null ? brandsValue?.id.toString() : widget.getBrand ?? false ? widget.brandId : ''
     };
-    print('-----getProductApi--parameter--------------$parameter');
     print('___________${selId}_____selId_____');
     if (selId != '') {
       parameter[ATTRIBUTE_VALUE_ID] = selId;
@@ -351,7 +353,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           } else {
             isLoadingmore = false;
             if (msg != 'Products Not Found !') //setSnackbar(msg!, context);
-            notificationisnodata = true;
+              notificationisnodata = true;
           }
 
           setState(
@@ -550,7 +552,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           },
                         );
                       }
-                        getProduct('0');
+                      getProduct('0');
                       Navigator.pop(context, 'option 3');
                     },
                   ),
@@ -702,7 +704,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              if (widget.fromSeller==null?false:widget.fromSeller!) Container() else _tags(),
+              if (widget.fromSeller == null ? false : widget.fromSeller!)
+                Container()
+              else
+                _tags(),
               sortAndFilterOption(),
             ],
           ),
@@ -1115,15 +1120,13 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       ),
     );
   }
+
   List<BrandsData> brandsList = [];
   BrandsData? brandsValue;
 
-
   getBrands() async {
-    var headers = {
-      'Cookie': 'ci_session=06dfdc4d3993137b7a348ecf6f66d7cffbcd25b9'
-    };
-    var request = http.MultipartRequest('POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
@@ -1132,8 +1135,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       setState(() {
         brandsList = GetBrandsModel.fromJson(userData).data!;
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
@@ -1192,19 +1194,24 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     width: double.maxFinite,
                     height: 50,
                     padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white),
                     child: DropdownButton(
                       isExpanded: true,
                       value: brandsValue,
-                      hint: const Text('Brands', style: TextStyle(color: Colors.black),),
+                      hint: const Text(
+                        'Brands',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       // Down Arrow Icon
-                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                      icon: const Icon(Icons.keyboard_arrow_down,
+                          color: Colors.black),
                       // Array list of items
                       items: brandsList.map((items) {
                         return DropdownMenuItem(
                           value: items,
-                          child: Container(
-                              child: Text(items.name.toString())),
+                          child: Container(child: Text(items.name.toString())),
                         );
                       }).toList(),
                       onChanged: (BrandsData? value) {
@@ -1218,7 +1225,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 ),
                 Expanded(
                   child: Container(
-                    color:colors.primary1,
+                    color: colors.primary1,
                     padding: const EdgeInsetsDirectional.only(
                       start: 7.0,
                       end: 7.0,
@@ -1313,7 +1320,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
                                     itemLabel = Container(
                                       width: 25,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         // color: Color(
                                         //   int.parse(

@@ -995,7 +995,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               PRODUCT_VARIENT_ID: model.prVarientList![_oldSelVarient].id,
               QTY: qty,
             };
-            print("hjshdjhdjhjsjhds ${parameter}");
+            print("add to cart parameter ${parameter}");
             ApiBaseHelper().postAPICall(manageCartApi, parameter).then(
               (getdata) {
                 bool error = getdata['error'];
@@ -1039,11 +1039,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     },
                   );
                 }
-
                 if (msg == 'Cart Updated !') {
                   setSnackbar(
-                      getTranslated(context, 'Product Added Successfully')!,
-                      context);
+                      getTranslated(context, 'Product Added Successfully')!, context);
                 }
               },
               onError: (error) {
@@ -1061,6 +1059,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             }
           }
         } else {
+
           if (singleSellerOrderSystem) {
             if (CurrentSellerID == '' ||
                 CurrentSellerID == widget.model!.seller_id!) {
@@ -1070,6 +1069,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               CurrentSellerID = widget.model!.seller_id!;
               List<Product>? prList = [];
               prList.add(widget.model!);
+
               context.read<CartProvider>().addCartItem(
                     SectionModel(
                       qty: qty,
@@ -1085,6 +1085,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 qty,
                 context,
               );
+              print("=======neew ad to cart value========${qty}${productList}===========");
               setSnackbar(getTranslated(context, 'Product Added Successfully')!,
                   context);
               Future.delayed(const Duration(milliseconds: 100)).then(
@@ -1101,6 +1102,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           } else {
             List<Product>? prList = [];
             prList.add(widget.model!);
+            print("mnmnmmmmmnnmnnm ${widget.model?.tax}");
             context.read<CartProvider>().addCartItem(
                   SectionModel(
                     qty: qty,
@@ -1115,6 +1117,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               qty,
               context,
             );
+            print("=======neew ad to cart adddddd========${qty}${productList}===========");
             setSnackbar(
                 getTranslated(context, 'Product Added Successfully')!, context);
             Future.delayed(const Duration(milliseconds: 100)).then(
@@ -1401,9 +1404,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           };
 
           ApiBaseHelper().postAPICall(setFavoriteApi, parameter).then(
-
             (getdata) {
-
               bool error = getdata['error'];
               String? msg = getdata['message'];
               if (!error) {
@@ -2707,15 +2708,12 @@ print("jjjj");
                            const SizedBox(width: 20,),
                           InkWell(
                             onTap: () async {
-
-
                               // addToCart(
                               //   qtyController.text,
                               //   false,
                               //   true,
                               //   widget.model!,
                               // );
-
                               addToCart(
                                 qty == 0.0 ? widget.model?.qtyStepSize ?? '' : qty.toStringAsFixed(0),
                                 true,
@@ -2796,8 +2794,8 @@ print("jjjj");
                         ],
                       );
                     })
-                : available == false || outOfStock == true
-                    ? outOfStock == true
+                   : available == false || outOfStock == true
+                     ? outOfStock == true
                         ? AnimatedBuilder(
                             animation: buttonAnimationController,
                             builder: (context, child) {
@@ -4002,7 +4000,6 @@ print("jjjj");
                 },
               );
             }
-
             var parameter = {
               CATID: widget.model!.categoryId,
               LIMIT: perPage.toString(),
@@ -4010,9 +4007,8 @@ print("jjjj");
               ID: widget.model!.id,
               IS_SIMILAR: '1'
             };
-
+            print("get products isss ${parameter}");
             if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
-
             ApiBaseHelper().postAPICall(getProductApi, parameter).then(
                 (getdata) {
               bool error = getdata['error'];

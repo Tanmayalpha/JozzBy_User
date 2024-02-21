@@ -70,11 +70,17 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController listViewIconController;
   var filterList;
-  String minPrice = '0', maxPrice = '0';
+  String minPrice = '0',
+      maxPrice = '0';
   List<String>? attributeNameList,
       attributeSubList,
       attributeIDList,
+
       selectedId = [];
+  List<String> selectedBrandId = [];
+  List<String> selectedCategoryId = [];
+  List<String> selectedCategoryNAME = [];
+  List<String> selectedBRANDNAME = [];
   bool initializingFilterDialogFirstTime = true;
 
   RangeValues? _currentRangeValues;
@@ -82,8 +88,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   ChoiceChip? choiceChip;
 
   String selId = '';
+  String brandId = '';
+  String categoryId = '';
 
-  String sortBy = 'p.date_added', orderBy = 'DESC';
+  String sortBy = 'p.date_added',
+      orderBy = 'DESC';
+
   update() {
     setState(() {});
   }
@@ -98,7 +108,9 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     sellerListController = ScrollController(keepScrollOffset: true);
     sellerListController!.addListener(_sellerListController);
 
-    context.read<ExploreProvider>().productList = [];
+    context
+        .read<ExploreProvider>()
+        .productList = [];
     listViewIconController = AnimationController(
       vsync: this,
       duration: const Duration(
@@ -107,35 +119,36 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     );
 
     _controller.addListener(
-      () {
+          () {
         if (_controller.text.isEmpty) {
           if (mounted) {
             setState(
-              () {
+                  () {
                 query = '';
                 notificationoffset = 0;
               },
             );
           }
           getProduct('0');
-
         } else {
           if (_tabController.index == 0) {
             query = _controller.text;
             notificationoffset = 0;
             notificationisnodata = false;
 
-            if (query.trim().isNotEmpty) {
+            if (query
+                .trim()
+                .isNotEmpty) {
               if (_debounce?.isActive ?? false) _debounce!.cancel();
               _debounce = Timer(
                 const Duration(milliseconds: 500),
-                () {
-                  if (query.trim().isNotEmpty) {
+                    () {
+                  if (query
+                      .trim()
+                      .isNotEmpty) {
                     notificationisloadmore = true;
                     notificationoffset = 0;
                     getProduct('0');
-
-
                   }
                 },
               );
@@ -145,17 +158,22 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
             search = _controller.text;
             context.read<SellerDetailProvider>().setOffsetvalue(0);
             context.read<HomePageProvider>().setSellerLoading(true);
-            if (search.trim().isNotEmpty) {
+            if (search
+                .trim()
+                .isNotEmpty) {
               if (_debounce?.isActive ?? false) _debounce!.cancel();
               _debounce = Timer(
                 const Duration(milliseconds: 500),
-                () {
-                  if (search.trim().isNotEmpty) {
+                    () {
+                  if (search
+                      .trim()
+                      .isNotEmpty) {
                     context.read<SellerDetailProvider>().doSellerListEmpty();
                     context.read<SellerDetailProvider>().setOffsetvalue(0);
                     context.read<HomePageProvider>().setSellerLoading(true);
                     Future.delayed(Duration.zero).then(
-                      (value) => context.read<SellerDetailProvider>().getSeller(
+                          (value) =>
+                          context.read<SellerDetailProvider>().getSeller(
                             '',
                             _controller.text.trim(),
                           ),
@@ -199,7 +217,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     getProduct('0');
 
     Future.delayed(Duration.zero).then(
-      (value) => context.read<SellerDetailProvider>().getSeller(
+          (value) =>
+          context.read<SellerDetailProvider>().getSeller(
             '',
             _controller.text.trim(),
           ),
@@ -208,17 +227,15 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   }
 
 
-
   _productsListScrollListener() {
     if (productsController!.offset >=
-            productsController!.position.maxScrollExtent &&
+        productsController!.position.maxScrollExtent &&
         !productsController!.position.outOfRange) {
       print("+++++++++++++++++++++++++++++=");
       if (mounted) {
-
         setState(
-          () {
-          //  getProduct('0');
+              () {
+            //  getProduct('0');
           },
         );
       }
@@ -226,22 +243,25 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   }
 
 
-
   _sellerListController() {
     if (sellerListController!.offset >=
-            sellerListController!.position.maxScrollExtent &&
+        sellerListController!.position.maxScrollExtent &&
         !sellerListController!.position.outOfRange) {
       if (mounted) {
-        if (context.read<SellerDetailProvider>().sellerListOffsetValue <
-            context.read<SellerDetailProvider>().totalSellerCountValue) {
-         /* Future.delayed(Duration.zero).then(
+        if (context
+            .read<SellerDetailProvider>()
+            .sellerListOffsetValue <
+            context
+                .read<SellerDetailProvider>()
+                .totalSellerCountValue) {
+          /* Future.delayed(Duration.zero).then(
             (value) => context.read<SellerDetailProvider>().getSeller(
                   '',
                   _controller.text.trim(),
                 ),
           );*/
           setState(
-            () {},
+                () {},
           );
         }
       }
@@ -271,7 +291,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   setStateNoInternate() async {
     _playAnimation();
     Future.delayed(const Duration(seconds: 2)).then(
-      (_) async {
+          (_) async {
         isNetworkAvail = await isNetworkAvailable();
         if (isNetworkAvail) {
           Navigator.pushReplacement(
@@ -284,7 +304,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           await buttonController!.reverse();
           if (mounted) {
             setState(
-              () {},
+                  () {},
             );
           }
         }
@@ -297,280 +317,290 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-      backgroundColor:colors.primary1,
+      backgroundColor: colors.primary1,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
         backgroundColor: colors.whiteTemp,
-        title: const Text('Explore',style: TextStyle(color: colors.blackTemp),),
-       actions: [
-         Padding(
-           padding: const EdgeInsetsDirectional.only(
-             end: 10.0,
-             bottom: 10.0,
-             top: 10.0,
-           ),
-           child: Container(
-             decoration: BoxDecoration(
-               borderRadius: BorderRadius.circular(circularBorderRadius10),
-               color:colors.transparent,
-             ),
-             width:50,
-             height:50,
-             child: InkWell(
-               onTap: () {
-                 CUR_USERID != null
-                     ? Navigator.push(
-                   context,
-                   CupertinoPageRoute(
-                     builder: (context) => const Search(),
-                   ),
-                 ).then(
-                       (value) {
-                     if (value != null && value) {
-                       _tabController.animateTo(1);
-                     }
-                   },
-                 )
-                     : Routes.navigateToSearchScreen(context);
-               },
-               child: const Icon(
-                 Icons.search,color:colors.blackTemp,
+        title: const Text(
+          'Explore', style: TextStyle(color: colors.blackTemp),),
+        actions: [
+          Padding(
+            padding: const EdgeInsetsDirectional.only(
+              end: 10.0,
+              bottom: 10.0,
+              top: 10.0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(circularBorderRadius10),
+                color: colors.transparent,
+              ),
+              width: 50,
+              height: 50,
+              child: InkWell(
+                onTap: () {
+                  CUR_USERID != null
+                      ? Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => const Search(),
+                    ),
+                  ).then(
+                        (value) {
+                      if (value != null && value) {
+                        _tabController.animateTo(1);
+                      }
+                    },
+                  )
+                      : Routes.navigateToSearchScreen(context);
+                },
+                child: const Icon(
+                  Icons.search, color: colors.blackTemp,
 
-               ),
-             ),
+                ),
+              ),
 
-           ),
-         ),
-       ],
+            ),
+          ),
+        ],
       ),
       key: _scaffoldKey,
       body: isNetworkAvail
           ? Consumer<SellerDetailProvider>(
-              builder: (context, value, child) {
-                if (value.getCurrentStatus ==
-                    SellerDetailProviderStatus.isSuccsess) {
-                  return Column(
-                    children: [
-                      // Container(
-                      //   color: Theme.of(context).colorScheme.white,
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-                      //     child: Container(
-                      //       decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(
-                      //           circularBorderRadius10,
-                      //         ),
-                      //       ),
-                      //       height: 44,
-                      //       child: TextField(
-                      //         style: TextStyle(
-                      //           color: Theme.of(context).colorScheme.fontColor,
-                      //           fontWeight: FontWeight.normal,
-                      //         ),
-                      //         controller: _controller,
-                      //         autofocus: false,
-                      //         enabled: true,
-                      //         textAlign: TextAlign.left,
-                      //         decoration: InputDecoration(
-                      //           focusedBorder: OutlineInputBorder(
-                      //             borderSide: BorderSide(
-                      //                 color: Theme.of(context)
-                      //                     .colorScheme
-                      //                     .lightWhite),
-                      //             borderRadius: const BorderRadius.all(
-                      //               Radius.circular(circularBorderRadius10),
-                      //             ),
-                      //           ),
-                      //           enabledBorder: const OutlineInputBorder(
-                      //             borderSide:
-                      //                 BorderSide(color: Colors.transparent),
-                      //             borderRadius: BorderRadius.all(
-                      //               Radius.circular(circularBorderRadius10),
-                      //             ),
-                      //           ),
-                      //           contentPadding: const EdgeInsets.fromLTRB(
-                      //               15.0, 5.0, 0, 5.0),
-                      //           border: const OutlineInputBorder(
-                      //             borderSide:
-                      //                 BorderSide(color: Colors.transparent),
-                      //             borderRadius: BorderRadius.all(
-                      //               Radius.circular(circularBorderRadius10),
-                      //             ),
-                      //           ),
-                      //           fillColor:
-                      //               Theme.of(context).colorScheme.lightWhite,
-                      //           filled: true,
-                      //           isDense: true,
-                      //           hintText: getTranslated(context, 'searchHint'),
-                      //           hintStyle: Theme.of(context)
-                      //               .textTheme
-                      //               .bodyText2!
-                      //               .copyWith(
-                      //                 color: Theme.of(context)
-                      //                     .colorScheme
-                      //                     .fontColor,
-                      //                 fontSize: textFontSize12,
-                      //                 fontWeight: FontWeight.w400,
-                      //                 fontStyle: FontStyle.normal,
-                      //               ),
-                      //           prefixIcon: const Padding(
-                      //               padding: EdgeInsets.all(15.0),
-                      //               child: Icon(Icons.search)),
-                      //           suffixIcon: _controller.text != ''
-                      //               ? IconButton(
-                      //                   onPressed: () {
-                      //                     FocusScope.of(context).unfocus();
-                      //                     _controller.text = '';
-                      //                     notificationoffset = 0;
-                      //                   },
-                      //                   icon: const Icon(
-                      //                     Icons.close,
-                      //                     color: colors.primary,
-                      //                   ),
-                      //                 )
-                      //               : Padding(
-                      //                   padding: const EdgeInsets.all(10.0),
-                      //                   child: GestureDetector(
-                      //                     onTap: () {
-                      //                       lastWords = '';
-                      //                       if (!_hasSpeech) {
-                      //                         initSpeechState();
-                      //                       } else {
-                      //                         showSpeechDialog();
-                      //                       }
-                      //                     },
-                      //                     child: Selector<ThemeNotifier,
-                      //                         ThemeMode>(
-                      //                       selector: (_, themeProvider) =>
-                      //                           themeProvider.getThemeMode(),
-                      //                       builder: (context, data, child) {
-                      //                         return (data ==
-                      //                                         ThemeMode
-                      //                                             .system &&
-                      //                                     MediaQuery.of(context)
-                      //                                             .platformBrightness ==
-                      //                                         Brightness
-                      //                                             .light) ||
-                      //                                 data == ThemeMode.light
-                      //                             ? SvgPicture.asset(
-                      //                                 DesignConfiguration
-                      //                                     .setSvgPath(
-                      //                                         'voice_search'),
-                      //                                 height: 15,
-                      //                                 width: 15,
-                      //                               )
-                      //                             : SvgPicture.asset(
-                      //                                 DesignConfiguration
-                      //                                     .setSvgPath(
-                      //                                         'voice_search_white'),
-                      //                                 height: 15,
-                      //                                 width: 15,
-                      //                               );
-                      //                       },
-                      //                     ),
-                      //                   ),
-                      //                 ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      Container(
-                        color: Theme.of(context).colorScheme.white,
-                        child: TabBar(
-                          controller: _tabController,
-                          tabs: [
-                            Tab(
-                              child: Text(
-                                getTranslated(context, 'ALL_PRODUCTS')!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .copyWith(
-                                      fontFamily: 'ubuntu',
-                                    ),
-                              ),
-                            ),
-                            Tab(
-                              child: Text(
-                                getTranslated(context, 'ALL_SELLERS')!,
-                                style: const TextStyle(
-                                  fontFamily: 'ubuntu',
-                                ),
-                              ),
-                            ),
-                          ],
-                          indicatorColor: colors.primary,
-                          labelColor: Theme.of(context).colorScheme.fontColor,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          unselectedLabelColor:
-                              Theme.of(context).colorScheme.lightBlack,
-                          labelStyle: const TextStyle(
-                            fontSize: textFontSize16,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FontStyle.normal,
+        builder: (context, value, child) {
+          if (value.getCurrentStatus ==
+              SellerDetailProviderStatus.isSuccsess) {
+            return Column(
+              children: [
+                // Container(
+                //   color: Theme.of(context).colorScheme.white,
+                //   child: Padding(
+                //     padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(
+                //           circularBorderRadius10,
+                //         ),
+                //       ),
+                //       height: 44,
+                //       child: TextField(
+                //         style: TextStyle(
+                //           color: Theme.of(context).colorScheme.fontColor,
+                //           fontWeight: FontWeight.normal,
+                //         ),
+                //         controller: _controller,
+                //         autofocus: false,
+                //         enabled: true,
+                //         textAlign: TextAlign.left,
+                //         decoration: InputDecoration(
+                //           focusedBorder: OutlineInputBorder(
+                //             borderSide: BorderSide(
+                //                 color: Theme.of(context)
+                //                     .colorScheme
+                //                     .lightWhite),
+                //             borderRadius: const BorderRadius.all(
+                //               Radius.circular(circularBorderRadius10),
+                //             ),
+                //           ),
+                //           enabledBorder: const OutlineInputBorder(
+                //             borderSide:
+                //                 BorderSide(color: Colors.transparent),
+                //             borderRadius: BorderRadius.all(
+                //               Radius.circular(circularBorderRadius10),
+                //             ),
+                //           ),
+                //           contentPadding: const EdgeInsets.fromLTRB(
+                //               15.0, 5.0, 0, 5.0),
+                //           border: const OutlineInputBorder(
+                //             borderSide:
+                //                 BorderSide(color: Colors.transparent),
+                //             borderRadius: BorderRadius.all(
+                //               Radius.circular(circularBorderRadius10),
+                //             ),
+                //           ),
+                //           fillColor:
+                //               Theme.of(context).colorScheme.lightWhite,
+                //           filled: true,
+                //           isDense: true,
+                //           hintText: getTranslated(context, 'searchHint'),
+                //           hintStyle: Theme.of(context)
+                //               .textTheme
+                //               .bodyText2!
+                //               .copyWith(
+                //                 color: Theme.of(context)
+                //                     .colorScheme
+                //                     .fontColor,
+                //                 fontSize: textFontSize12,
+                //                 fontWeight: FontWeight.w400,
+                //                 fontStyle: FontStyle.normal,
+                //               ),
+                //           prefixIcon: const Padding(
+                //               padding: EdgeInsets.all(15.0),
+                //               child: Icon(Icons.search)),
+                //           suffixIcon: _controller.text != ''
+                //               ? IconButton(
+                //                   onPressed: () {
+                //                     FocusScope.of(context).unfocus();
+                //                     _controller.text = '';
+                //                     notificationoffset = 0;
+                //                   },
+                //                   icon: const Icon(
+                //                     Icons.close,
+                //                     color: colors.primary,
+                //                   ),
+                //                 )
+                //               : Padding(
+                //                   padding: const EdgeInsets.all(10.0),
+                //                   child: GestureDetector(
+                //                     onTap: () {
+                //                       lastWords = '';
+                //                       if (!_hasSpeech) {
+                //                         initSpeechState();
+                //                       } else {
+                //                         showSpeechDialog();
+                //                       }
+                //                     },
+                //                     child: Selector<ThemeNotifier,
+                //                         ThemeMode>(
+                //                       selector: (_, themeProvider) =>
+                //                           themeProvider.getThemeMode(),
+                //                       builder: (context, data, child) {
+                //                         return (data ==
+                //                                         ThemeMode
+                //                                             .system &&
+                //                                     MediaQuery.of(context)
+                //                                             .platformBrightness ==
+                //                                         Brightness
+                //                                             .light) ||
+                //                                 data == ThemeMode.light
+                //                             ? SvgPicture.asset(
+                //                                 DesignConfiguration
+                //                                     .setSvgPath(
+                //                                         'voice_search'),
+                //                                 height: 15,
+                //                                 width: 15,
+                //                               )
+                //                             : SvgPicture.asset(
+                //                                 DesignConfiguration
+                //                                     .setSvgPath(
+                //                                         'voice_search_white'),
+                //                                 height: 15,
+                //                                 width: 15,
+                //                               );
+                //                       },
+                //                     ),
+                //                   ),
+                //                 ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                Container(
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .white,
+                  child: TabBar(
+                    controller: _tabController,
+                    tabs: [
+                      Tab(
+                        child: Text(
+                          getTranslated(context, 'ALL_PRODUCTS')!,
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(
+                            fontFamily: 'ubuntu',
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: TabBarView(
-
-                          controller: _tabController,
-
-
-
-                          children: [
-                            Stack(
-                              children: <Widget>[
-                                _showContentOfProducts(),
-                                Center(
-                                  child:
-                                      DesignConfiguration.showCircularProgress(
-                                    _isProgress,
-                                    colors.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Stack(
-                              children: <Widget>[
-                                ShowContentOfSellers(
-                                  sellerList: value.sellerList,
-                                ),
-                                Center(
-                                  child:
-                                      DesignConfiguration.showCircularProgress(
-                                    _isProgress,
-                                    colors.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      Tab(
+                        child: Text(
+                          getTranslated(context, 'ALL_SELLERS')!,
+                          style: const TextStyle(
+                            fontFamily: 'ubuntu',
+                          ),
                         ),
                       ),
                     ],
-                  );
-                } else if (value.getCurrentStatus ==
-                    SellerDetailProviderStatus.isFailure) {
-                  return Center(
-                    child: Text(
-                      value.geterrormessage,
-                      style: const TextStyle(
-                        fontFamily: 'ubuntu',
-                      ),
+                    indicatorColor: colors.primary,
+                    labelColor: Theme
+                        .of(context)
+                        .colorScheme
+                        .fontColor,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    unselectedLabelColor:
+                    Theme
+                        .of(context)
+                        .colorScheme
+                        .lightBlack,
+                    labelStyle: const TextStyle(
+                      fontSize: textFontSize16,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
                     ),
-                  );
-                }
-                return const ShimmerEffect();
-              },
-            )
+                  ),
+                ),
+                Expanded(
+                  child: TabBarView(
+
+                    controller: _tabController,
+
+
+                    children: [
+                      Stack(
+                        children: <Widget>[
+                          _showContentOfProducts(),
+                          Center(
+                            child:
+                            DesignConfiguration.showCircularProgress(
+                              _isProgress,
+                              colors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Stack(
+                        children: <Widget>[
+                          ShowContentOfSellers(
+                            sellerList: value.sellerList,
+                          ),
+                          Center(
+                            child:
+                            DesignConfiguration.showCircularProgress(
+                              _isProgress,
+                              colors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          } else if (value.getCurrentStatus ==
+              SellerDetailProviderStatus.isFailure) {
+            return Center(
+              child: Text(
+                value.geterrormessage,
+                style: const TextStyle(
+                  fontFamily: 'ubuntu',
+                ),
+              ),
+            );
+          }
+          return const ShimmerEffect();
+        },
+      )
           : NoInterNet(
-              setStateNoInternate: setStateNoInternate,
-              buttonSqueezeanimation: buttonSqueezeanimation,
-              buttonController: buttonController,
-            ),
+        setStateNoInternate: setStateNoInternate,
+        buttonSqueezeanimation: buttonSqueezeanimation,
+        buttonController: buttonController,
+      ),
     );
   }
 
@@ -586,9 +616,14 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
       }
     }
     if (notificationoffset == 0) {
-      context.read<ExploreProvider>().productList = [];
+      context
+          .read<ExploreProvider>()
+          .productList = [];
     }
-    context.read<ExploreProvider>().productList.addAll(tempList);
+    context
+        .read<ExploreProvider>()
+        .productList
+        .addAll(tempList);
     notificationisloadmore = true;
     notificationoffset = notificationoffset + perPage;
   }
@@ -596,8 +631,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   void _handleTabChange() {
     if (_tabController.index == 0 && _tabController.indexIsChanging) {
       notificationisloadmore = true;
-       notificationoffset = 0;
-      _currentRangeValues = null ;
+      notificationoffset = 0;
+      _currentRangeValues = null;
       // This function will be called when the tab changes.
       // You can make your API call here.
       setState(() {
@@ -612,8 +647,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
       if (notificationisloadmore) {
         if (mounted) {
           setState(
-            () {
-              notificationisloadmore = false;
+                () {
+              // notificationisloadmore = false;
               notificationisgettingdata = true;
             },
           );
@@ -626,10 +661,17 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           ORDER: orderBy,
           TOP_RETAED: showTopRated,
         };
-        print("parararraarar ${parameter}");
+
         if (selId != '') {
           parameter[ATTRIBUTE_VALUE_ID] = selId;
         }
+        if (categoryId != '') {
+          parameter['category_id'] = categoryId;
+        }
+        if (brandId != '') {
+          parameter['brand'] = brandId;
+        }
+
         if (query.trim() != '') {
           parameter[SEARCH] = query.trim();
         }
@@ -647,66 +689,71 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
         context.read<ProductListProvider>().setProductListParameter(parameter);
         print('___________${parameter}__________');
         Future.delayed(Duration.zero).then(
-          (value) => context.read<ProductListProvider>().getProductList().then(
-            (
-              value,
-            ) async {
-              bool error = value['error'];
-              String? search = value['search'];
-              print('${value['total']}______________________ggdfgggdfgfdgfgdgfg');
-              context.read<ExploreProvider>().setProductTotal(value['data'].length.toString() ??
-                  context.read<ExploreProvider>().totalProducts);
-              notificationisgettingdata = false;
-              if (notificationoffset == 0) notificationisnodata = error;
+              (value) =>
+              context.read<ProductListProvider>().getProductList().then(
+                    (value,) async {
+                  bool error = value['error'];
+                  String? search = value['search'];
+                  context.read<ExploreProvider>().setProductTotal(
+                      value['data'].length.toString() ??
+                          context
+                              .read<ExploreProvider>()
+                              .totalProducts);
+                  notificationisgettingdata = false;
+                  if (notificationoffset == 0) notificationisnodata = error;
 
-              if (!error && search!.trim() == query.trim()) {
-                if (mounted) {
-                  if (initializingFilterDialogFirstTime) {
-                    filterList = value['filters'];
+                  if (!error && search!.trim() == query.trim()) {
+                    if (mounted) {
+                      if (initializingFilterDialogFirstTime) {
+                        filterList = value['filters'];
 
-                    minPrice = value[MINPRICE].toString();
-                    maxPrice = value[MAXPRICE].toString();
-                    _currentRangeValues = RangeValues(
-                        double.parse(minPrice), double.parse(maxPrice));
-                    initializingFilterDialogFirstTime = false;
+                        print('${value['filters']}');
+
+
+                        minPrice = value[MINPRICE].toString();
+                        maxPrice = value[MAXPRICE].toString();
+                        _currentRangeValues = RangeValues(
+                            double.parse(minPrice), double.parse(maxPrice));
+                        initializingFilterDialogFirstTime = false;
+                      }
+
+                      Future.delayed(
+                        Duration.zero,
+                            () =>
+                            setState(
+                                  () {
+                                List mainlist = value['data'];
+                                if (mainlist.isNotEmpty) {
+                                  List<Product> items = [];
+                                  List<Product> allitems = [];
+
+                                  items.addAll(mainlist
+                                      .map((data) => Product.fromJson(data))
+                                      .toList());
+
+
+                                  allitems.addAll(items);
+
+                                  getAvailVarient(allitems);
+                                } else {
+                                  // notificationisloadmore = false;
+                                }
+                              },
+                            ),
+                      );
+                    }
+                  } else {
+                    // notificationisloadmore = false;
+                    if (mounted) setState(() {});
                   }
-
-                  Future.delayed(
-                    Duration.zero,
-                    () => setState(
-                      () {
-                        List mainlist = value['data'];
-                        if (mainlist.isNotEmpty) {
-                          List<Product> items = [];
-                          List<Product> allitems = [];
-
-                          items.addAll(mainlist
-                              .map((data) => Product.fromJson(data))
-                              .toList());
-
-
-                          allitems.addAll(items);
-
-                          getAvailVarient(allitems);
-                        } else {
-                          notificationisloadmore = false;
-                        }
-                      },
-                    ),
-                  );
-                }
-              } else {
-                notificationisloadmore = false;
-                if (mounted) setState(() {});
-              }
-            },
-          ),
+                },
+              ),
         );
       }
     } else {
       if (mounted) {
         setState(
-          () {
+              () {
             isNetworkAvail = false;
           },
         );
@@ -716,17 +763,19 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
 
   clearAll() {
     setState(
-      () {
+          () {
         query = _controller.text;
         notificationoffset = 0;
         notificationisloadmore = true;
-        context.read<ExploreProvider>().productList.clear();
+        context
+            .read<ExploreProvider>()
+            .productList
+            .clear();
       },
     );
   }
 
   _showContentOfProducts() {
-
     return Column(
       children: <Widget>[
         sortAndFilterOption(),
@@ -735,21 +784,23 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           child: notificationisnodata
               ? DesignConfiguration.getNoItem(context)
               : Stack(
-                  children: [
-                    context.watch<ExploreProvider>().getCurrentView !=
-                            'GridView'
-                        ? ListViewLayOut(
-                            fromExplore: true,
-                            update: update,
-                          )
-                        : getGridviewLayoutOfProducts(),
-                    notificationisgettingdata
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : Container(),
-                  ],
-                ),
+            children: [
+              context
+                  .watch<ExploreProvider>()
+                  .getCurrentView !=
+                  'GridView'
+                  ? ListViewLayOut(
+                fromExplore: true,
+                update: update,
+              )
+                  : getGridviewLayoutOfProducts(),
+              notificationisgettingdata
+                  ? const Center(
+                child: CircularProgressIndicator(),
+              )
+                  : Container(),
+            ],
+          ),
         ),
       ],
     );
@@ -778,7 +829,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
 
   void statusListener(String status) {
     setStater(
-      () {
+          () {
         lastStatus = status;
       },
     );
@@ -796,7 +847,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
         cancelOnError: true,
         listenMode: ListenMode.confirmation);
     setStater(
-      () {},
+          () {},
     );
   }
 
@@ -805,7 +856,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     maxSoundLevel = max(maxSoundLevel, level);
 
     setStater(
-      () {
+          () {
         this.level = level;
       },
     );
@@ -821,7 +872,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   void cancelListening() {
     speech.cancel();
     setStater(
-      () {
+          () {
         level = 0.0;
       },
     );
@@ -835,7 +886,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
 
     if (result.finalResult) {
       Future.delayed(const Duration(seconds: 1)).then(
-        (_) async {
+            (_) async {
           clearAll();
 
           _controller.text = lastWords;
@@ -856,12 +907,18 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
         builder: (BuildContext context, StateSetter setStater1) {
           setStater = setStater1;
           return AlertDialog(
-            backgroundColor: Theme.of(context).colorScheme.lightWhite,
+            backgroundColor: Theme
+                .of(context)
+                .colorScheme
+                .lightWhite,
             title: Text(
               getTranslated(context, 'SEarchHint')!,
               style: TextStyle(
                 fontFamily: 'ubuntu',
-                color: Theme.of(context).colorScheme.fontColor,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .fontColor,
                 fontWeight: FontWeight.bold,
                 fontSize: textFontSize16,
               ),
@@ -876,12 +933,16 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       BoxShadow(
                           blurRadius: .26,
                           spreadRadius: level * 1.5,
-                          color: Theme.of(context)
+                          color: Theme
+                              .of(context)
                               .colorScheme
                               .black
                               .withOpacity(.05))
                     ],
-                    color: Theme.of(context).colorScheme.white,
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .white,
                     borderRadius: const BorderRadius.all(
                         Radius.circular(circularBorderRadius50)),
                   ),
@@ -913,33 +974,45 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   color:
-                      Theme.of(context).colorScheme.fontColor.withOpacity(0.1),
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .fontColor
+                      .withOpacity(0.1),
                   child: Center(
                     child: speech.isListening
                         ? Text(
-                            getTranslated(context, "I'm listening...")!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'ubuntu',
-                                ),
-                          )
+                      getTranslated(context, "I'm listening...")!,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(
+                        color:
+                        Theme
+                            .of(context)
+                            .colorScheme
+                            .fontColor,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'ubuntu',
+                      ),
+                    )
                         : Text(
-                            getTranslated(context, 'Not listening')!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'ubuntu',
-                                ),
-                          ),
+                      getTranslated(context, 'Not listening')!,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(
+                        color:
+                        Theme
+                            .of(context)
+                            .colorScheme
+                            .fontColor,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'ubuntu',
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -952,7 +1025,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
 
   void sortDialog() {
     showModalBottomSheet(
-      backgroundColor: Theme.of(context).colorScheme.white,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .white,
       context: context,
       enableDrag: false,
       isScrollControlled: true,
@@ -977,7 +1053,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       child: Text(
                         getTranslated(context, 'SORT_BY')!,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.fontColor,
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize18,
                           fontFamily: 'ubuntu',
                         ),
@@ -990,9 +1069,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       orderBy = 'DESC';
                       if (mounted) {
                         setState(
-                          () {
+                              () {
                             notificationoffset = 0;
-                            context.read<ExploreProvider>().productList.clear();
+                            context
+                                .read<ExploreProvider>()
+                                .productList
+                                .clear();
                           },
                         );
                       }
@@ -1003,15 +1085,24 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       width: deviceWidth,
                       color: sortBy == ''
                           ? colors.primary
-                          : Theme.of(context).colorScheme.white,
+                          : Theme
+                          .of(context)
+                          .colorScheme
+                          .white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Text(
                         getTranslated(context, 'TOP_RATED')!,
                         style: TextStyle(
                           color: sortBy == ''
-                              ? Theme.of(context).colorScheme.white
-                              : Theme.of(context).colorScheme.fontColor,
+                              ? Theme
+                              .of(context)
+                              .colorScheme
+                              .white
+                              : Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize16,
                           fontFamily: 'ubuntu',
                         ),
@@ -1023,15 +1114,24 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       width: deviceWidth,
                       color: sortBy == 'p.date_added' && orderBy == 'DESC'
                           ? colors.primary
-                          : Theme.of(context).colorScheme.white,
+                          : Theme
+                          .of(context)
+                          .colorScheme
+                          .white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Text(
                         getTranslated(context, 'F_NEWEST')!,
                         style: TextStyle(
                           color: sortBy == 'p.date_added' && orderBy == 'DESC'
-                              ? Theme.of(context).colorScheme.white
-                              : Theme.of(context).colorScheme.fontColor,
+                              ? Theme
+                              .of(context)
+                              .colorScheme
+                              .white
+                              : Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize16,
                           fontFamily: 'ubuntu',
                         ),
@@ -1042,9 +1142,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       orderBy = 'DESC';
                       if (mounted) {
                         setState(
-                          () {
+                              () {
                             notificationoffset = 0;
-                            context.read<ExploreProvider>().productList.clear();
+                            context
+                                .read<ExploreProvider>()
+                                .productList
+                                .clear();
                           },
                         );
                       }
@@ -1057,15 +1160,24 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       width: deviceWidth,
                       color: sortBy == 'p.date_added' && orderBy == 'ASC'
                           ? colors.primary
-                          : Theme.of(context).colorScheme.white,
+                          : Theme
+                          .of(context)
+                          .colorScheme
+                          .white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Text(
                         getTranslated(context, 'F_OLDEST')!,
                         style: TextStyle(
                           color: sortBy == 'p.date_added' && orderBy == 'ASC'
-                              ? Theme.of(context).colorScheme.white
-                              : Theme.of(context).colorScheme.fontColor,
+                              ? Theme
+                              .of(context)
+                              .colorScheme
+                              .white
+                              : Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize16,
                           fontFamily: 'ubuntu',
                         ),
@@ -1076,9 +1188,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       orderBy = 'ASC';
                       if (mounted) {
                         setState(
-                          () {
+                              () {
                             notificationoffset = 0;
-                            context.read<ExploreProvider>().productList.clear();
+                            context
+                                .read<ExploreProvider>()
+                                .productList
+                                .clear();
                           },
                         );
                       }
@@ -1091,15 +1206,24 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       width: deviceWidth,
                       color: sortBy == 'pv.price' && orderBy == 'ASC'
                           ? colors.primary
-                          : Theme.of(context).colorScheme.white,
+                          : Theme
+                          .of(context)
+                          .colorScheme
+                          .white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Text(
                         getTranslated(context, 'F_LOW')!,
                         style: TextStyle(
                           color: sortBy == 'pv.price' && orderBy == 'ASC'
-                              ? Theme.of(context).colorScheme.white
-                              : Theme.of(context).colorScheme.fontColor,
+                              ? Theme
+                              .of(context)
+                              .colorScheme
+                              .white
+                              : Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize16,
                           fontFamily: 'ubuntu',
                         ),
@@ -1110,9 +1234,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       orderBy = 'ASC';
                       if (mounted) {
                         setState(
-                          () {
+                              () {
                             notificationoffset = 0;
-                            context.read<ExploreProvider>().productList.clear();
+                            context
+                                .read<ExploreProvider>()
+                                .productList
+                                .clear();
                           },
                         );
                       }
@@ -1125,15 +1252,24 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       width: deviceWidth,
                       color: sortBy == 'pv.price' && orderBy == 'DESC'
                           ? colors.primary
-                          : Theme.of(context).colorScheme.white,
+                          : Theme
+                          .of(context)
+                          .colorScheme
+                          .white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Text(
                         getTranslated(context, 'F_HIGH')!,
                         style: TextStyle(
                           color: sortBy == 'pv.price' && orderBy == 'DESC'
-                              ? Theme.of(context).colorScheme.white
-                              : Theme.of(context).colorScheme.fontColor,
+                              ? Theme
+                              .of(context)
+                              .colorScheme
+                              .white
+                              : Theme
+                              .of(context)
+                              .colorScheme
+                              .fontColor,
                           fontSize: textFontSize16,
                           fontFamily: 'ubuntu',
                         ),
@@ -1144,9 +1280,12 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                       orderBy = 'DESC';
                       if (mounted) {
                         setState(
-                          () {
+                              () {
                             notificationoffset = 0;
-                            context.read<ExploreProvider>().productList.clear();
+                            context
+                                .read<ExploreProvider>()
+                                .productList
+                                .clear();
                           },
                         );
                       }
@@ -1167,7 +1306,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1.0),
       child: Container(
-        color: Theme.of(context).colorScheme.white,
+        color: Theme
+            .of(context)
+            .colorScheme
+            .white,
         height: 45,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1222,7 +1364,9 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                             .read<ExploreProvider>()
                             .productList
                             .isNotEmpty) {
-                          if (context.read<ExploreProvider>().view ==
+                          if (context
+                              .read<ExploreProvider>()
+                              .view ==
                               'ListView') {
                             context
                                 .read<ExploreProvider>()
@@ -1233,7 +1377,9 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                                 .changeViewTo('ListView');
                           }
                         }
-                        context.read<ExploreProvider>().view == 'ListView'
+                        context
+                            .read<ExploreProvider>()
+                            .view == 'ListView'
                             ? listViewIconController.forward()
                             : listViewIconController.reverse();
                       },
@@ -1257,7 +1403,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                           getTranslated(context, 'FILTER')!,
                           style: TextStyle(
                             fontFamily: 'ubuntu',
-                            color: Theme.of(context).colorScheme.fontColor,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .fontColor,
                           ),
                         ),
                       ],
@@ -1276,7 +1425,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1.0),
       child: Container(
-        color: Theme.of(context).colorScheme.white,
+        color: Theme
+            .of(context)
+            .colorScheme
+            .white,
         height: 45,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1288,7 +1440,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                 child: Text(
                   getTranslated(context, 'TITLE1_LBL')!,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.fontColor,
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .fontColor,
                     fontWeight: FontWeight.w500,
                     fontStyle: FontStyle.normal,
                     fontSize: textFontSize16,
@@ -1334,274 +1489,280 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 30.0),
-                  child: AppBar(
-                    title: Text(
-                      getTranslated(context, 'FILTER')!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.fontColor,
-                        fontFamily: 'ubuntu',
-                      ),
-                    ),
-                    centerTitle: true,
-                    elevation: 5,
-                    backgroundColor: Theme.of(context).colorScheme.white,
-                    leading: Builder(
-                      builder: (BuildContext context) {
-                        return Container(
-                          margin: const EdgeInsets.all(10),
-                          child: InkWell(
-                            borderRadius:
-                                BorderRadius.circular(circularBorderRadius4),
-                            onTap: () => Navigator.of(context).pop(),
-                            child: const Padding(
-                              padding: EdgeInsetsDirectional.only(end: 4.0),
-                              child: Icon(
-                                Icons.arrow_back_ios_rounded,
-                                color: colors.primary,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+
                 Expanded(
                     child: Container(
-                  color: colors.primary1,
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 7.0,
-                    end: 7.0,
-                    top: 7.0,
-                  ),
-                  child: filterList != null
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          padding: const EdgeInsetsDirectional.only(top: 10.0),
-                          itemCount: filterList.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    width: deviceWidth,
-                                    child: Card(
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          getTranslated(
-                                              context, 'Price Range')!,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1!
-                                              .copyWith(
-                                                fontFamily: 'ubuntu',
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .lightBlack,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
+                      color: colors.primary1,
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 7.0,
+                        end: 7.0,
+                        top: 7.0,
+                      ),
+                      child: filterList != null
+                          ? ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        padding: const EdgeInsetsDirectional.only(top: 10.0),
+                        itemCount: filterList.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Column(
+                              children: [
+
+                                ///price range filter
+                                SizedBox(
+                                  width: deviceWidth,
+                                  child: Card(
+                                    elevation: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        getTranslated(
+                                            context, 'Price Range')!,
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                          fontFamily: 'ubuntu',
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .lightBlack,
+                                          fontWeight: FontWeight.normal,
                                         ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                       ),
                                     ),
                                   ),
-                                  RangeSlider(
-                                    values: _currentRangeValues!,
-                                    min: double.parse(minPrice),
-                                    max: double.parse(maxPrice),
-                                    divisions: 10,
-                                    labels: RangeLabels(
-                                      _currentRangeValues!.start
-                                          .round()
-                                          .toString(),
-                                      _currentRangeValues!.end
-                                          .round()
-                                          .toString(),
-                                    ),
-                                    onChanged: (RangeValues values) {
-                                      _currentRangeValues = values;
-                                      setState(
-                                        () {},
-                                      );
-                                    },
+                                ),
+
+                                RangeSlider(
+                                  values: _currentRangeValues ?? RangeValues(100, 1000),
+                                  min: double.parse(minPrice),
+                                  max: double.parse(maxPrice),
+                                  divisions: 10,
+                                  labels: RangeLabels(
+                                    (_currentRangeValues?.start ?? 0)
+                                        .round()
+                                        .toString(),
+                                    (_currentRangeValues?.end ?? 1000)
+                                        .round()
+                                        .toString(),
                                   ),
-                                ],
-                              );
-                            } else {
-                              index = index - 1;
-                              attributeSubList = filterList[index]
-                                      ['attribute_values']
-                                  .split(',');
-
-                              attributeIDList = filterList[index]
-                                      ['attribute_values_id']
-                                  .split(',');
-
-                              List<Widget?> chips = [];
-                              List<String> att = filterList[index]
-                                      ['attribute_values']!
-                                  .split(',');
-
-                              List<String> attSType =
-                                  filterList[index]['swatche_type'].split(',');
-
-                              List<String> attSValue =
-                                  filterList[index]['swatche_value'].split(',');
-
-                              for (int i = 0; i < att.length; i++) {
-                                Widget itemLabel;
-                                if (attSType[i] == '1') {
-                                  String clr = (attSValue[i].substring(1));
-
-                                  String color = '0xff$clr';
-
-                                  itemLabel = Container(
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(
-                                        int.parse(color),
-                                      ),
-                                    ),
-                                  );
-                                } else if (attSType[i] == '2') {
-                                  itemLabel = ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        circularBorderRadius10),
-                                    child: Image.network(
-                                      attSValue[i],
-                                      width: 80,
-                                      height: 80,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              DesignConfiguration.erroWidget(
-                                        80,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  itemLabel = Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Text(
-                                      att[i],
-                                      style: TextStyle(
-                                        fontFamily: 'ubuntu',
-                                        color: selectedId!
-                                                .contains(attributeIDList![i])
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .white
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .fontColor,
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                choiceChip = ChoiceChip(
-                                  selected:
-                                      selectedId!.contains(attributeIDList![i]),
-                                  label: itemLabel,
-                                  labelPadding: const EdgeInsets.all(0),
-                                  selectedColor: colors.primary,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        attSType[i] == '1'
-                                            ? circularBorderRadius100
-                                            : circularBorderRadius10),
-                                    side: BorderSide(
-                                        color: selectedId!
-                                                .contains(attributeIDList![i])
-                                            ? colors.primary
-                                            : colors.black12,
-                                        width: 1.5),
-                                  ),
-                                  onSelected: (bool selected) {
-                                    attributeIDList = filterList[index]
-                                            ['attribute_values_id']
-                                        .split(',');
-
-                                    if (mounted) {
-                                      setState(
-                                        () {
-                                          if (selected == true) {
-                                            selectedId!
-                                                .add(attributeIDList![i]);
-                                          } else {
-                                            selectedId!
-                                                .remove(attributeIDList![i]);
-                                          }
-                                        },
-                                      );
-                                    }
+                                  onChanged: (RangeValues values) {
+                                    _currentRangeValues = values;
+                                    setState(
+                                          () {},
+                                    );
                                   },
-                                );
+                                ),
+                              ],
+                            );
+                          } else {
+                            index = index - 1;
+                            attributeSubList = filterList[index]
+                            ['attribute_values']
+                                .split(',');
 
-                                chips.add(choiceChip);
+                            attributeIDList = filterList[index]
+                            ['attribute_values_id']
+                                .split(',');
+
+                            List<Widget?> chips = [];
+                            List<String> att = filterList[index]
+                            ['attribute_values']!
+                                .split(',');
+
+
+                            List<String> attSType =
+                            filterList[index]['swatche_type'].split(',');
+
+                            List<String> attSValue =
+                            filterList[index]['swatche_value'].split(',');
+
+                            for (int i = 0; i < att.length; i++) {
+                              Widget itemLabel;
+                              if (attSType[i] == '1') {
+                                String clr = (attSValue[i].substring(1));
+
+                                String color = '0xff$clr';
+
+                                itemLabel = Container(
+                                  width: 25,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(
+                                      int.parse(color),
+                                    ),
+                                  ),
+                                );
+                              } else if (attSType[i] == '2') {
+                                itemLabel = ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      circularBorderRadius10),
+                                  child: Image.network(
+                                    attSValue[i],
+                                    width: 80,
+                                    height: 80,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                        DesignConfiguration.erroWidget(
+                                          80,
+                                        ),
+                                  ),
+                                );
+                              } else {
+                                itemLabel = Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Text(
+                                    att[i],
+                                    style: TextStyle(
+                                      fontFamily: 'ubuntu',
+                                      color: selectedId!
+                                          .contains(attributeIDList![i])
+                                          ? Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .white
+                                          : Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .fontColor,
+                                    ),
+                                  ),
+                                );
                               }
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: deviceWidth,
-                                    child: Card(
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          filterList[index]['name'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1!
-                                              .copyWith(
-                                                  fontFamily: 'ubuntu',
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .fontColor,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  chips.isNotEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Wrap(
-                                            children: chips.map<Widget>(
-                                              (Widget? chip) {
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2.0),
-                                                  child: chip,
-                                                );
-                                              },
-                                            ).toList(),
-                                          ),
-                                        )
-                                      : Container()
-                                ],
-                              );
-                            }
+                              choiceChip = ChoiceChip(
+                                  selected:
+                                  selectedId!.contains(attributeIDList![i])
+                                      || (filterList[index]['name'].toString().toLowerCase() == 'category' && selectedCategoryId.contains(attributeIDList![i]))
+                                      || (filterList[index]['name'].toString().toLowerCase() == 'brand' && selectedBrandId.contains(attributeIDList![i])),
+                          label: itemLabel,
+                          labelPadding: const EdgeInsets.all(0),
+                          selectedColor: colors.primary,
+                          backgroundColor:
+                          Theme.of(context).colorScheme.white,
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                          attSType[i] == '1'
+                          ? circularBorderRadius100
+                              : circularBorderRadius10),
+                          side: BorderSide(
+                          color: selectedId!
+                              .contains(attributeIDList![i])
+                              || (filterList[index]['name'].toString().toLowerCase() == 'category' && selectedCategoryId.contains(attributeIDList![i]))
+                              || (filterList[index]['name'].toString().toLowerCase() == 'brand' && selectedBrandId.contains(attributeIDList![i]))
+                          ? colors.primary
+                              : colors.black12,
+                          width: 1.5),
+                          ),
+                          onSelected: (bool selected) {
+                          attributeIDList = filterList[index]
+                          ['attribute_values_id']
+                              .split(',');
+
+
+                          if (mounted) {
+                          setState(
+                          () {
+                          if (selected == true) {
+
+
+                          ///for brand and category filter
+
+                          if(filterList[index]['name'].toString().toLowerCase() == 'category' ){
+                          categoryId = '';
+                          selectedCategoryId.add(attributeIDList?[i] ?? '');
+                          }else if(filterList[index]['name'].toString().toLowerCase() == 'brand' ){
+                          brandId = '';
+                          selectedBrandId.add(attributeIDList?[i] ?? '');
+                          }else {
+                          selectedId!
+                              .add(attributeIDList![i]);
+                          }
+
+                          } else {
+
+
+                          if(filterList[index]['name'].toString().toLowerCase() == 'category' ){
+                          categoryId = '';
+                          selectedCategoryId.remove(attributeIDList?[i] ?? '');
+                          }else if(filterList[index]['name'].toString().toLowerCase() == 'brand' ){
+                          brandId = '';
+                          selectedBrandId.remove(attributeIDList?[i] ?? '');
+                          }else {
+                          selectedId!
+                              .remove(attributeIDList![i]);
+                          }
+                          }
                           },
-                        )
-                      : Container(),
-                )),
+                          );
+                          }
+                          },
+                          );
+
+                          chips.add(choiceChip);
+                          }
+
+                          return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          SizedBox(
+                          width: deviceWidth,
+                          child: Card(
+                          elevation: 0,
+                          child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                          filterList[index]['name'],
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(
+                          fontFamily: 'ubuntu',
+                          color: Theme.of(context)
+                              .colorScheme
+                              .fontColor,
+                          fontWeight:
+                          FontWeight.normal),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          ),
+                          ),
+                          ),
+                          ),
+                          chips.isNotEmpty
+                          ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Wrap(
+                          children: chips.map<Widget>(
+                          (Widget? chip) {
+                          return Padding(
+                          padding:
+                          const EdgeInsets.all(2.0),
+                          child: chip,
+                          );
+                          },
+                          ).toList(),
+                          ),
+                          )
+                              : Container()
+                          ],
+                          );
+                          }
+                          },
+                      )
+                          : Container(),
+                    )),
                 Container(
-                  color: Theme.of(context).colorScheme.white,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .white,
                   child: Row(
                     children: <Widget>[
                       Container(
@@ -1611,8 +1772,10 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                           onPressed: () {
                             if (mounted) {
                               setState(
-                                () {
+                                    () {
                                   selectedId!.clear();
+                                  selectedCategoryId.clear();
+                                  selectedBrandId.clear();
                                 },
                               );
                               Routes.pop(context);
@@ -1635,9 +1798,15 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                           if (selectedId != null) {
                             selId = selectedId!.join(',');
                           }
+                          if (selectedBrandId.isNotEmpty) {
+                            brandId = selectedBrandId.join(',');
+                          }
+                          if (selectedCategoryId.isNotEmpty) {
+                            categoryId = selectedCategoryId.join(',');
+                          }
                           if (mounted) {
                             setState(
-                              () {
+                                  () {
                                 notificationoffset = 0;
                                 context
                                     .read<ExploreProvider>()
@@ -1646,6 +1815,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                               },
                             );
                           }
+                          notificationisnodata = false;
                           getProduct('0');
                           Navigator.pop(context, 'Product Filter');
                         },
@@ -1679,8 +1849,11 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           crossAxisSpacing: 5,
           physics: const BouncingScrollPhysics(),
           children: List.generate(
-            context.read<ExploreProvider>().productList.length,
-            (index) {
+            context
+                .read<ExploreProvider>()
+                .productList
+                .length,
+                (index) {
               return GridViewLayOut(
                 index: index,
                 update: update,

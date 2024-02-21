@@ -16,6 +16,7 @@ import '../../Provider/productListProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/appBar.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/security.dart';
 import '../Language/languageSettings.dart';
 import '../../widgets/networkAvailablity.dart';
 import '../../widgets/simmerEffect.dart';
@@ -696,7 +697,7 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
                                     // String color = '0xff$clr';
                                     itemLabel = Container(
                                       width: 25,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           // color: Color(int.parse(color))
                                       ),
@@ -912,9 +913,7 @@ class StateSection extends State<SectionList> with TickerProviderStateMixin {
 
   // GetBrandsModel? brands;
   getBrands() async {
-    var headers = {
-      'Cookie': 'ci_session=06dfdc4d3993137b7a348ecf6f66d7cffbcd25b9'
-    };
+   
     var request = http.MultipartRequest('POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
