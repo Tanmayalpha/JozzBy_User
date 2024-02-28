@@ -66,7 +66,7 @@ class DynamicLinkHandler {
   }
 
   createdeeplinking(String id,String secPos,String index,bool list) async {
-  var url=Uri.parse("https://admin.jossbuy.com/product?data=$id&secPos=$secPos&index=$index&list=$list");
+  var url=Uri.parse("https://admin.jozzbybazar.com/product?data=$id&secPos=$secPos&index=$index&list=$list");
     // final dynamicLinkParams = DynamicLinkParameters(
     //   link: Uri.parse("https://jozzbybazar.com/product?data=$id&secPos=$secPos&index=$index&list=$list"),
     //   uriPrefix: deepLinkUrlPrefix,

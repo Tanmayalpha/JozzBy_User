@@ -1,23 +1,29 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Provider/myWalletProvider.dart';
 import 'package:eshop_multivendor/Provider/systemProvider.dart';
 import 'package:eshop_multivendor/Screen/My%20Wallet/Widgets/myWalletDialog.dart';
 import 'package:eshop_multivendor/Screen/My%20Wallet/Widgets/walletTransactionItem.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Helper/Color.dart';
 import '../../Helper/Constant.dart';
 import '../../Helper/String.dart';
 import '../../Model/Transaction_Model.dart';
 import '../../Model/getWithdrawelRequest/withdrawTransactiponsModel.dart';
+import '../../Provider/CartProvider.dart';
 import '../../Provider/paymentProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/desing.dart';
+import '../../widgets/security.dart';
 import '../Language/languageSettings.dart';
 import '../../widgets/simmerEffect.dart';
 import '../../widgets/snackbar.dart';
 import 'Widgets/withdrawRequestItem.dart';
+import 'package:http/http.dart' as http;
 
 class MyWallet extends StatefulWidget {
   const MyWallet({Key? key}) : super(key: key);
@@ -232,6 +238,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
     }
   }
 
+
   showContent(List<TransactionModel> walletTransactionList,
       List<WithdrawTransaction> withdrawList) {
     return RefreshIndicator(
@@ -298,8 +305,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                             size: 0.8,
                             title: getTranslated(context, 'ADD_MONEY'),
                             onBtnSelected: () async {
-                              await MyWalletDialog.showAddMoneyDialog(context)
-                                  .then(
+                              await MyWalletDialog.showAddMoneyDialog(context).then(
                                 (value) async {
                                   if (value['message'] != '') {
                                     setSnackbar(value['message'], context);
@@ -311,17 +317,8 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                                   );
                                   offset = 0;
                                   total = 0;
-                                  await context
-                                      .read<MyWalletProvider>()
-                                      .fetchUserWalletAmountWithdrawalRequestTransactions(
-                                          walletTransactionIsLoadingMore: false,
-                                          context: context);
-                                  await context
-                                      .read<MyWalletProvider>()
-                                      .getUserWalletTransactions(
-                                          context: context,
-                                          walletTransactionIsLoadingMore:
-                                              false);
+                                  await context.read<MyWalletProvider>().fetchUserWalletAmountWithdrawalRequestTransactions(walletTransactionIsLoadingMore: false, context: context);
+                                  await context.read<MyWalletProvider>().getUserWalletTransactions(context: context, walletTransactionIsLoadingMore: false);
                                   setState(() {});
                                   return;
                                 },

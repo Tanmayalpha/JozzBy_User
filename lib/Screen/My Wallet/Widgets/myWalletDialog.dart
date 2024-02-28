@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:eshop_multivendor/Helper/Color.dart';
@@ -13,12 +14,14 @@ import 'package:eshop_multivendor/Provider/userWalletProvider.dart';
 import 'package:eshop_multivendor/Screen/WebView/PaypalWebviewActivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:my_fatoorah/my_fatoorah.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Helper/String.dart';
 import '../../../Helper/routes.dart';
+import '../../../Provider/CartProvider.dart';
 import '../../../widgets/desing.dart';
 import '../../../widgets/security.dart';
 import '../../Language/languageSettings.dart';
@@ -327,10 +330,8 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
     });
 
     request.headers.addAll(headers);
-
     http.StreamedResponse response = await request.send();
     print('___________${ request.fields}__________');
-
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
       Navigator.pop(context);
@@ -446,7 +447,7 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20.0, 10, 20.0, 5),
                       child: Text(
-                        'Payment Method:   RazorPay'/*getTranslated(context, 'SELECT_PAYMENT')!*/,
+                        'Payment Method:   PhonePe'/*getTranslated(context, 'SELECT_PAYMENT')!*/,
                         style: Theme.of(context).textTheme.subtitle2!.copyWith(
                               fontFamily: 'ubuntu',
                             ),
@@ -467,7 +468,7 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
                             ),
                           )
                         : Container(),
-                    context.read<SystemProvider>().isPaypalEnable == null
+                         context.read<SystemProvider>().isPaypalEnable == null
                         ? const Center(child: CircularProgressIndicator())
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -508,9 +509,10 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
           onPressed: () async {
             //systemProvider!.selectedPaymentMethodName = getTranslated(context, 'RAZORPAY_LBL')!.trim() ;
             final form = formKey.currentState!;
-            if (form.validate() && amountTextController!.text != '0') {
+            if (form.validate() && amountTextController.text != '0') {
               form.save();
-              openCheckout(amount: double.parse(amountTextController!.text));
+              getPhonpayURL();
+              // openCheckout(amount: double.parse(amountTextController.text));
               //doPaymentWithRazorpay(price: int.parse(amountTextController!.text));
               /*if (systemProvider!.selectedPaymentMethodName == null) {
                 setState(() {
@@ -568,9 +570,8 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
                   Navigator.pop(context, response);
                 }*/
               }
-
           },
-        )
+        ),
       ],
     );
   }
@@ -1006,6 +1007,127 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
     }
   }
 
+  bool? isPhonePayPaymentSuccess;
+  String url = '';
+  InAppWebViewController? _webViewController;
+  String _paymentStatus = '';
+
+  void initiatePayment() {
+    // Replace this with the actual PhonePe payment URL you have
+    String phonePePaymentUrl = url;
+    callBackUrl = 'https://admin.jozzbybazar.com/home/phonepay_success';
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('PhonePe Payment'),
+          ),
+          body: InAppWebView(
+            initialUrlRequest: URLRequest(url: Uri.parse(phonePePaymentUrl)),
+            onWebViewCreated: (controller) {
+              _webViewController = controller;
+            },
+            onLoadStart: ((controller, url) {}),
+            onLoadStop: (controller, url) async {
+              if (url.toString().contains(callBackUrl!)) {
+                // Extract payment status from URL
+                /// String? paymentStatus = extractPaymentStatusFromUrl(url.toString());
+                ///
+                _handlePaymentStatus(url.toString());
+
+
+                await _webViewController?.stopLoading();
+                if (await _webViewController?.canGoBack() ?? false) {
+                  await _webViewController?.goBack();
+                  print("==firts print=");
+                } else {
+                  print("==second print=");
+                  Navigator.pop(context);
+                }
+                if(isPhonePayPaymentSuccess ?? false){
+                  print("==thirddd print=");
+                  addwalletPayment();
+                }else {
+                  print("==fourthhh  print=");
+                }
+
+
+                // Stop loading and close WebView
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  int? paymentIndex;
+  double? deductAmount;
+
+  void _handlePaymentStatus(String url) async {
+    print('${'transaction_id $merchantTransactionId'}_______________');
+    Map<String, dynamic> responseData = await fetchDataFromUrl();
+
+    print('${responseData['data']}');
+    String isError = responseData['data'][0]['error'];
+    if (isError == 'true') {
+      // Payment success
+      isPhonePayPaymentSuccess = false;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment Failure')));
+    } else {
+      // Payment failure
+      isPhonePayPaymentSuccess = true;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment Success')));
+    }
+  }
+
+  String? callBackUrl;
+  String? merchantId;
+  String? merchantTransactionId;
+  Future<Map<String, dynamic>> fetchDataFromUrl() async {
+    final response = await http.post(
+        Uri.parse("${baseUrl}/check_phonepay_status"),
+        body: {'transaction_id': merchantTransactionId},
+        headers: headers);
+    if (response.statusCode == 200) {
+      // If the request is successful, parse the JSON response and return it
+      return json.decode(response.body);
+    } else {
+      // If the request fails, throw an exception or handle the error accordingly
+      throw Exception('Failed to load data from the URL');
+    }
+  }
+
+  String? mobile;
+  Future<void> getPhonpayURL() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    mobile = preferences.getString('mobile');
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$baseUrl/initiate_phone_payment'));
+    request.fields.addAll({
+      'user_id': CUR_USERID.toString(),
+      'mobile': mobile.toString(),
+      'amount': amountTextController.text
+    });
+    print('_______request.fields____${request.fields}__________');
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult = jsonDecode(result);
+      url = finalResult['data']['data']['instrumentResponse']['redirectInfo']['url'];
+      merchantId = finalResult['data']['data']['merchantId'];
+      merchantTransactionId = finalResult['data']['data']['merchantTransactionId'];
+       initiatePayment();
+      //  print('_____merchantTransactionId______${merchantTransactionId}_____${merchantId}_____');
+      //print("aaaaaaaaaaaaaaaaaaaaaa${url}");
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+
   Future<Map<String, dynamic>> doPaymentWithRazorpay(
       {required int price}) async {
     try {
@@ -1084,7 +1206,6 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
     //setSnackbar(getTranslated(context, 'Transaction Successful')!, context);
    // Navigator.pop(context, response);
     addwalletPayment();
-
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

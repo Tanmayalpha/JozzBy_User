@@ -1126,7 +1126,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
   getBrands() async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('https://admin.jossbuy.com/app/v1/api/get_brands'));
+        'POST', Uri.parse('https://admin.jozzbybazar.com/app/v1/api/get_brands'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {

@@ -55,11 +55,9 @@ class UpdateFavProvider extends ChangeNotifier {
           setSnackbar(msg!, context);
         }
       }
-
       changeStatus(UpdateFavStatus.isSuccsess);
     } catch (e) {
       errorMessage = e.toString();
-
       changeStatus(UpdateFavStatus.isFailure);
     }
   }
@@ -77,29 +75,26 @@ class UpdateFavProvider extends ChangeNotifier {
       if (CUR_USERID != null) {
         try {
           updateNow();
-
           String qty = (int.parse(favList[index].prVarientList![0].cartCount!) +
                   int.parse(favList[index].qtyStepSize!))
               .toString();
-
           if (int.parse(qty) < favList[index].minOrderQuntity!) {
             qty = favList[index].minOrderQuntity.toString();
             setSnackbar("${getTranslated(context, 'MIN_MSG')}$qty", context);
           }
-
           var parameter = {
             PRODUCT_VARIENT_ID:
                 favList[index].prVarientList![favList[index].selVarient!].id,
             USER_ID: CUR_USERID,
             QTY: qty,
           };
+          print("pararararr ${parameter}");
           apiBaseHelper.postAPICall(manageCartApi, parameter).then(
             (getdata) {
               bool error = getdata['error'];
               String? msg = getdata['message'];
               if (!error) {
                 var data = getdata['data'];
-
                 String? qty = data['total_quantity'];
                 cartCount = data['cart_count'];
                 favList[index].prVarientList![0].cartCount = qty.toString();

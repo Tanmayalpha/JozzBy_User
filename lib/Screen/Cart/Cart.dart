@@ -139,6 +139,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       cartList[index].id!,
       context,
     );
+    print("HERE");
     context
         .read<CartProvider>()
         .productIds
@@ -515,8 +516,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
             if (context.read<CartProvider>().oriPrice <
                 double.parse(deliveryChargeList.first.maximum ?? '0.0')) {
-              context.read<CartProvider>().deliveryCharge =
-                  double.parse(
+              context.read<CartProvider>().deliveryCharge = double.parse(
                   deliveryChargeList.first.deliveryCharge ?? '0.0');
               deliveryCharge = double.parse(
                   deliveryChargeList.first.deliveryCharge ?? '0.0');
@@ -525,12 +525,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
               context.read<CartProvider>().totalPrice =
                   context.read<CartProvider>().deliveryCharge +
-                      context.read<CartProvider>().oriPrice-context.read<CartProvider>().promoAmt;
+                      context.read<CartProvider>().oriPrice -
+                      context.read<CartProvider>().promoAmt;
 
               // print('___________${context.read<CartProvider>().deliveryCharge}__________');
               //  print('___________${context.read<CartProvider>().totalPrice}__________');
-            }
-            else {
+            } else {
               for (var i = 1; i < deliveryChargeList.length; i++) {
                 if (double.parse(deliveryChargeList[i].minimum ?? '0.0') <
                         context.read<CartProvider>().oriPrice &&
@@ -550,9 +550,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               print(
                   'this is my promocode charge--->>> ${context.read<CartProvider>().promoAmt}');
 
-              context.read<CartProvider>().totalPrice =
-                  deliveryCharge1 +
-                      context.read<CartProvider>().oriPrice-context.read<CartProvider>().promoAmt;
+              context.read<CartProvider>().totalPrice = deliveryCharge1 +
+                  context.read<CartProvider>().oriPrice -
+                  context.read<CartProvider>().promoAmt;
               setState(() {});
             }
             checkout();
@@ -566,6 +566,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
   bool notForCheckout = false;
   String cartMessage = '';
+  bool? isDoCheckout;
+  String? isDoCheckoutMessage;
   Future<void> _getCart(String save) async {
     isNetworkAvail = await isNetworkAvailable();
     if (isNetworkAvail) {
@@ -577,12 +579,18 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           String? msg = getdata['message'];
           if (!error) {
             var data = getdata['data'];
-            context.read<CartProvider>().oriPrice = double.parse(getdata[SUB_TOTAL]);
-            context.read<CartProvider>().taxPer = double.parse(getdata[TAX_PER]);
-            deliveryCharge1=double.parse("${getdata['delivery_charge']}");
+            isDoCheckout = getdata['is_do_checkout'];
+            isDoCheckoutMessage = getdata['is_do_checkout_message'];
+            print('is do checkout $isDoCheckout===========');
+            context.read<CartProvider>().oriPrice =
+                double.parse(getdata[SUB_TOTAL]);
+            context.read<CartProvider>().taxPer =
+                double.parse(getdata[TAX_PER]);
+            deliveryCharge1 = double.parse("${getdata['delivery_charge']}");
             setState(() {});
-            print("${getdata['TAX_PER']}"+"_________tax percentage____________");
-       /*context.read<CartProvider>().totalPrice =
+            print("${getdata['TAX_PER']}" +
+                "_________tax percentage____________");
+            /*context.read<CartProvider>().totalPrice =
                 context.read<CartProvider>().deliveryCharge +
                     context.read<CartProvider>().oriPrice;*/
             // await getDeliveryCharge();
@@ -592,10 +600,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             context.read<CartProvider>().setCartlist(cartList);
             if (getdata.containsKey(PROMO_CODES)) {
               var promo = getdata[PROMO_CODES];
-              context.read<CartProvider>().promoList = (promo as List).map((e) => Promo.fromJson(e)).toList();
+              context.read<CartProvider>().promoList =
+                  (promo as List).map((e) => Promo.fromJson(e)).toList();
             }
             for (int i = 0; i < cartList.length; i++) {
-              context.read<CartProvider>().controller.add(TextEditingController());
+              context
+                  .read<CartProvider>()
+                  .controller
+                  .add(TextEditingController());
             }
             setState(() {});
           } else {
@@ -906,16 +918,27 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                       index: index,
                                       setState: setStateNow,
                                       saveForLatter: saveForLaterFun,
-                                      delete: (){
+                                      delete: () {
                                         print("Delete+++++++++++=");
-                                        context.read<CartProvider>().setprescriptionImages([]);
-                                        context.read<CartProvider>().selectedMethod = null;
-                                        context.read<CartProvider>().selectedMethod = null;
-                                        context.read<CartProvider>().payMethod = null;
-                                        context.read<CartProvider>().deliverable = false;
+                                        context
+                                            .read<CartProvider>()
+                                            .setprescriptionImages([]);
+                                        context
+                                            .read<CartProvider>()
+                                            .selectedMethod = null;
+                                        context
+                                            .read<CartProvider>()
+                                            .selectedMethod = null;
+                                        context.read<CartProvider>().payMethod =
+                                            null;
+                                        context
+                                            .read<CartProvider>()
+                                            .deliverable = false;
                                         callApi();
                                         buttonController = AnimationController(
-                                            duration: const Duration(milliseconds: 2000), vsync: this);
+                                            duration: const Duration(
+                                                milliseconds: 2000),
+                                            vsync: this);
                                         buttonSqueezeanimation = Tween(
                                           begin: deviceWidth! * 0.7,
                                           end: 50.0,
@@ -929,8 +952,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                           ),
                                         );
                                         getDeliveryCharge();
+                                      }, callCartApi: (){
+                                        _getCart('0');
                                       },
-
                                     );
                                   },
                                 ),
@@ -955,12 +979,20 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         ),
                                       )
                                     : Container(
-                                        height: 0,),
-                                if (context.read<CartProvider>().saveLaterList.isNotEmpty)
+                                        height: 0,
+                                      ),
+                                if (context
+                                    .read<CartProvider>()
+                                    .saveLaterList
+                                    .isNotEmpty)
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    itemCount: context.read<CartProvider>().saveLaterList.length,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: context
+                                        .read<CartProvider>()
+                                        .saveLaterList
+                                        .length,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return SaveLatterIteam(
                                         index: index,
@@ -1003,18 +1035,31 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(getTranslated(context, 'TOTAL_PRICE')!,),
+                                          Text(
+                                            getTranslated(
+                                                context, 'TOTAL_PRICE')!,
+                                          ),
                                           Text(
                                             //'${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().oriPrice)!} ',
-                                            "${double.parse("${context.read<CartProvider>().oriPrice}")-double.parse("${context.read<CartProvider>().promoAmt}")}"
-                                            ,style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).colorScheme.fontColor, fontFamily: 'ubuntu'),
+                                            "${double.parse("${context.read<CartProvider>().oriPrice}") - double.parse("${context.read<CartProvider>().promoAmt}")}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .fontColor,
+                                                    fontFamily: 'ubuntu'),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
                                 ),
-                              ):Container(height: 0,),
+                              )
+                            : Container(
+                                height: 0,
+                              ),
                       ],
                     ),
                     cartList.isNotEmpty
@@ -1083,14 +1128,27 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         setState: setStateNow,
                                         saveForLatter: saveForLaterFun,
                                         delete: () async {
-                                          context.read<CartProvider>().setprescriptionImages([]);
-                                          context.read<CartProvider>().selectedMethod = null;
-                                          context.read<CartProvider>().selectedMethod = null;
-                                          context.read<CartProvider>().payMethod = null;
-                                          context.read<CartProvider>().deliverable = false;
+                                          context
+                                              .read<CartProvider>()
+                                              .setprescriptionImages([]);
+                                          context
+                                              .read<CartProvider>()
+                                              .selectedMethod = null;
+                                          context
+                                              .read<CartProvider>()
+                                              .selectedMethod = null;
+                                          context
+                                              .read<CartProvider>()
+                                              .payMethod = null;
+                                          context
+                                              .read<CartProvider>()
+                                              .deliverable = false;
                                           callApi();
-                                          buttonController = AnimationController(
-                                              duration: const Duration(milliseconds: 2000), vsync: this);
+                                          buttonController =
+                                              AnimationController(
+                                                  duration: const Duration(
+                                                      milliseconds: 2000),
+                                                  vsync: this);
                                           buttonSqueezeanimation = Tween(
                                             begin: deviceWidth! * 0.7,
                                             end: 50.0,
@@ -1104,6 +1162,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                             ),
                                           );
                                           print("Delete+++++++++++=");
+                                        }, callCartApi: (){
+                                            _getCart('0');
                                         },
                                       );
                                     },
@@ -1340,53 +1400,83 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       ],
                     ),
                     // !notForCheckout ?
-                    SimBtn(
-                      size: 0.9,
-                      height: 40,
-                      borderRadius: circularBorderRadius5,
-                      title: context.read<CartProvider>().isPromoLen
-                          ? getTranslated(context, 'VALI_PRO_CODE')
-                          : getTranslated(context, 'PROCEED_CHECKOUT'),
-                      onBtnSelected: () async {
-                        if (context.read<CartProvider>().isPromoLen == false) {
-                          if (context.read<CartProvider>().oriPrice > 0) {
-                            // await getDeliveryCharge();
-                            // checkout();
-                            // FocusScope.of(context).unfocus();
-                            await getDeliveryCharge();
-                            if (isAvailable) {
-                              if (context.read<CartProvider>().totalPrice != 0) {}
-                            } else {
-                              setSnackbar(
-                                  getTranslated(context, 'CART_OUT_OF_STOCK_MSG')!,
-                                  _scaffoldKey);
-                            }
-                            if (mounted) setState(() {});
-                          } else {
-                            setSnackbar(getTranslated(context, 'ADD_ITEM')!,
-                                _scaffoldKey);
-                          }
-                        } else {
-                          await context
-                              .read<PromoCodeProvider>()
-                              .validatePromocode(
-                                  check: false,
-                                  context: context,
-                                  promocode:
-                                      context.read<CartProvider>().promoC.text,
-                                  update: setStateNow)
-                              .then(
-                            (value) {
-                              setState(
-                                () {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              );
+                    isDoCheckout == false
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.red,
+                                ),
+                                height: 50,
+                                width: MediaQuery.of(context).size.width / 1.1,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4, top: 4),
+                                  child: Center(
+                                      child: Text(
+                                    '$isDoCheckoutMessage',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )),
+                                )),
+                          )
+                        : SimBtn(
+                            size: 0.9,
+                            height: 40,
+                            borderRadius: circularBorderRadius5,
+                            title: context.read<CartProvider>().isPromoLen
+                                ? getTranslated(context, 'VALI_PRO_CODE')
+                                : getTranslated(context, 'PROCEED_CHECKOUT'),
+                            onBtnSelected: () async {
+                              if (context.read<CartProvider>().isPromoLen ==
+                                  false) {
+                                if (context.read<CartProvider>().oriPrice > 0) {
+                                  // await getDeliveryCharge();
+                                  // checkout();
+                                  // FocusScope.of(context).unfocus();
+                                  await getDeliveryCharge();
+                                  if (isAvailable) {
+                                    if (context
+                                            .read<CartProvider>()
+                                            .totalPrice !=
+                                        0) {}
+                                  } else {
+                                    setSnackbar(
+                                        getTranslated(
+                                            context, 'CART_OUT_OF_STOCK_MSG')!,
+                                        _scaffoldKey);
+                                  }
+                                  if (mounted) setState(() {});
+                                } else {
+                                  setSnackbar(
+                                      getTranslated(context, 'ADD_ITEM')!,
+                                      _scaffoldKey);
+                                }
+                              } else {
+                                await context
+                                    .read<PromoCodeProvider>()
+                                    .validatePromocode(
+                                        check: false,
+                                        context: context,
+                                        promocode: context
+                                            .read<CartProvider>()
+                                            .promoC
+                                            .text,
+                                        update: setStateNow)
+                                    .then(
+                                  (value) {
+                                    setState(
+                                      () {
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                    );
+                                  },
+                                );
+                              }
                             },
-                          );
-                        }
-                      },
-                    )
+                          )
                     // : SizedBox(),
                   ],
                 ),
@@ -1437,12 +1527,22 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                tempCartListForTestCondtion[0].productType == 'digital_product'
+                                                tempCartListForTestCondtion[0]
+                                                            .productType ==
+                                                        'digital_product'
                                                     ? Container()
-                                                    : SetAddress(update: setStateNow),
-                                                AttachPrescriptionImages(cartList: context.read<CartProvider>().cartList),
-                                                SelectPayment(updateCheckout: updateCheckout),
-                                                cartItems(context.read<CartProvider>().cartList),
+                                                    : SetAddress(
+                                                        update: setStateNow),
+                                                AttachPrescriptionImages(
+                                                    cartList: context
+                                                        .read<CartProvider>()
+                                                        .cartList),
+                                                SelectPayment(
+                                                    updateCheckout:
+                                                        updateCheckout),
+                                                cartItems(context
+                                                    .read<CartProvider>()
+                                                    .cartList),
                                                 orderSummary(),
                                                 /* OrderSummery(
                                                   cartList: context
@@ -1457,7 +1557,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         ),
                                         Selector<CartProvider, bool>(
                                           builder: (context, data, child) {
-                                            return DesignConfiguration.showCircularProgress(data, colors.primary);
+                                            return DesignConfiguration
+                                                .showCircularProgress(
+                                                    data, colors.primary);
                                           },
                                           selector: (_, provider) =>
                                               provider.isProgress,
@@ -1470,15 +1572,20 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     child: Row(
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsetsDirectional.only(start: 15.0),
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                  start: 15.0),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 //'${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().totalPrice)!} ',
                                                 '${double.parse("${context.read<CartProvider>().totalPrice}")}',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.fontColor,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .fontColor,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily: 'ubuntu',
                                                 ),
@@ -1504,17 +1611,30 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                 context, 'PLACE_ORDER'),
                                             onBtnSelected: _placeOrder
                                                 ? () {
-                                                    context.read<CartProvider>().checkoutState!(
+                                                    context
+                                                        .read<CartProvider>()
+                                                        .checkoutState!(
                                                       () {
                                                         _placeOrder = false;
                                                       },
                                                     );
                                                     if (context.read<CartProvider>().selAddress ==
                                                             '' ||
-                                                        context.read<CartProvider>().selAddress!.isEmpty) {
-                                                      if (tempCartListForTestCondtion[0].productType != 'digital_product') {
-                                                        msg = getTranslated(context, 'addressWarning');
-                                                        Routes.navigateToManageAddressScreen(context, false);
+                                                        context
+                                                            .read<
+                                                                CartProvider>()
+                                                            .selAddress!
+                                                            .isEmpty) {
+                                                      if (tempCartListForTestCondtion[
+                                                                  0]
+                                                              .productType !=
+                                                          'digital_product') {
+                                                        msg = getTranslated(
+                                                            context,
+                                                            'addressWarning');
+                                                        Routes
+                                                            .navigateToManageAddressScreen(
+                                                                context, false);
                                                       }
                                                       context
                                                           .read<CartProvider>()
@@ -1523,36 +1643,71 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    } else if (context.read<CartProvider>().payMethod ==
+                                                    } else if (context
+                                                            .read<
+                                                                CartProvider>()
+                                                            .payMethod ==
                                                         null) {
                                                       print("test pay***");
-                                                      msg = getTranslated(context, 'payWarning');
-                                                      Navigator.push(context, CupertinoPageRoute(builder: (BuildContextcontext) => Payment(updateCheckout, msg),
+                                                      msg = getTranslated(
+                                                          context,
+                                                          'payWarning');
+                                                      Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                          builder:
+                                                              (BuildContextcontext) =>
+                                                                  Payment(
+                                                                      updateCheckout,
+                                                                      msg),
                                                         ),
                                                       ).then((value) {
                                                         print("back pop ");
-                                                        print("back pop ${value}");
+                                                        print(
+                                                            "back pop ${value}");
                                                         if (value != null) {
-                                                          print("neweew ${context.read<CartProvider>().payMethod}");
+                                                          print(
+                                                              "neweew ${context.read<CartProvider>().payMethod}");
                                                           placeOrder("");
                                                           // context.read<CartProvider>().selAddress == null || context.read<CartProvider>().selAddress!.isEmpty ||  isPaymentSuccess == true;
                                                         }
-
-
                                                       });
-                                                      context.read<CartProvider>().checkoutState!(
+                                                      context
+                                                          .read<CartProvider>()
+                                                          .checkoutState!(
                                                         () {
                                                           _placeOrder = true;
                                                         },
                                                       );
-                                                    } else if (context.read<CartProvider>().isTimeSlot! &&
-                                                        int.parse(context.read<PaymentProvider>().allowDay!) > 0 &&
-                                                        (context.read<CartProvider>().selDate == null ||
-                                                            context.read<CartProvider>().selDate!.isEmpty)) {
-                                                      if (tempCartListForTestCondtion[0].productType != 'digital_product') {
-                                                        msg = getTranslated(context, 'dateWarning');
+                                                    } else if (context
+                                                            .read<
+                                                                CartProvider>()
+                                                            .isTimeSlot! &&
+                                                        int.parse(context.read<PaymentProvider>().allowDay!) >
+                                                            0 &&
+                                                        (context.read<CartProvider>().selDate ==
+                                                                null ||
+                                                            context
+                                                                .read<
+                                                                    CartProvider>()
+                                                                .selDate!
+                                                                .isEmpty)) {
+                                                      if (tempCartListForTestCondtion[
+                                                                  0]
+                                                              .productType !=
+                                                          'digital_product') {
+                                                        msg = getTranslated(
+                                                            context,
+                                                            'dateWarning');
                                                         Navigator.push(
-                                                          context, CupertinoPageRoute(builder: (BuildContextcontext) => Payment(updateCheckout, msg,)),
+                                                          context,
+                                                          CupertinoPageRoute(
+                                                              builder:
+                                                                  (BuildContextcontext) =>
+                                                                      Payment(
+                                                                        updateCheckout,
+                                                                        msg,
+                                                                      )),
                                                         );
                                                       }
                                                       context
@@ -1894,9 +2049,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     }
   }
 
-
-
-
   void paytmPayment(String? tranId, String orderID, String? status, String? msg,
       bool redirect) async {
     String? paymentResponse;
@@ -2001,7 +2153,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       String? varientId, quantity;
       List<SectionModel> cartList = context.read<CartProvider>().cartList;
       for (SectionModel sec in cartList) {
-        varientId = varientId != null ? '$varientId,${sec.varientId!}' : sec.varientId;
+        varientId =
+            varientId != null ? '$varientId,${sec.varientId!}' : sec.varientId;
         quantity = quantity != null ? '$quantity,${sec.qty!}' : sec.qty;
       }
       String? payVia;
@@ -2805,7 +2958,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   }
 
   void confirmDialog({double? deliveryCharge}) {
-    print("========payment method=======${context.read<CartProvider>().payMethod}===========");
+    print(
+        "========payment method=======${context.read<CartProvider>().payMethod}===========");
     showGeneralDialog(
       barrierColor: Theme.of(context).colorScheme.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {

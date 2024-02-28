@@ -219,7 +219,6 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                       context.read<CartProvider>().payMethod = null;
                       context.read<CartProvider>().selectedMethod = null;
                     }
-
                     if (paymentIndex == 1 &&
                         !(razorAdvancePaySuccess == true)) {
                       setSnackbar(
@@ -604,30 +603,24 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                         children: [
                                                           Text(
                                                               '*Pay $ADVANCE_PERCENT% Advance amount of Order amount'),
-                                                          razorAdvancePaySuccess ==
-                                                                  true
+                                                          razorAdvancePaySuccess == true
                                                               ? SizedBox()
                                                               : ElevatedButton(
                                                                   onPressed:
                                                                       () {
                                                                     print(
                                                                         '_____sddssssds______${context.read<CartProvider>().totalPrice}__________');
-                                                                    double
-                                                                        percent =
-                                                                        double.parse(ADVANCE_PERCENT ??
-                                                                            '0.0');
-                                                                    deductAmount = context
-                                                                            .read<CartProvider>()
-                                                                            .totalPrice *
-                                                                        percent /
-                                                                        100;
-                                                                    openCheckout();
-                                                                    // initiatePayment();
+                                                                    double percent = double.parse(ADVANCE_PERCENT ?? '0.0');
+                                                                    deductAmount = context.read<CartProvider>().totalPrice * percent / 100;
+                                                                    // openCheckout();
+                                                                    initiatePayment();
                                                                     setState(
-                                                                        () {});
+                                                                        () {}
+                                                                    );
                                                                   },
                                                                   child: Text(
-                                                                      'Pay ${deductAmount ?? ''}'))
+                                                                      'Pay ${deductAmount ?? ''}'),
+                                                          )
                                                         ],
                                                       ),
                                                     ),
@@ -705,7 +698,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   void initiatePayment() {
     // Replace this with the actual PhonePe payment URL you have
     String phonePePaymentUrl = url;
-    callBackUrl = "https://admin.jossbuy.com/home/phonepay_success";
+    callBackUrl = 'https://admin.jozzbybazar.com/home/phonepay_success';
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -721,19 +714,17 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
             onLoadStart: ((controller, url) {}),
             onLoadStop: (controller, url) async {
               if (url.toString().contains(callBackUrl!)) {
+                print('========url herrre=======$url===========');
                 // Extract payment status from URL
                 /// String? paymentStatus = extractPaymentStatusFromUrl(url.toString());
                 ///
                 _handlePaymentStatus(url.toString());
-
                 await _webViewController?.stopLoading();
-
                 if (await _webViewController?.canGoBack() ?? false) {
                   await _webViewController?.goBack();
                 } else {
                   Navigator.pop(context);
                 }
-
                 // Update payment status
                 /*setState(() {
                   _paymentStatus = paymentStatus!;
@@ -749,9 +740,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
   void _handlePaymentStatus(String url) async {
     Map<String, dynamic> responseData = await fetchDataFromUrl();
-
     String isError = responseData['data'][0]['error'];
-
     if (isError == 'true') {
       // Payment success
       _paymentStatus = 'Payment Failure';
@@ -767,17 +756,16 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       // Payment failure
       _paymentStatus = 'Payment Success';
       isPhonePayPaymentSuccess = true;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Payment Success')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Payment Success')));
     }
     print('___________${_paymentStatus}____vssdfff______');
-
     setState(() {});
   }
 
   String? callBackUrl;
   String? merchantId;
   String? merchantTransactionId;
+
   Future<Map<String, dynamic>> fetchDataFromUrl() async {
     final response = await http.post(
         Uri.parse("${baseUrl}/check_phonepay_status"),
@@ -794,8 +782,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
   getPhonpayURL({int? i}) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    mobile = preferences.getString("mobile");
-
+    mobile = preferences.getString('mobile');
     var request = http.MultipartRequest(
         'POST', Uri.parse('$baseUrl/initiate_phone_payment'));
     request.fields.addAll({
@@ -1015,13 +1002,10 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
               context.read<CartProvider>().payMethod =
                   context.read<PaymentProvider>().paymentMethodList[
                       context.read<CartProvider>().selectedMethod!];
-
               for (var element in context.read<PaymentProvider>().payModel) {
                 element.isSelected = false;
               }
-
               context.read<PaymentProvider>().payModel[index].isSelected = true;
-
               if (index == 1) {
                 paymentIndex = index;
                 getPhonpayURL(i: index);

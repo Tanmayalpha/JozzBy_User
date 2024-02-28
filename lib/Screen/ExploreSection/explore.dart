@@ -48,7 +48,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   AnimationController? buttonController;
 
   String query = '';
-  int notificationoffset = 0;
+  int notificationoffset = 1;
   bool notificationisloadmore = true,
       notificationisgettingdata = false,
       notificationisnodata = false;
@@ -235,7 +235,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
       if (mounted) {
         setState(
               () {
-            //  getProduct('0');
+             getProduct('0');
           },
         );
       }
@@ -604,6 +604,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
     );
   }
 
+  int counter = 1;
   void getAvailVarient(List<Product> tempList) {
     for (int j = 0; j < tempList.length; j++) {
       if (tempList[j].stockType == '2') {
@@ -653,7 +654,6 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
             },
           );
         }
-
         var parameter = {
           LIMIT: perPage.toString(),
           OFFSET: notificationoffset.toString(),
@@ -661,7 +661,6 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
           ORDER: orderBy,
           TOP_RETAED: showTopRated,
         };
-
         if (selId != '') {
           parameter[ATTRIBUTE_VALUE_ID] = selId;
         }
@@ -671,7 +670,6 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
         if (brandId != '') {
           parameter['brand'] = brandId;
         }
-
         if (query.trim() != '') {
           parameter[SEARCH] = query.trim();
         }
@@ -679,19 +677,16 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
             _currentRangeValues!.start.round().toString() != '0') {
           parameter[MINPRICE] = _currentRangeValues!.start.round().toString();
         }
-
         if (_currentRangeValues != null &&
             _currentRangeValues!.end.round().toString() != '0') {
           parameter[MAXPRICE] = _currentRangeValues!.end.round().toString();
         }
-
         if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
         context.read<ProductListProvider>().setProductListParameter(parameter);
-        print('___________${parameter}__________');
+        print('____get explore product_______${parameter}__________');
         Future.delayed(Duration.zero).then(
               (value) =>
-              context.read<ProductListProvider>().getProductList().then(
-                    (value,) async {
+              context.read<ProductListProvider>().getProductList().then((value,) async {
                   bool error = value['error'];
                   String? search = value['search'];
                   context.read<ExploreProvider>().setProductTotal(
@@ -701,22 +696,17 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                               .totalProducts);
                   notificationisgettingdata = false;
                   if (notificationoffset == 0) notificationisnodata = error;
-
                   if (!error && search!.trim() == query.trim()) {
                     if (mounted) {
                       if (initializingFilterDialogFirstTime) {
                         filterList = value['filters'];
-
                         print('${value['filters']}');
-
-
                         minPrice = value[MINPRICE].toString();
                         maxPrice = value[MAXPRICE].toString();
                         _currentRangeValues = RangeValues(
                             double.parse(minPrice), double.parse(maxPrice));
                         initializingFilterDialogFirstTime = false;
                       }
-
                       Future.delayed(
                         Duration.zero,
                             () =>
@@ -726,14 +716,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                                 if (mainlist.isNotEmpty) {
                                   List<Product> items = [];
                                   List<Product> allitems = [];
-
-                                  items.addAll(mainlist
-                                      .map((data) => Product.fromJson(data))
-                                      .toList());
-
-
+                                  items.addAll(mainlist.map((data) => Product.fromJson(data)).toList());
                                   allitems.addAll(items);
-
                                   getAvailVarient(allitems);
                                 } else {
                                   // notificationisloadmore = false;
@@ -767,10 +751,7 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
         query = _controller.text;
         notificationoffset = 0;
         notificationisloadmore = true;
-        context
-            .read<ExploreProvider>()
-            .productList
-            .clear();
+        context.read<ExploreProvider>().productList.clear();
       },
     );
   }
@@ -826,10 +807,8 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
   }
 
   void errorListener(SpeechRecognitionError error) {}
-
   void statusListener(String status) {
-    setStater(
-          () {
+    setStater(() {
         lastStatus = status;
       },
     );

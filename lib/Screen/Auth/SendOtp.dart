@@ -63,7 +63,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     print("wokingg");
     
     var request = http.MultipartRequest('POST',
-        Uri.parse('https://admin.jossbuy.com/app/v1/api/verify_user_forgot'));
+        Uri.parse('https://admin.jozzbybazar.com/app/v1/api/verify_user_forgot'));
     request.fields.addAll({'mobile': mobileController.text});
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -104,7 +104,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
         var request = http.MultipartRequest(
             'POST',
             Uri.parse(
-                'https://admin.jossbuy.com/app/v1/api/verify_user_forgot'));
+                'https://admin.jozzbybazar.com/app/v1/api/verify_user_forgot'));
         request.fields.addAll({'mobile': mobileController.text});
         request.headers.addAll(headers);
         http.StreamedResponse response = await request.send();

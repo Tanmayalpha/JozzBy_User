@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:eshop_multivendor/Model/Get_Images_model.dart';
 import 'package:eshop_multivendor/Screen/SQLiteData/SqliteData.dart';
 import 'package:eshop_multivendor/repository/homeRepository.dart';
@@ -20,6 +19,7 @@ import '../widgets/snackbar.dart';
 import 'CategoryProvider.dart';
 import 'Favourite/FavoriteProvider.dart';
 import 'package:http/http.dart' as http;
+import 'Search/SearchProvider.dart';
 
 class HomePageProvider extends ChangeNotifier {
   int _curSlider = 0;
@@ -268,27 +268,29 @@ class HomePageProvider extends ChangeNotifier {
     );
   }
 
+  int notificationoffset = 1;
+  bool notificationisloadmore = true,
+      notificationisgettingdata = false,
+      notificationisnodata = false;
+
   //This method is used to get Categories from server
   Future<void> getSections() async {
-    print('---***********-----${secLoading}');
+    print('---***********-----$secLoading');
     secLoading = true;
-
     notifyListeners();
-    var parameter = {PRODUCT_LIMIT: '6', PRODUCT_OFFSET: '0'};
-
+    var parameter = {PRODUCT_LIMIT: '6', PRODUCT_OFFSET: '0',
+      // 'limit': perPage.toString(), 'offset': "${notificationoffset.toString()}"
+    };
     if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
     sectionList.clear();
     await HomeRepository.fetchSections(parameter: parameter).then(
       (result) {
         if (!result['error']) {
           List<SectionModel> tempList = [];
-
           for (var element in (result['sectionList'] as List)) {
             tempList.add(element);
           }
-
           sectionList.addAll(tempList);
-
           secLoading = false;
           notifyListeners();
         }

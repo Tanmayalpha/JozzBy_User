@@ -105,23 +105,16 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="admin.jossbuy.com" android:scheme="http"  android:pathPrefix="/product"/>
-                <data android:host="admin.jossbuy.com" android:scheme="https"  android:pathPrefix="/product"/>
-                <data android:host="admin.jossbuy.com
+                <data android:host="admin.jozzbybazar.com" android:scheme="http"  android:pathPrefix="/product"/>
+                <data android:host="admin.jozzbybazar.com" android:scheme="https"  android:pathPrefix="/product"/>
+                <data android:host="admin.jozzbybazar.com
                 " android:scheme="https"
                     android:pathPrefix="/product"
                     />
-
             </intent-filter>
-            
         </activity>
-        
-      
-        
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
-
-
         <!--After Adding Key, Uncomment below lines-->
       <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM"/>

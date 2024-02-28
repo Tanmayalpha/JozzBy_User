@@ -44,10 +44,10 @@ class HomeRepository {
 
 
   static Future<Map<String, dynamic>> fetchSections(
-      {required Map<String, dynamic> parameter}) async {
-
+      {
+        required Map<String, dynamic> parameter}) async {
     try {
-       print('-----This is get section parameter-------${parameter}');
+       print('-----This is get section parameter-------$parameter');
       var sectionData =
           await ApiBaseHelper().postAPICall(getSectionApi, parameter);
                       //    ;
