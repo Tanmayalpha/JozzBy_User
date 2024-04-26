@@ -309,7 +309,7 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                 EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Form(
               key: _changeUserDetailsKey,
-              child: Container(
+              child: SizedBox(
                 height: 600,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

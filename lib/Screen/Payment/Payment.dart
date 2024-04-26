@@ -619,7 +619,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                                     );
                                                                   },
                                                                   child: Text(
-                                                                      'Pay ${deductAmount ?? ''}'),
+                                                                      'Pay ${deductAmount?.toStringAsFixed(2) ?? ''}'),
                                                           )
                                                         ],
                                                       ),
@@ -725,6 +725,12 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                 } else {
                   Navigator.pop(context);
                 }
+
+                if((isPhonePayPaymentSuccess  ?? false) && mounted){
+
+                  Navigator.pop(context, true);
+                }else {
+                }
                 // Update payment status
                 /*setState(() {
                   _paymentStatus = paymentStatus!;
@@ -739,7 +745,10 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   }
 
   void _handlePaymentStatus(String url) async {
+    print('${merchantTransactionId}_________________jsdjjda');
     Map<String, dynamic> responseData = await fetchDataFromUrl();
+    print('${responseData['data']}_________________jsdjjda');
+
     String isError = responseData['data'][0]['error'];
     if (isError == 'true') {
       // Payment success
@@ -749,8 +758,9 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
           .showSnackBar(SnackBar(content: Text('Payment Failure')));
     } else {
       isAdvancePaymentSuccess = false;
+      isPhonePayPaymentSuccess = true;
       context.read<CartProvider>().totalPrice =
-          context.read<CartProvider>().totalPrice - deductAmount!;
+          context.read<CartProvider>().totalPrice - (deductAmount ?? 0.0);
       context.read<CartProvider>().deductAmount = deductAmount ?? 0.0;
       setState(() {});
       // Payment failure
@@ -1008,6 +1018,8 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
               context.read<PaymentProvider>().payModel[index].isSelected = true;
               if (index == 1) {
                 paymentIndex = index;
+                double percent = double.parse(ADVANCE_PERCENT ?? '0.0');
+                deductAmount = context.read<CartProvider>().totalPrice * percent / 100;
                 getPhonpayURL(i: index);
               }
               if (index == 3) {

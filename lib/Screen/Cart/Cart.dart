@@ -1887,6 +1887,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             }
 
             if (ISFLAT_DEL) {
+              print('_____________${MIN_AMT}');
               if ((context.read<CartProvider>().oriPrice) <
                   double.parse(MIN_AMT!)) {
                 context.read<CartProvider>().deliveryCharge =

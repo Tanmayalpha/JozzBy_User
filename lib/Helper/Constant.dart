@@ -75,17 +75,20 @@ const String bankDetail =
 ApiBaseHelper apiBaseHelper = ApiBaseHelper();
 
 // for demo panels
-// const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
-const String imageUrl = 'https://admin.jozzbybazar.com/';
+ const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
+//const String imageUrl = 'https://admin.jozzbybazar.com/';
+//const String imageUrl = 'https://admin.jozzbybazar.com/';
 // const String imageUrl = 'https://admin.jozzbybazar.com/';
 //const String imageUrl = 'https://alphawizzserver.com/jozzby_bazar_new/';
 // const String imageUrl = 'https://alphawizzserver.com/';
-// const String baseUrl = 'https://alphawizzserver.com/jozzby_bazar_new/app/v1/api/';
+ const String baseUrl = 'https://alphawizzserver.com/jozzby_bazar_new/app/v1/api/';
 // const String baseUrl = 'https://admin.jozzbybazar.com/app/v1/api/';
 // const String baseUrl = 'https://admin.jozzbybazar.com/app/v1/api/';
-const String baseUrl = 'https://admin.jozzbybazar.com/app/v1/api/';
+//const String baseUrl = 'https://admin.jozzbybazar.com/app/v1/api/';
+//const String baseUrl = 'https://admin.jozzbybazar.com/app/v1/api/';
 // const String baseUrl = 'https://alphawizzserver.com/jossbuy/app/v1/api/';
 const String ecomExpressUrl =
     'https://clbeta.ecomexpress.in/track_me/api/mawbd/';
 // const String jwtKey = '56a1ea67a60392285e2cbe4c55d705cb4b84b509';
-const String jwtKey = '1f952f5fa7e86ba159749c2df92011fd27ef3a1b';
+//const String jwtKey = '1f952f5fa7e86ba159749c2df92011fd27ef3a1b';
+const String jwtKey = '4f0903c90894d5c1b99e30ef357bb1d6cbd0edc2';
